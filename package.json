@@ -1,0 +1,28 @@
+{
+  "name": "kassan",
+  "version": "0.1.0",
+  "description": "Kanban board for Asana",
+  "main": "main.js",
+  "scripts": {
+    "start": "webpack-dev-server --devtool eval --progress --colors --hot --content-base build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SmoofCreative/kassan.git"
+  },
+  "keywords": [
+    "asana",
+    "kanban"
+  ],
+  "author": "Smoof",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SmoofCreative/kassan/issues"
+  },
+  "homepage": "https://github.com/SmoofCreative/kassan#readme",
+  "devDependencies": {
+    "webpack": "^1.12.13",
+    "webpack-dev-server": "^1.14.1"
+  }
+}
