@@ -1,6 +1,17 @@
 // general scss
+
+/**
+ * We could load in bootstrap manually, but we hit issues with relative path
+ * loading within bootstrap-sass.
+ */
+// @import "~bootstrap-sass/assets/stylesheets/bootstrap/_variables";
+// @import "~bootstrap-sass/assets/stylesheets/bootstrap/_mixins";
+// @import "~bootstrap-sass/assets/stylesheets/bootstrap/_normalize";
+// @import "~bootstrap-sass/assets/stylesheets/bootstrap/_scaffolding";
+
 $foo: #900;
 
 body {
-  background-color: $foo;
+  // background-color: $foo;
 }
+

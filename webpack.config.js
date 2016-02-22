@@ -4,6 +4,7 @@ module.exports = {
   entry: [
     'webpack/hot/dev-server',
     'webpack-dev-server/client?http://localhost:8080',
+    'bootstrap-loader',
     path.resolve(__dirname, 'app/index.js')
   ],
   output: {
@@ -13,12 +14,9 @@ module.exports = {
   module: {
     loaders: [
       { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader"},
-      { test: /\.scss$/, loader: "style-loader!css-loader!sass" }
-    ]
-  },
-  sassLoader: {
-    includePaths: [
-      path.resolve(__dirname, "./app/sass")
+      { test: /\.scss$/, loader: "style!css!sass" },
+      { test: /\.(woff2?|ttf|eot|svg)$/, loaders: [ 'url?limit=10000' ] },
+      { test: /bootstrap-sass\/assets\/javascripts\//, loader: 'imports?jQuery=jquery' },
     ]
   }
 };
