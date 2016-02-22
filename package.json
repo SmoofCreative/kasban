@@ -1,5 +1,5 @@
 {
-  "name": "kassan",
+  "name": "kasban",
   "version": "0.1.0",
   "description": "Kanban board for Asana",
   "main": "main.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SmoofCreative/kassan.git"
+    "url": "git+https://github.com/SmoofCreative/kasban.git"
   },
   "keywords": [
     "asana",
@@ -18,9 +18,9 @@
   "author": "Smoof",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/SmoofCreative/kassan/issues"
+    "url": "https://github.com/SmoofCreative/kasban/issues"
   },
-  "homepage": "https://github.com/SmoofCreative/kassan#readme",
+  "homepage": "https://github.com/SmoofCreative/kasban#readme",
   "devDependencies": {
     "babel-core": "^6.5.2",
     "babel-loader": "^6.2.3",
