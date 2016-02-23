@@ -2,9 +2,9 @@ import React    from 'react';
 import ReactDOM from 'react-dom';
 
 import './style';
-import Header   from './components/Header';
+import Main from './layouts/Main';
 
 ReactDOM.render(
-  <Header />,
+  <Main />,
   document.getElementById('app')
 );
