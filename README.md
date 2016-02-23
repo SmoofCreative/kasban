@@ -8,7 +8,7 @@ A React + Webpack style project.
 
 Developed against
  - node 5.1.0
- - npm 2.13
+ - npm 3.3.12
 
 `npm install`
 
