@@ -1,3 +1,11 @@
-h1 {
-  color: #0c0;
+$header-height: 50px;
+$header-bg-colour: #333B54;
+$header-text-colour: #FFFFFF;
+
+.header {
+  height: $header-height;
+  width: 100%;
+  background-color: $header-bg-colour;
+  color: $header-text-colour;
 }
+
