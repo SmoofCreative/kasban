@@ -3,9 +3,49 @@ $header-bg-colour: #333B54;
 $header-text-colour: #FFFFFF;
 
 .header {
-  height: $header-height;
+  position: fixed;
   width: 100%;
-  background-color: $header-bg-colour;
-  color: $header-text-colour;
-}
+  height: 50px;
+  background-color: #333B54;
+  color: #FFFFFF;
+  padding-right: 15px;
+  padding-left: 30px;
+  clear: both;
 
+  &__col {
+    float: left;
+    width: 50%;
+    height: 100%;
+
+    &--right {
+      text-align: right;
+    }
+  }
+
+  &__logo {
+    float: left;
+    height: 20px;
+    margin-top: 15px;
+  }
+
+  &__breadcrumbs {
+    float: left;
+    height: 100%;
+    margin-left: 30px;
+    font-size: 14px;
+    line-height: $header-height + 2px;
+  }
+
+  &__cta {
+    color: #FFFFFF;
+    background-color: #68ACD0;
+    border-radius: 4px;
+    padding-top: 7px;
+    padding-right: 15px;
+    padding-bottom: 7px;
+    padding-left: 15px;
+    margin-top: 9px;
+    font-size: 16px;
+    border:none;
+  }
+}
