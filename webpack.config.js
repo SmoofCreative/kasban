@@ -1,6 +1,5 @@
 var path     = require('path');
 var rucksack = require('rucksack-css');
-var webpack  = require('webpack');
 
 module.exports = {
   entry: [
@@ -17,13 +16,7 @@ module.exports = {
       { test: /\.jsx?$/, exclude: /node_modules/, loader: 'eslint' }
     ],
     loaders: [
-      { test: /\.jsx?$/,
-        exclude: /node_modules/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['es2015', 'react']
-        }
-      },
+      { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader' },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass!postcss-loader' }
     ]
   },
