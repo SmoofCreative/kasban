@@ -1,4 +1,5 @@
-var path = require('path');
+var path     = require('path');
+var rucksack = require('rucksack-css');
 
 module.exports = {
   entry: [
@@ -13,12 +14,12 @@ module.exports = {
   module: {
     loaders: [
       { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader"},
-      { test: /\.scss$/, loader: "style-loader!css-loader!sass" }
+      { test: /\.scss$/, loader: "style-loader!css-loader!sass!postcss-loader" },
     ]
   },
-  sassLoader: {
-    includePaths: [
-      path.resolve(__dirname, "./app/sass")
-    ]
-  }
+  postcss: [
+    rucksack({
+      autoprefixer: true
+    })
+  ]
 };
