@@ -1,6 +1,10 @@
 @import "~purecss/build/pure-min";
 
-$foo: #EEEEEE;
+$foo: #FFFFFF;
+
+* {
+  box-sizing: border-box;
+}
 
 body {
   background-color: $foo;
