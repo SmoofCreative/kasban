@@ -2,23 +2,313 @@
 <html>
   <head>
     <meta charset="UTF-8"/>
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/combo?pure/0.6.0/base-min.css&pure/0.6.0/grids-min.css&pure/0.6.0/grids-responsive-min.css">
     <style>
+      *{
+        box-sizing: border-box;
+      }
+
       html,
       body {
         margin: 0;
         padding: 0;
+        font-family: 'Montserrat', sans-serif;
+        background-color: #555;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      p {
+        margin: 0;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+
+      .text-right {
+        text-align: right;
+      }
+
+      .cta {
+        color: #FFFFFF;
+        background-color: #68ACD0;
+        border-radius: 4px;
+        padding-top: 7px;
+        padding-right: 15px;
+        padding-bottom: 7px;
+        padding-left: 15px;
+        font-size: 16px;
+        border:none;
       }
 
       .header {
+        position: fixed;
         width: 100%;
         height: 50px;
         background-color: #333B54;
         color: #FFFFFF;
+        padding-right: 15px;
+        padding-left: 30px;
+        clear: both;
       }
+
+      .header__col {
+        float: left;
+        width: 50%;
+        height: 100%;
+      }
+
+      .header__logo {
+        display: inline-block;
+        height: 20px;
+        margin-top: 15px;
+      }
+
+      .header__breadcrumbs {
+        display: inline-block;
+        height: 100%;
+        margin-left: 30px;
+        font-size: 14px;
+        font-family: 'Raleway', sans-serif;
+      }
+
+      .header__cta {
+        margin-top: 7px;
+      }
+
+      .main {
+        padding-top: 70px;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .swimlane {
+        float: left;
+        width: 300px;
+        margin-right: 5px;
+        margin-left: 5px;
+      }
+
+      .swimlane__header {
+        border-top-right-radius: 4px;
+        border-top-left-radius: 4px;
+        border-bottom: 1px solid #eee;
+        background-color: #F9FAFB;
+      }
+
+      .swimlane__header__text {
+        padding-top: 15px;
+        padding-right: 10px;
+        padding-bottom: 15px;
+        padding-left: 10px;
+        margin: 0;
+      }
+
+      .swimlane__card {
+        min-height: 50px;
+        padding-top: 15px;
+        padding-right: 5px;
+        padding-left: 5px;
+        background-color: #FFFFFF;
+      }
+
+      .swimlane__card-border {
+        height: 100%;
+        width: 100%;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #E6E6E6;
+      }
+
+      .swimlane__user-image {
+        width: 30px;
+        height: auto;
+        border-radius: 50%;
+      }
+
+      .swimlane__task {
+        font-size: 14px;
+      }
+
+      .swimlane__date {
+        font-size: 14px;
+        color: #656872;
+      }
+
+      .swimlane__card--add-item {
+        font-family: 'Raleway', sans-serif;
+        padding-left: 10px;
+        border-bottom-right-radius: 4px;
+        border-bottom-left-radius: 4px;
+        color: #7A7C85;
+      }
+
     </style>
   </head>
   <body>
     <header class="header">
+      <div class="header__col">
+        <img class="header__logo" src="logo.png" />
+        <span class="header__breadcrumbs">Workspaces > Smoof > Project name</span>
+      </div>
+      <div class="header__col text-right">
+        <button class="header__cta cta">Open asana</button>
+      </div>
     </header>
+    <main class="main">
+      <div class="container">
+        <div class="content-wrapper">
+          <section class="swimlane">
+            <header class="swimlane__header">
+              <h3 class="swimlane__header__text">Uncategorised</h3>
+            </header>
+            <article class="swimlane__card pure-g">
+              <div class="swimlane__card-border">
+                <div class="pure-u-1-5 text-center">
+                  <img class="swimlane__user-image" src="https://c2.staticflickr.com/8/7146/6685872171_98eb3d6cb5_z.jpg" />
+                </div>
+                <div class="pure-u-4-5">
+                  <p class="swimlane__task">Lean more about sketch try out invisionapp craft, is it any good?</p>
+                  <time class="swimlane__date">20 Dec</time>
+                </div>
+              </div>
+            </article>
+            <article class="swimlane__card pure-g">
+              <div class="swimlane__card-border">
+                <div class="pure-u-1-5 text-center">
+                  <img class="swimlane__user-image" src="https://c2.staticflickr.com/8/7146/6685872171_98eb3d6cb5_z.jpg" />
+                </div>
+                <div class="pure-u-4-5">
+                  <p class="swimlane__task">Buy new computer</p>
+                  <time class="swimlane__date">No due date</time>
+                </div>
+              </div>
+            </article>
+            <article class="swimlane__card pure-g">
+              <div class="swimlane__card-border">
+                <div class="pure-u-1-5 text-center">
+                  <img class="swimlane__user-image" src="https://c2.staticflickr.com/8/7146/6685872171_98eb3d6cb5_z.jpg" />
+                </div>
+                <div class="pure-u-4-5">
+                  <p class="swimlane__task">Lean more about sketch try out invisionapp craft, is it any good?</p>
+                  <time class="swimlane__date">20 Dec</time>
+                </div>
+              </div>
+            </article>
+            <article class="swimlane__card pure-g">
+              <div class="swimlane__card-border">
+                <div class="pure-u-1-5 text-center">
+                  <img class="swimlane__user-image" src="https://c2.staticflickr.com/8/7146/6685872171_98eb3d6cb5_z.jpg" />
+                </div>
+                <div class="pure-u-4-5">
+                  <p class="swimlane__task">Buy new computer</p>
+                  <time class="swimlane__date">No due date</time>
+                </div>
+              </div>
+            </article>
+            <article class="swimlane__card swimlane__card--add-item">
+              <span>Add task...</span>
+            </article>
+          </section>
+          <section class="swimlane">
+            <header class="swimlane__header">
+              <h3 class="swimlane__header__text">
+                Backlog - if backlog had a really long annoying title that is really too long to be aloud
+              </h3>
+            </header>
+            <article class="swimlane__card pure-g">
+              <div class="swimlane__card-border">
+                <div class="pure-u-1-5 text-center">
+                  <img class="swimlane__user-image" src="https://c2.staticflickr.com/8/7146/6685872171_98eb3d6cb5_z.jpg" />
+                </div>
+                <div class="pure-u-4-5">
+                  <p class="swimlane__task">Lean more about sketch try out invisionapp craft, is it any good?</p>
+                  <time class="swimlane__date">20 Dec</time>
+                </div>
+              </div>
+            </article>
+            <article class="swimlane__card pure-g">
+              <div class="swimlane__card-border">
+                <div class="pure-u-1-5 text-center">
+                  <img class="swimlane__user-image" src="https://c2.staticflickr.com/8/7146/6685872171_98eb3d6cb5_z.jpg" />
+                </div>
+                <div class="pure-u-4-5">
+                  <p class="swimlane__task">Buy new computer</p>
+                  <time class="swimlane__date">No due date</time>
+                </div>
+              </div>
+            </article>
+            <article class="swimlane__card swimlane__card--add-item">
+              <span>Add task...</span>
+            </article>
+          </section>
+          <section class="swimlane">
+            <header class="swimlane__header">
+              <h3 class="swimlane__header__text">In progress</h3>
+            </header>
+            <article class="swimlane__card pure-g">
+              <div class="swimlane__card-border">
+                <div class="pure-u-1-5 text-center">
+                  <img class="swimlane__user-image" src="https://c2.staticflickr.com/8/7146/6685872171_98eb3d6cb5_z.jpg" />
+                </div>
+                <div class="pure-u-4-5">
+                  <p class="swimlane__task">Lean more about sketch try out invisionapp craft, is it any good?</p>
+                  <time class="swimlane__date">20 Dec</time>
+                </div>
+              </div>
+            </article>
+            <article class="swimlane__card pure-g">
+              <div class="swimlane__card-border">
+                <div class="pure-u-1-5 text-center">
+                  <img class="swimlane__user-image" src="https://c2.staticflickr.com/8/7146/6685872171_98eb3d6cb5_z.jpg" />
+                </div>
+                <div class="pure-u-4-5">
+                  <p class="swimlane__task">Buy new computer</p>
+                  <time class="swimlane__date">No due date</time>
+                </div>
+              </div>
+            </article>
+            <article class="swimlane__card swimlane__card--add-item">
+              <span>Add task...</span>
+            </article>
+          </section>
+          <section class="swimlane">
+            <header class="swimlane__header">
+              <h3 class="swimlane__header__text">In progress</h3>
+            </header>
+            <article class="swimlane__card pure-g">
+              <div class="swimlane__card-border">
+                <div class="pure-u-1-5 text-center">
+                  <img class="swimlane__user-image" src="https://c2.staticflickr.com/8/7146/6685872171_98eb3d6cb5_z.jpg" />
+                </div>
+                <div class="pure-u-4-5">
+                  <p class="swimlane__task">Lean more about sketch try out invisionapp craft, is it any good?</p>
+                  <time class="swimlane__date">20 Dec</time>
+                </div>
+              </div>
+            </article>
+            <article class="swimlane__card pure-g">
+              <div class="swimlane__card-border">
+                <div class="pure-u-1-5 text-center">
+                  <img class="swimlane__user-image" src="https://c2.staticflickr.com/8/7146/6685872171_98eb3d6cb5_z.jpg" />
+                </div>
+                <div class="pure-u-4-5">
+                  <p class="swimlane__task">Buy new computer</p>
+                  <time class="swimlane__date">No due date</time>
+                </div>
+              </div>
+            </article>
+            <article class="swimlane__card swimlane__card--add-item">
+              <span>Add task...</span>
+            </article>
+          </section>
+        </div>
+      </div>
+    </main>
   </body>
 </html>
