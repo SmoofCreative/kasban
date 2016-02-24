@@ -1,4 +1,5 @@
 import Asana from 'asana';
+import qs from 'querystringify';
 
 const Actions = {};
 
@@ -13,24 +14,72 @@ Actions.getTasks = () => {
   };
 };
 
-Actions.doAuth = () => {
+const AsanaClient = Asana.Client.create({
+  clientId: 93624243720041,
+  redirectUri: document.location['href']
+}).useOauth();
+
+// window.acl = AsanaClient;
+
+// onClick doAuth
+// onLoad checkAuth
+
+// check auth key from local - initial state
+//
+// if on a project
+//  rerun auth if key outdated - initial state, or after timeout
+// else
+//  await input
+
+Actions.checkAuth = () => {
   return () => {
 
-    let client = Asana.Client.create({
-      clientId: 93624243720041,
-      redirectUri: document.location['href']
-    });
+    // dispatch -> START_AUTH
 
-    window.aclient = client;
 
-    client.useOauth();
+    // if there is an auth token in url
+    //  set token in storage
+    //  add to AsanaClient
+    // else if there's a token in storage
+    //  get token from storage
+    //  add to AsanaClient
+    //
 
-    client.authorize().then(() => {
-      // dispatch()
-      client.users.me().then(function(me) {
-        console.log(me)
-      })
-    })
+    let params = qs.parse(location.hash.slice(1))
+    if (typeof params.access_token !== 'undefined') {
+      console.log('theres a token')
+
+      localStorage.setItem('access_token', params.access_token)
+      localStorage.setItem('token_death', Date.now() + 100)
+    }
+
+    // do not touch the date!!
+    if ( localStorage.getItem('access_token') !== null && localStorage.getItem('token_death') > Date.now() ) {
+      console.log('new token time')
+
+      AsanaClient
+        .authorize()
+        .then(() => {
+          let expires_in = parseInt(AsanaClient.dispatcher.authenticator.credentials.expires_in);
+          let expires_at = Date.now() + expires_in;
+
+          localStorage.setItem('token_death', expires_at);
+          localStorage.setItem('access_token', AsanaClient.dispatcher.authenticator.credentials.access_token);
+
+
+
+          // dispatch -> AUTH_SUCCESS
+        })
+
+    }
+
+  }
+}
+
+Actions.doAuth = () => {
+  return () => {
+    // dispatch -> START_AUTH
+    AsanaClient.authorize();
   }
 }
 
