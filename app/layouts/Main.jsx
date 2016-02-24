@@ -4,12 +4,14 @@ import { connect } from 'react-redux';
 import './style';
 import Header from '../components/Header';
 import Project from '../components/Project';
-import Auth from '../components/Auth'
+import Auth from '../components/Auth';
+import BoardSelector from '../components/BoardSelector';
 import Actions from '../actions';
 
 const Main = React.createClass({
   componentDidMount() {
-    this.props.dispatch(Actions.checkAuth())
+    this.props.dispatch(Actions.checkAuth());
+    this.props.dispatch(Actions.getWorkspaces());
   },
 
   render() {
@@ -19,10 +21,17 @@ const Main = React.createClass({
 
         <Auth />
 
+        <BoardSelector workspaces={this.props.workspaces} projects={this.props.projects} />
+
         <Project />
       </div>
     );
   }
 });
 
-export default connect()(Main);
+const mapStateToProps = (state) => ({
+  projects: state.get('projects'),
+  workspaces: state.get('workspaces')
+});
+
+export default connect(mapStateToProps)(Main);

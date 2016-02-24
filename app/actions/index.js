@@ -3,17 +3,6 @@ import qs from 'querystringify';
 
 const Actions = {};
 
-Actions.getTasks = () => {
-  return (dispatch) => {
-    dispatch({
-      type: 'GET_TASKS',
-      payload: {
-        projectId: 1
-      }
-    })
-  };
-};
-
 const access_token = localStorage.getItem('access_token')
 const AsanaClient = Asana.Client.create({
   clientId: 93624243720041,
@@ -21,6 +10,36 @@ const AsanaClient = Asana.Client.create({
 }).useOauth({
   credentials: access_token
 });
+
+Actions.getWorkspaces = () => {
+  return (dispatch) => {
+    AsanaClient.users.me().then((data) => {
+      dispatch({
+        type: 'GET_WORKSPACES',
+        payload: {
+          workspaces: data.workspaces
+        }
+      });
+    });
+  };
+};
+
+Actions.getProjects = (workspaceId) => {
+  return (dispatch) => {
+    AsanaClient
+      .projects
+      .findByWorkspace(workspaceId, { limit: 100 })
+      .then((collection) => {
+        console.log('dispatch incoming');
+        dispatch({
+          type: 'GET_PROJECTS',
+          payload: {
+            projects: collection.data
+          }
+        });
+      });
+  };
+};
 
 Actions.checkAuth = () => {
   return () => {
