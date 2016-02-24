@@ -31,13 +31,18 @@ const initalState = Map({
       'name': 'Create initial style guide'
     }
   ],
-  'next_page': null
+  'next_page': null,
+  'workspaces': [],
+  'projects': []
 });
 
 export default function reducer(state = initalState, action) {
   switch(action.type) {
-    case 'GET_TASKS':
-      return state;
+    case 'GET_WORKSPACES':
+      return state.set('workspaces', action.payload.workspaces);
+    case 'GET_PROJECTS':
+      console.log(action.payload.projects);
+      return state.set('projects', action.payload.projects);
     default:
       return state;
   }
