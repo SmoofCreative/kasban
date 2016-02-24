@@ -1,19 +1,17 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 import './style';
 import Swimlane from '../Swimlane';
 
 const Project = React.createClass({
-  _renderSwimlanes() {
-    return <Swimlane />;
-  },
-
   render() {
+    const { cards } = this.props;
     return (
       <main className="main">
         <div className="container">
           <div className="flex-container">
-            { this._renderSwimlanes() }
+            <Swimlane cards={cards} />
           </div>
         </div>
       </main>
@@ -21,4 +19,8 @@ const Project = React.createClass({
   }
 });
 
-export default Project;
+const mapStateToProps = (state) => ({
+  cards: state.get('data')
+});
+
+export default connect(mapStateToProps)(Project);
