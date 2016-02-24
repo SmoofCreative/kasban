@@ -17,7 +17,8 @@ module.exports = {
     ],
     loaders: [
       { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader' },
-      { test: /\.scss$/, loader: 'style-loader!css-loader!sass!postcss-loader' }
+      { test: /\.scss$/, loader: 'style-loader!css-loader!sass!postcss-loader' },
+      { test: /\.json$/, loader: 'json-loader' },
     ]
   },
   postcss: [
@@ -26,6 +27,10 @@ module.exports = {
     })
   ],
   resolve: {
-    extensions: ['', '.js', '.jsx', '.scss']
+    extensions: ['', '.js', '.jsx', '.json', '.scss'],
+    modulesDirectories: ['node_modules']
+  },
+  node: {
+    readline: 'empty'
   }
 };
