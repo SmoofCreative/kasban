@@ -2,7 +2,7 @@ import React from 'react';
 
 import './style';
 
-const Header = (props) => (
+const Header = () => (
   <header className="header">
     <div className="header__col">
       <img className="header__logo" src="logo.png" />

@@ -5,7 +5,9 @@ import Card from '../Card';
 
 const Swimlane = React.createClass({
   _renderCards() {
-    return <Card />;
+    return this.props.cards.map((card) => (
+      <Card key={card.id} name={card.name} />
+    ));
   },
 
   render() {
