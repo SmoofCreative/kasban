@@ -14,28 +14,18 @@ Actions.getTasks = () => {
   };
 };
 
+const access_token = localStorage.getItem('access_token')
 const AsanaClient = Asana.Client.create({
   clientId: 93624243720041,
   redirectUri: document.location['href']
-}).useOauth();
-
-// window.acl = AsanaClient;
-
-// onClick doAuth
-// onLoad checkAuth
-
-// check auth key from local - initial state
-//
-// if on a project
-//  rerun auth if key outdated - initial state, or after timeout
-// else
-//  await input
+}).useOauth({
+  credentials: access_token
+});
 
 Actions.checkAuth = () => {
   return () => {
 
     // dispatch -> START_AUTH
-
 
     // if there is an auth token in url
     //  set token in storage
@@ -65,8 +55,6 @@ Actions.checkAuth = () => {
 
           localStorage.setItem('token_death', expires_at);
           localStorage.setItem('access_token', AsanaClient.dispatcher.authenticator.credentials.access_token);
-
-
 
           // dispatch -> AUTH_SUCCESS
         })
