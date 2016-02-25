@@ -9,8 +9,8 @@ const Auth = React.createClass({
 
   render() {
     return (
-      <div style={{paddingTop: 85, paddingLeft: 50}}>
-        <button onClick={this._handleClick}>Authmeplox</button>
+      <div style={{display: 'inline-block', marginRight: 15}}>
+        <button className="header__cta cta" onClick={this._handleClick}>Authmeplox</button>
       </div>
     );
   }

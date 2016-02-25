@@ -13,14 +13,18 @@ const AsanaClient = Asana.Client.create({
 
 Actions.getWorkspaces = () => {
   return (dispatch) => {
+    dispatch({
+      type: 'REQUEST_WORKSPACES'
+    });
+
     AsanaClient.users.me().then((data) => {
       dispatch({
-        type: 'GET_WORKSPACES',
+        type: 'RECEIVE_WORKSPACES',
         payload: {
           workspaces: data.workspaces
         }
       });
-    });
+    })
   };
 };
 

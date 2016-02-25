@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import './style';
 import Header from '../components/Header';
 import Project from '../components/Project';
-import Auth from '../components/Auth';
-import BoardSelector from '../components/BoardSelector';
 import Actions from '../actions';
 
 const Main = React.createClass({
@@ -17,11 +15,7 @@ const Main = React.createClass({
   render() {
     return (
       <div>
-        <Header />
-
-        <Auth />
-
-        <BoardSelector workspaces={this.props.workspaces} projects={this.props.projects} />
+        <Header workspaces={this.props.workspaces} projects={this.props.projects} />
 
         <Project />
       </div>

@@ -1,15 +1,22 @@
 import React from 'react';
 
 import './style';
+import Auth from '../Auth';
+import BoardSelector from '../BoardSelector';
 
-const Header = () => (
+const Header = ({workspaces, projects}) => (
   <header className="header">
-    <div className="header__col">
+    <div className="pure-u-2-3">
       <img className="header__logo" src="logo.png" />
-      <div className="header__breadcrumbs">Workspaces > Smoof > Project name</div>
+      <div className="header__breadcrumbs">
+        <BoardSelector workspaces={workspaces} projects={projects} />
+      </div>
     </div>
-    <div className="header__col header__col--right">
+    <div className="pure-u-1-3">
+      <div className=" pull-right">
+      <Auth />
       <button className="header__cta cta">Open asana</button>
+      </div>
     </div>
   </header>
 )

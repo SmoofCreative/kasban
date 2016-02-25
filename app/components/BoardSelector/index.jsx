@@ -27,12 +27,12 @@ const BoardSelector = React.createClass({
   render() {
     return(
       <div>
-        <select onChange={this.handleWorkspaceChange} style={{marginLeft: 50}}>
+        <select onChange={this.handleWorkspaceChange}>
           <option value="0">Select workspaces...</option>
           { this.renderWorkspaces() }
         </select>
 
-        <select onChange={this.handleProjectChange} style={{marginLeft: 50}}>
+        <select onChange={this.handleProjectChange} style={{marginLeft: 15}}>
           <option value="0">Select project...</option>
           { this.renderProjects() }
         </select>

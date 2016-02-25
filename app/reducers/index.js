@@ -38,7 +38,7 @@ const initalState = Map({
 
 export default function reducer(state = initalState, action) {
   switch(action.type) {
-    case 'GET_WORKSPACES':
+    case 'RECEIVE_WORKSPACES':
       return state.set('workspaces', action.payload.workspaces);
     case 'GET_PROJECTS':
       console.log(action.payload.projects);

@@ -12,16 +12,6 @@ $header-text-colour: #FFFFFF;
   padding-left: 30px;
   clear: both;
 
-  &__col {
-    float: left;
-    width: 50%;
-    height: 100%;
-
-    &--right {
-      text-align: right;
-    }
-  }
-
   &__logo {
     float: left;
     height: 20px;
