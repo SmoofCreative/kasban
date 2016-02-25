@@ -1,48 +1,66 @@
-import { Map } from 'immutable';
-
-const initalState = Map({
-  'data': [
-    {
-      'id': 92006189034861,
-      'name': 'In Progress:'
-    },
-    {
-      'id': 92006189034880,
-      'name': 'As the owner i want i need a landing page to validate the concept'
-    },
-    {
-      'id': 92106379395279,
-      'name': 'Development env setup'
-    },
-    {
-      'id': 92106379395349,
-      'name': 'ToDo:'
-    },
-    {
-      'id': 92205938529192,
-      'name': 'Create a quick lean canvas for kassan'
-    },
-    {
-      'id': 92106379395281,
-      'name': 'Application dependency setup'
-    },
-    {
-      'id': 92106379395300,
-      'name': 'Create initial style guide'
-    }
-  ],
-  'next_page': null,
+const initalState = {
   'workspaces': [],
-  'projects': []
-});
+  'projects': [],
+  'sections': [
+    {
+      'name': 'Todo:',
+      'id': 92106379395349,
+      'cards': [
+        {
+            'id': 92006189034921,
+            'created_at': '2016-02-19T15:36:22.226Z',
+            'modified_at': '2016-02-19T16:01:49.030Z',
+            'name': 'Pick up and move headings with tasks below',
+            'completed': false,
+            'assignee_status': 'upcoming',
+            'completed_at': null,
+            'due_on': null,
+            'due_at': null,
+            'workspace': {
+              'id': 3736871133687,
+              'name': 'Smoof'
+            },
+            'parent': null,
+            'projects': [
+              {
+                'id': 92006189034858,
+                'name': 'Kasban Asana Board'
+              }
+            ],
+            'memberships': [
+              {
+                'project': {
+                  'id': 92006189034858,
+                  'name': 'Kasban Asana Board'
+                },
+                'section': {
+                  'id': 92106379395235,
+                  'name': 'Icebox:'
+                }
+              }
+            ]
+          }
+      ]
+    },
+    {
+      name: 'Completed:',
+      cards: []
+    }
+  ]
+};
 
 export default function reducer(state = initalState, action) {
   switch(action.type) {
     case 'RECEIVE_WORKSPACES':
-      return state.set('workspaces', action.payload.workspaces);
+      return Object.assign({}, state, {
+        workspaces: action.payload.workspaces
+      });
     case 'GET_PROJECTS':
       console.log(action.payload.projects);
-      return state.set('projects', action.payload.projects);
+
+      return Object.assign({}, state, {
+        projects: action.payload.projects
+      });
     default:
       return state;
   }

@@ -24,8 +24,8 @@ const Main = React.createClass({
 });
 
 const mapStateToProps = (state) => ({
-  projects: state.get('projects'),
-  workspaces: state.get('workspaces')
+  projects: state.projects,
+  workspaces: state.workspaces
 });
 
 export default connect(mapStateToProps)(Main);
