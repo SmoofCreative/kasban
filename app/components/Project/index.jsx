@@ -20,7 +20,7 @@ const Project = React.createClass({
 });
 
 const mapStateToProps = (state) => ({
-  cards: state.get('data')
+  cards: []
 });
 
 export default connect(mapStateToProps)(Project);
