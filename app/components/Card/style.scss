@@ -1,30 +1,37 @@
-.swimlane__card {
-  min-height: 50px;
-  width: 300px;
-  padding-top: 15px;
-  padding-right: 5px;
-  padding-left: 5px;
-  background-color: #FFFFFF;
-}
+.swimcard {
+  &__card {
+    min-height: 50px;
+    width: 300px;
+    padding-top: 15px;
+    padding-right: 5px;
+    padding-left: 5px;
+    background-color: #FFFFFF;
+  }
 
-.swimlane__card-border {
-  height: 100%;
-  width: 100%;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #E6E6E6;
-}
+  &__card-content {
+    padding-left: 10px;
+  }
 
-.swimlane__user-image {
-  width: 30px;
-  height: auto;
-  border-radius: 50%;
-}
+  &__card-border {
+    height: 100%;
+    width: 100%;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #E6E6E6;
+  }
 
-.swimlane__task {
-  font-size: 14px;
-}
+  &__user-image {
+    width: 30px;
+    height: auto;
+    border-radius: 50%;
+  }
 
-.swimlane__date {
-  font-size: 14px;
-  color: #656872;
+  &__task {
+    font-size: 14px;
+  }
+
+  &__date {
+    font-size: 14px;
+    color: #656872;
+  }
+
 }

@@ -21,7 +21,7 @@ const Swimlane = React.createClass({
         { this._renderCards() }
         </div>
 
-        <footer className="swimlane__card swimlane__card--add-item">
+        <footer className="swimlane__footer">
           <span>Add task...</span>
         </footer>
       </section>
