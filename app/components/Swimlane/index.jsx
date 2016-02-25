@@ -6,7 +6,7 @@ import Card from '../Card';
 const Swimlane = React.createClass({
   _renderCards() {
     return this.props.cards.map((card) => (
-      <Card key={card.id} name={card.name} />
+      <Card key={card.id} card={card} />
     ));
   },
 
@@ -14,10 +14,12 @@ const Swimlane = React.createClass({
     return (
       <section className="swimlane">
         <header className="swimlane__header">
-          <h3 className="swimlane__header__text">In progress</h3>
+          <h3 className="swimlane__header__text">{this.props.name}</h3>
         </header>
 
+        <div className="swimlane__cards">
         { this._renderCards() }
+        </div>
 
         <footer className="swimlane__card swimlane__card--add-item">
           <span>Add task...</span>

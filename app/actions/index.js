@@ -30,13 +30,17 @@ Actions.getWorkspaces = () => {
 
 Actions.getProjects = (workspaceId) => {
   return (dispatch) => {
+
+    dispatch({
+      type: 'REQUEST_PROJECTS'
+    });
+
     AsanaClient
       .projects
       .findByWorkspace(workspaceId, { limit: 100 })
       .then((collection) => {
-        console.log('dispatch incoming');
         dispatch({
-          type: 'GET_PROJECTS',
+          type: 'RECEIVE_PROJECTS',
           payload: {
             projects: collection.data
           }
@@ -45,18 +49,93 @@ Actions.getProjects = (workspaceId) => {
   };
 };
 
+
+function makeSwimlanes(list) {
+  let swimlanes = [];
+
+  if (list[0].name.slice(-1) !== ':') {
+    swimlanes.unshift({
+      id: 0,
+      name: 'Prelisted:',
+      cards: []
+    });
+  }
+
+  for (let item of list) {
+    if (item.name.slice(-1) === ':') {
+      swimlanes.unshift({
+        id: item.id,
+        name: item.name,
+        cards: []
+      });
+
+      continue;
+    }
+
+    swimlanes[0].cards.push(item);
+  }
+
+  return swimlanes;
+}
+
+
+Actions.getTasks = (projectId) => {
+  return (dispatch) => {
+
+    dispatch({
+      type: 'REQUEST_TASKS'
+    });
+
+    AsanaClient
+      .tasks
+      .findByProject(projectId, { limit: 100 })
+      .then((collection) => {
+
+        const swimlanes = makeSwimlanes(collection.data)
+
+        dispatch({
+          type: 'SET_SWIMLANES_AND_INITIAL_TASKS',
+          payload: {
+            swimlanes: swimlanes
+          }
+        });
+
+      });
+
+  };
+};
+
+
+// const getTaskDetails = (taskId) => {
+//   return (dispatch) => {
+
+//     dispatch({
+//       type: 'REQUEST_TASK_DETAILS'
+//     })
+
+//     AsanaClient
+//       .tasks
+//       .findById(taskId)
+//       .then((task) => {
+
+//         dispatch({
+//           type: 'RECEIVE_TASK_DETAILS',
+//           payload: {
+//             task: task
+//           }
+//         });
+
+//       });
+//   };
+// };
+
+
+
+
+
+
 Actions.checkAuth = () => {
   return () => {
-
-    // dispatch -> START_AUTH
-
-    // if there is an auth token in url
-    //  set token in storage
-    //  add to AsanaClient
-    // else if there's a token in storage
-    //  get token from storage
-    //  add to AsanaClient
-    //
 
     let params = qs.parse(location.hash.slice(1))
     if (typeof params.access_token !== 'undefined') {
@@ -78,8 +157,6 @@ Actions.checkAuth = () => {
 
           localStorage.setItem('token_death', expires_at);
           localStorage.setItem('access_token', AsanaClient.dispatcher.authenticator.credentials.access_token);
-
-          // dispatch -> AUTH_SUCCESS
         })
 
     }
@@ -89,7 +166,6 @@ Actions.checkAuth = () => {
 
 Actions.doAuth = () => {
   return () => {
-    // dispatch -> START_AUTH
     AsanaClient.authorize();
   }
 }

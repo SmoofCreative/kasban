@@ -7,44 +7,44 @@ const initalState = {
       'id': 92106379395349,
       'cards': [
         {
-            'id': 92006189034921,
-            'created_at': '2016-02-19T15:36:22.226Z',
-            'modified_at': '2016-02-19T16:01:49.030Z',
-            'name': 'Pick up and move headings with tasks below',
-            'completed': false,
-            'assignee_status': 'upcoming',
-            'completed_at': null,
-            'due_on': null,
-            'due_at': null,
-            'workspace': {
-              'id': 3736871133687,
-              'name': 'Smoof'
-            },
-            'parent': null,
-            'projects': [
-              {
+          'id': 92006189034921,
+          'created_at': '2016-02-19T15:36:22.226Z',
+          'modified_at': '2016-02-19T16:01:49.030Z',
+          'name': 'Pick up and move headings with tasks below',
+          'completed': false,
+          'assignee_status': 'upcoming',
+          'completed_at': null,
+          'due_on': null,
+          'due_at': null,
+          'workspace': {
+            'id': 3736871133687,
+            'name': 'Smoof'
+          },
+          'parent': null,
+          'projects': [
+            {
+              'id': 92006189034858,
+              'name': 'Kasban Asana Board'
+            }
+          ],
+          'memberships': [
+            {
+              'project': {
                 'id': 92006189034858,
                 'name': 'Kasban Asana Board'
+              },
+              'section': {
+                'id': 92106379395235,
+                'name': 'Icebox:'
               }
-            ],
-            'memberships': [
-              {
-                'project': {
-                  'id': 92006189034858,
-                  'name': 'Kasban Asana Board'
-                },
-                'section': {
-                  'id': 92106379395235,
-                  'name': 'Icebox:'
-                }
-              }
-            ]
-          }
+            }
+          ]
+        }
       ]
     },
     {
-      name: 'Completed:',
-      cards: []
+      'name': 'Completed:',
+      'cards': []
     }
   ]
 };
@@ -55,12 +55,20 @@ export default function reducer(state = initalState, action) {
       return Object.assign({}, state, {
         workspaces: action.payload.workspaces
       });
-    case 'GET_PROJECTS':
-      console.log(action.payload.projects);
-
+    case 'RECEIVE_PROJECTS':
       return Object.assign({}, state, {
         projects: action.payload.projects
       });
+    case 'SET_SWIMLANES_AND_INITIAL_TASKS':
+      return Object.assign({}, state, {
+        sections: action.payload.swimlanes
+      });
+
+    case 'RECEIVE_TASK_DETAILS':
+      // return Object.assign({}, state, {
+      //   card: action.payload.card
+      // });
+
     default:
       return state;
   }
