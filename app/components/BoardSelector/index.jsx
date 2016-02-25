@@ -15,7 +15,7 @@ const BoardSelector = React.createClass({
   },
 
   handleProjectChange(e) {
-    console.log(e.target.value);
+    this.props.dispatch(Actions.getTasks(e.target.value));
   },
 
   renderProjects() {

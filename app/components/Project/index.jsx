@@ -5,13 +5,21 @@ import './style';
 import Swimlane from '../Swimlane';
 
 const Project = React.createClass({
+  renderSwimlanes () {
+    return this.props.sections.map((section) => (
+      <Swimlane cards={section.cards} name={section.name} id={section.id} />
+    ))
+  },
+
   render() {
-    const { cards } = this.props;
+    // const { sections } = this.props;
     return (
       <main className="main">
         <div className="container">
           <div className="flex-container">
-            <Swimlane cards={cards} />
+
+            { this.renderSwimlanes() }
+
           </div>
         </div>
       </main>
@@ -20,7 +28,7 @@ const Project = React.createClass({
 });
 
 const mapStateToProps = (state) => ({
-  cards: []
+  sections: state.sections
 });
 
 export default connect(mapStateToProps)(Project);
