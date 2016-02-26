@@ -53,6 +53,12 @@ Actions.getProjects = (workspaceId) => {
 function makeSwimlanes(list) {
   let swimlanes = [];
 
+  swimlanes.unshift({
+    id: 0,
+    name: 'Completed:',
+    cards: []
+  });
+
   if (list[0].name.slice(-1) !== ':') {
     swimlanes.unshift({
       id: 0,
@@ -72,7 +78,14 @@ function makeSwimlanes(list) {
       continue;
     }
 
-    swimlanes[0].cards.push(item);
+    if (item.completed) {
+      // Completed should always be the last lane...
+      //  is it defined first in this func?
+      swimlanes[swimlanes.length - 1].cards.push(item);
+    } else {
+      swimlanes[0].cards.push(item);
+    }
+
   }
 
   return swimlanes;
@@ -88,7 +101,10 @@ Actions.getTasks = (projectId) => {
 
     AsanaClient
       .tasks
-      .findByProject(projectId, { limit: 100 })
+      .findByProject(projectId, {
+        limit: 100,
+        opt_fields: 'id,name,completed_at,completed,due_at'
+      })
       .then((collection) => {
 
         const swimlanes = makeSwimlanes(collection.data)
@@ -99,9 +115,7 @@ Actions.getTasks = (projectId) => {
             swimlanes: swimlanes
           }
         });
-
       });
-
   };
 };
 
@@ -117,19 +131,15 @@ Actions.getTasks = (projectId) => {
 //       .tasks
 //       .findById(taskId)
 //       .then((task) => {
-
 //         dispatch({
 //           type: 'RECEIVE_TASK_DETAILS',
 //           payload: {
 //             task: task
 //           }
 //         });
-
 //       });
 //   };
 // };
-
-
 
 
 

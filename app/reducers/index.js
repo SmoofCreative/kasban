@@ -4,26 +4,54 @@ const initalState = {
   'sections': [
     {
       'name': 'Todo:',
-      'id': 92106379395349,
+      'id': 3,
       'cards': [
         {
-          'id': 92006189034921,
-          'created_at': '2016-02-19T15:36:22.226Z',
-          'modified_at': '2016-02-19T16:01:49.030Z',
-          'name': 'Pick up and move headings with tasks below',
+          'id': 4,
+          'name': 'Select a workspace',
           'completed': false,
           'assignee_status': 'upcoming',
           'completed_at': null,
           'due_on': null,
           'due_at': null,
           'workspace': {
-            'id': 3736871133687,
+            'id': 1,
             'name': 'Smoof'
           },
-          'parent': null,
           'projects': [
             {
-              'id': 92006189034858,
+              'id': 2,
+              'name': 'Kasban Asana Board'
+            }
+          ],
+          'memberships': [
+            {
+              'project': {
+                'id': 92006189034858,
+                'name': 'Kasban Asana Board'
+              },
+              'section': {
+                'id': 92106379395235,
+                'name': 'Icebox:'
+              }
+            }
+          ]
+        },
+        {
+          'id': 5,
+          'name': 'Select a project',
+          'completed': false,
+          'assignee_status': 'upcoming',
+          'completed_at': null,
+          'due_on': null,
+          'due_at': null,
+          'workspace': {
+            'id': 1,
+            'name': 'Smoof'
+          },
+          'projects': [
+            {
+              'id': 2,
               'name': 'Kasban Asana Board'
             }
           ],
