@@ -85,12 +85,21 @@ function makeSwimlanes(list) {
     } else {
       swimlanes[0].cards.push(item);
     }
-
   }
+
+  // give cards an initial index
+  // swimlanes.map((s) => (s.cards = addObjectIndex(s.cards)))
 
   return swimlanes;
 }
 
+
+// function addObjectIndex(arr) {
+//   return arr.map((i,k) => {
+//     i.index = k;
+//     return i;
+//   });
+// }
 
 Actions.getTasks = (projectId) => {
   return (dispatch) => {
