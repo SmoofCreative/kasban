@@ -117,36 +117,41 @@ Actions.getTasks = (projectId) => {
 
 Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
   return (dispatch) => {
-
-    dispatch({
-      type: 'MOVING_TASK',
-      payload: {
-        idToMove: idToMove,
-        idToInsertAfter: idToInsertAfter
-      }
-    });
-
-    let data = {
-      project: projectId
-    }
-
-    if (idToInsertAfter) {
-      data.insert_after = idToInsertAfter
-    }
-
-    AsanaClient
-      .tasks
-      .addProject(idToMove, data)
-      .then(() => {
-        dispatch({
-          type: 'MOVED_TASK'
-        });
-      })
-      .catch(() => {
-        dispatch({
-          type: 'MOVED_TASK_FAILED'
-        });
+    if (idToMove !== idToInsertAfter) {
+      dispatch({
+        type: 'MOVING_TASK',
+        payload: {
+          idToMove: idToMove,
+          idToInsertAfter: idToInsertAfter
+        }
       });
+
+      let data = {
+        project: projectId
+      }
+
+      if (idToInsertAfter) {
+        data.insert_after = idToInsertAfter
+      }
+
+      AsanaClient
+        .tasks
+        .addProject(idToMove, data)
+        .then(() => {
+          dispatch({
+            type: 'MOVED_TASK'
+          });
+        })
+        .catch(() => {
+          dispatch({
+            type: 'MOVED_TASK_FAILED'
+          });
+        });
+    } else {
+      dispatch({
+        type: 'MOVED_TASK_SELF'
+      });
+    }
   };
 };
 
