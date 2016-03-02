@@ -2,23 +2,25 @@ import React from 'react';
 
 import './style';
 import Card from '../Card';
+import SwimlaneHeader from './header';
 
 const Swimlane = React.createClass({
-  _renderCards() {
+  renderCards() {
     return this.props.cards.map((card) => (
-      <Card key={card.id} card={card} />
+      <Card key={card.id} card={card} moveCard={this.props.moveCard} />
     ));
   },
 
   render() {
+
     return (
       <section className="swimlane">
-        <header className="swimlane__header">
-          <h3 className="swimlane__header__text">{this.props.name}</h3>
-        </header>
+        <SwimlaneHeader id={this.props.id}
+                        title={this.props.name}
+                        moveCard={this.props.moveCard} />
 
         <div className="swimlane__cards">
-        { this._renderCards() }
+        { this.renderCards() }
         </div>
 
         <footer className="swimlane__footer">

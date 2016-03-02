@@ -24,7 +24,7 @@ Actions.getWorkspaces = () => {
           workspaces: data.workspaces
         }
       });
-    })
+    });
   };
 };
 
@@ -61,7 +61,7 @@ function makeSwimlanes(list) {
 
   if (list[0].name.slice(-1) !== ':') {
     swimlanes.unshift({
-      id: 0,
+      id: 1,
       name: 'Prelisted:',
       cards: []
     });
@@ -85,12 +85,10 @@ function makeSwimlanes(list) {
     } else {
       swimlanes[0].cards.push(item);
     }
-
   }
 
   return swimlanes;
 }
-
 
 Actions.getTasks = (projectId) => {
   return (dispatch) => {
@@ -103,46 +101,54 @@ Actions.getTasks = (projectId) => {
       .tasks
       .findByProject(projectId, {
         limit: 100,
-        opt_fields: 'id,name,completed_at,completed,due_at'
+        opt_fields: 'id,name,completed_at,completed,due_at,projects'
       })
       .then((collection) => {
-
-        const swimlanes = makeSwimlanes(collection.data)
-
         dispatch({
           type: 'SET_SWIMLANES_AND_INITIAL_TASKS',
           payload: {
-            swimlanes: swimlanes
+            swimlanes: makeSwimlanes(collection.data),
+            projectId: projectId
           }
         });
       });
   };
 };
 
+Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
+  return (dispatch) => {
 
-// const getTaskDetails = (taskId) => {
-//   return (dispatch) => {
+    dispatch({
+      type: 'MOVING_TASK',
+      payload: {
+        idToMove: idToMove,
+        idToInsertAfter: idToInsertAfter
+      }
+    });
 
-//     dispatch({
-//       type: 'REQUEST_TASK_DETAILS'
-//     })
+    let data = {
+      project: projectId
+    }
 
-//     AsanaClient
-//       .tasks
-//       .findById(taskId)
-//       .then((task) => {
-//         dispatch({
-//           type: 'RECEIVE_TASK_DETAILS',
-//           payload: {
-//             task: task
-//           }
-//         });
-//       });
-//   };
-// };
+    if (idToInsertAfter) {
+      data.insert_after = idToInsertAfter
+    }
 
-
-
+    AsanaClient
+      .tasks
+      .addProject(idToMove, data)
+      .then(() => {
+        dispatch({
+          type: 'MOVED_TASK'
+        });
+      })
+      .catch(() => {
+        dispatch({
+          type: 'MOVED_TASK_FAILED'
+        });
+      });
+  };
+};
 
 Actions.checkAuth = () => {
   return () => {
@@ -167,18 +173,15 @@ Actions.checkAuth = () => {
 
           localStorage.setItem('token_death', expires_at);
           localStorage.setItem('access_token', AsanaClient.dispatcher.authenticator.credentials.access_token);
-        })
-
+        });
     }
-
-  }
-}
+  };
+};
 
 Actions.doAuth = () => {
   return () => {
     AsanaClient.authorize();
   }
 }
-
 
 export default Actions;
