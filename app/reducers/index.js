@@ -50,7 +50,7 @@ const moveCard = (state, idToMove, idToInsertAfter) => {
           moveFrom = [sectionIndex, listIndex]
         }
         if (card.id === idToInsertAfter) {
-          moveTo = [sectionIndex, listIndex]
+          moveTo = [sectionIndex, listIndex + 1]
         }
 
         if (moveFrom.length > 0 && moveTo.length > 0) {
@@ -91,16 +91,11 @@ export default function reducer(state = initalState, action) {
       });
     }
     case 'MOVING_TASK': {
-      console.log('reducer MOVING_TASK')
       const { idToMove, idToInsertAfter } = action.payload;
       const { fromXY, toXY } = moveCard(state, idToMove, idToInsertAfter);
 
       // Get the card to move
       const card = state.sections[fromXY[0]].cards[fromXY[1]];
-
-      let sectionIndex = fromXY[0];
-
-      console.log(sectionIndex);
 
       // Remove the card from the state
       const newState = update(state, {
@@ -113,8 +108,7 @@ export default function reducer(state = initalState, action) {
         }
       });
 
-      console.log('new state -->', newState);
-
+      // Insert the card into it's new place
       return update(newState, {
         sections: {
           [toXY[0]]: {
@@ -124,9 +118,6 @@ export default function reducer(state = initalState, action) {
           }
         }
       });
-
-    // let card = state.sections[fromXY[0]].cards.splice(fromXY[1], 1)[0];
-    // state.sections[toXY[0]].cards.splice(toXY[1], 0, card);;
 
     }
     default: {

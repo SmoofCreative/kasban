@@ -133,10 +133,17 @@ Actions.moveCard = (idToMove, idToInsertAfter) => {
       }
     });
 
-
-    dispatch({
-      type: 'MOVED_TASK'
-    });
+    AsanaClient
+      .tasks
+      .addProject(idToMove, {
+        project: 92006189034858,
+        insert_after: idToInsertAfter
+      })
+      .then(() => {
+        dispatch({
+          type: 'MOVED_TASK'
+        });
+      });
   };
 };
 

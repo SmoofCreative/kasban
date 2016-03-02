@@ -6,7 +6,6 @@ import './style';
 
 const cardSource = {
   beginDrag(props) {
-    console.log('cardSource', props)
     return {
       id: props.card.id,
       index: props.card.index
@@ -16,10 +15,7 @@ const cardSource = {
 
 const cardTarget = {
   drop(props, monitor, component) {
-    console.log('cardTarget', props);
-
     const item = monitor.getItem();
-
     props.moveCard(item.id, component.props.card.id);
   }
 };
@@ -35,7 +31,7 @@ const targetCollect = (connect) => ({
 
 const Card = ({ card }) => ({
   render() {
-    const { isDragging, connectDragSource, connectDropTarget } = this.props;
+    const { connectDragSource, connectDropTarget } = this.props;
 
     return connectDragSource(connectDropTarget(
       <article className="swimcard__card pure-g">
