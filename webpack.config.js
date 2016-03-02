@@ -1,12 +1,18 @@
 var path     = require('path');
 var rucksack = require('rucksack-css');
+var webpack  = require('webpack');
 
-module.exports = {
-  entry: [
-    'webpack/hot/dev-server',
-    'webpack-dev-server/client?http://localhost:8080',
-    path.resolve(__dirname, 'app/index.jsx')
-  ],
+var NODE_ENV = JSON.stringify(process.env.NODE_ENV || 'development');
+
+console.log('NODE_ENV', NODE_ENV)
+
+var entry = [path.resolve(__dirname, 'app/index.jsx')]
+if (NODE_ENV == JSON.stringify('development')) {
+  entry.push('webpack/hot/dev-server', 'webpack-dev-server/client?http://localhost:8080')
+}
+
+var config = {
+  entry: entry,
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
@@ -32,5 +38,12 @@ module.exports = {
   },
   node: {
     readline: 'empty'
-  }
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': { NODE_ENV: NODE_ENV }
+    })
+  ],
 };
+
+module.exports = config;
