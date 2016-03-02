@@ -5,7 +5,7 @@ const Actions = {};
 
 const access_token = localStorage.getItem('access_token')
 const AsanaClient = Asana.Client.create({
-  clientId: 93624243720041,
+  clientId: process.env.CLIENT_ID,
   redirectUri: document.location['href']
 }).useOauth({
   credentials: access_token

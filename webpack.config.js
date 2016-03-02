@@ -41,7 +41,10 @@ var config = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': { NODE_ENV: NODE_ENV }
+      'process.env': {
+        NODE_ENV: NODE_ENV,
+        CLIENT_ID: JSON.stringify(process.env.CLIENT_ID)
+      }
     })
   ],
 };

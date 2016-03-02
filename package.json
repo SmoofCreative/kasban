@@ -4,9 +4,9 @@
   "description": "Kanban board for Asana",
   "main": "main.js",
   "scripts": {
-    "start": "webpack-dev-server --devtool eval --progress --colors --hot --content-base build",
-    "test": "babel-tape-runner tests/**/*.js",
-    "build": "NODE_ENV=production webpack -p --progress --colors --content-base build"
+    "start": "CLIENT_ID=93624243720041 webpack-dev-server --devtool eval --progress --colors --hot --content-base build",
+    "test": "CLIENT_ID=1337 babel-tape-runner tests/**/*.js",
+    "build": "NODE_ENV=production CLIENT_ID=96449622081618 webpack -p --progress --colors --content-base build"
   },
   "repository": {
     "type": "git",
