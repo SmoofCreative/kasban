@@ -61,7 +61,7 @@ function makeSwimlanes(list) {
 
   if (list[0].name.slice(-1) !== ':') {
     swimlanes.unshift({
-      id: 0,
+      id: 1,
       name: 'Prelisted:',
       cards: []
     });
@@ -126,18 +126,25 @@ Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
       }
     });
 
+    let data = {
+      project: projectId
+    }
+
+    if (idToInsertAfter) {
+      data.insert_after = idToInsertAfter
+    }
+
+    console.log(data);
+
     AsanaClient
       .tasks
-      .addProject(idToMove, {
-        project: projectId,
-        insert_after: idToInsertAfter
-      })
+      .addProject(idToMove, data)
       .then(() => {
         dispatch({
           type: 'MOVED_TASK'
         });
       })
-      .catch((error) => {
+      .catch(() => {
         dispatch({
           type: 'MOVED_TASK_FAILED'
         });

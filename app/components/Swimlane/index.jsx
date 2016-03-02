@@ -15,7 +15,9 @@ const Swimlane = React.createClass({
 
     return (
       <section className="swimlane">
-        <SwimlaneHeader title={ this.props.name } />
+        <SwimlaneHeader id={this.props.id}
+                        title={this.props.name}
+                        moveCard={this.props.moveCard} />
 
         <div className="swimlane__cards">
         { this.renderCards() }

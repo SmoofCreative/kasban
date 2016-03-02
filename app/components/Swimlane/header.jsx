@@ -4,7 +4,7 @@ import { DropTarget } from 'react-dnd';
 const cardTarget = {
   drop(props, monitor) {
     const item = monitor.getItem();
-    console.log('swimlaneheadertarget', item);
+    props.moveCard(item.id, props.id);
   }
 };
 

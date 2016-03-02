@@ -66,15 +66,23 @@ const initalState = {
 };
 
 const moveCard = (state, idToMove, idToInsertAfter) => {
+
   // Get from/to coords -->> [swimlaneIndex, listIndex]
   let { fromXY, toXY } = function() {
     let moveFrom = [],
         moveTo = [];
 
     for (let sectionIndex = 0; sectionIndex < state.sections.length; sectionIndex++) {
+
       let section = state.sections[sectionIndex];
 
+      // Check if the id to move to is a section
+      if (section.id === idToInsertAfter) {
+        moveTo = [sectionIndex, 0];
+      }
+
       for (let listIndex = 0; listIndex < section.cards.length; listIndex++) {
+
         let card = section.cards[listIndex];
 
         if (card.id === idToMove) {
@@ -83,13 +91,14 @@ const moveCard = (state, idToMove, idToInsertAfter) => {
         if (card.id === idToInsertAfter) {
           moveTo = [sectionIndex, listIndex]
         }
+      }
 
-        if (moveFrom.length > 0 && moveTo.length > 0) {
-          return { fromXY: moveFrom, toXY: moveTo} ;
-        }
+      if (moveFrom.length > 0 && moveTo.length > 0) {
+        return { fromXY: moveFrom, toXY: moveTo} ;
       }
     }
   }();
+
 
   if (!fromXY.length) {
     //error
@@ -155,8 +164,6 @@ export default function reducer(state = initalState, action) {
       const card = state.sections[fromXY[0]].cards[fromXY[1]];
 
       const newState = removeCard(state, fromXY[0], fromXY[1]);
-
-      console.log(toXY);
 
       return insertCard(newState, toXY[0], toXY[1], card);
     }

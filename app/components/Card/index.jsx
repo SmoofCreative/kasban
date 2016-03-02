@@ -14,9 +14,9 @@ const cardSource = {
 };
 
 const cardTarget = {
-  drop(props, monitor, component) {
+  drop(props, monitor) {
     const item = monitor.getItem();
-    props.moveCard(item.id, component.props.card.id);
+    props.moveCard(item.id, props.card.id);
   }
 };
 
