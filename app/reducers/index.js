@@ -117,7 +117,7 @@ const removeCard = (state, sectionIndex, listIndex) => {
     sections: {
       [sectionIndex]: {
         cards: {
-          $splice: [[listIndex,1]]
+          $splice: [[listIndex, 1]]
         }
       }
     }
@@ -130,7 +130,7 @@ const insertCard = (state, sectionIndex, listIndex, card) => {
     sections: {
       [sectionIndex]: {
         cards: {
-          $splice: [[listIndex,0, card]]
+          $splice: [[listIndex, 0, card]]
         }
       }
     }
@@ -160,11 +160,8 @@ export default function reducer(state = initalState, action) {
       const { idToMove, idToInsertAfter } = action.payload;
       const { fromXY, toXY } = moveCard(state, idToMove, idToInsertAfter);
 
-      // Get the card to move
       const card = state.sections[fromXY[0]].cards[fromXY[1]];
-
       const newState = removeCard(state, fromXY[0], fromXY[1]);
-
       return insertCard(newState, toXY[0], toXY[1], card);
     }
     default: {

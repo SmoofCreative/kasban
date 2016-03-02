@@ -7,8 +7,7 @@ import './style';
 const cardSource = {
   beginDrag(props) {
     return {
-      id: props.card.id,
-      index: props.card.index
+      id: props.card.id
     };
   }
 };

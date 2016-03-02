@@ -134,8 +134,6 @@ Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
       data.insert_after = idToInsertAfter
     }
 
-    console.log(data);
-
     AsanaClient
       .tasks
       .addProject(idToMove, data)
