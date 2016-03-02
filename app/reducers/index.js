@@ -31,7 +31,8 @@ const initalState = {
       'id': 0,
       'cards': []
     }
-  ]
+  ],
+  'currentProjectId': null
 };
 
 const moveCard = (state, idToMove, idToInsertAfter) => {
@@ -50,7 +51,7 @@ const moveCard = (state, idToMove, idToInsertAfter) => {
           moveFrom = [sectionIndex, listIndex]
         }
         if (card.id === idToInsertAfter) {
-          moveTo = [sectionIndex, listIndex + 1]
+          moveTo = [sectionIndex, listIndex]
         }
 
         if (moveFrom.length > 0 && moveTo.length > 0) {
@@ -112,7 +113,8 @@ export default function reducer(state = initalState, action) {
     }
     case 'SET_SWIMLANES_AND_INITIAL_TASKS': {
       return Object.assign({}, state, {
-        sections: action.payload.swimlanes
+        sections: action.payload.swimlanes,
+        currentProjectId: action.payload.projectId
       });
     }
     case 'MOVING_TASK': {

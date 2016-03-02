@@ -101,29 +101,24 @@ Actions.getTasks = (projectId) => {
       .tasks
       .findByProject(projectId, {
         limit: 100,
-        opt_fields: 'id,name,completed_at,completed,due_at'
+        opt_fields: 'id,name,completed_at,completed,due_at,projects'
       })
       .then((collection) => {
         dispatch({
           type: 'SET_SWIMLANES_AND_INITIAL_TASKS',
           payload: {
-            swimlanes: makeSwimlanes(collection.data)
+            swimlanes: makeSwimlanes(collection.data),
+            projectId: projectId
           }
         });
       });
   };
 };
 
-Actions.moveCard = (idToMove, idToInsertAfter) => {
+Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
   return (dispatch) => {
-    // dispatch updating (info notification)
-    // update ui with new task order
-    // asana call
-    //  if success
-    //    dispatch update complete (info notifcation)
-    //  if error
-    //    dispatch update fail (info notifcation)
-    //    reload the project data from asana
+
+    console.log(projectId);
 
     dispatch({
       type: 'MOVING_TASK',
@@ -133,10 +128,11 @@ Actions.moveCard = (idToMove, idToInsertAfter) => {
       }
     });
 
+
     AsanaClient
       .tasks
       .addProject(idToMove, {
-        project: 92006189034858,
+        project: projectId,
         insert_after: idToInsertAfter
       })
       .then(() => {

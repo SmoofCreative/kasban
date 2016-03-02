@@ -11,7 +11,8 @@ import Actions from '../../actions';
 const Project = React.createClass({
 
   handleCardMove(idToMove, idToInsertAfter) {
-    this.props.dispatch(Actions.moveCard(idToMove, idToInsertAfter));
+    const { dispatch, currentProjectId } = this.props;
+    dispatch(Actions.moveCard(idToMove, idToInsertAfter, currentProjectId));
   },
 
   renderSwimlanes () {
@@ -39,7 +40,8 @@ const Project = React.createClass({
 });
 
 const mapStateToProps = (state) => ({
-  sections: state.sections
+  sections: state.sections,
+  currentProjectId: state.currentProjectId
 });
 
 export default _flow(
