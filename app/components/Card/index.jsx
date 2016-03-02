@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
 import _flow from 'lodash/flow';
 
@@ -10,22 +10,8 @@ const cardSource = {
     return {
       id: props.card.id,
       index: props.card.index
-      // index: props.findCard(props.card.id).index
     };
-  },
-
-  // endDrag(props, monitor) {
-  //   const { id } = monitor.getItem();
-  //   const didDrop = monitor.didDrop();
-
-  //   console.log('endDrag', monitor.getItem())
-
-  //   if (!didDrop) {
-  //     // props.moveCard(droppedId, index);
-  //     console.log('dropped', droppedId)
-  //     // TODO trigger action?
-  //   }
-  // }
+  }
 };
 
 const cardTarget = {
@@ -34,19 +20,13 @@ const cardTarget = {
 
     const item = monitor.getItem();
 
-
-    // 1. update position in the swimlanes
-    //  - swimlane on the card
-    // 2. tell asana
-    // 3. stop bubbling/propogation
-
-    // TODO perform drop action?
+    props.moveCard(item.id, component.props.card.id);
   }
 };
 
 const sourceCollect = (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
-  isDragging: monitor.isDragging(),
+  isDragging: monitor.isDragging()
 });
 
 const targetCollect = (connect) => ({
@@ -54,14 +34,8 @@ const targetCollect = (connect) => ({
 })
 
 const Card = ({ card }) => ({
-  propTypes: {
-    connectDropTarget: PropTypes.func.isRequired
-  },
-
   render() {
     const { isDragging, connectDragSource, connectDropTarget } = this.props;
-    // const {  } = this.props;
-
 
     return connectDragSource(connectDropTarget(
       <article className="swimcard__card pure-g">

@@ -1,50 +1,24 @@
-import React, { PropTypes }  from 'react';
-import { DropTarget } from 'react-dnd';
+import React from 'react';
 
 import './style';
 import Card from '../Card';
-
-const cardTarget = {
-  drop(props, monitor, component) {
-    const item = monitor.getItem();
-    console.log('swimlanetarget', item, props, component);
-    // TODO perform drop action?
-  }
-};
-
-const collect = (connect) => ({
-  connectDropTarget: connect.dropTarget()
-});
+import SwimlaneHeader from './header';
 
 const Swimlane = React.createClass({
-  propTypes: {
-    connectDropTarget: PropTypes.func.isRequired
-  },
-
-  _renderCards() {
-
-    // add an .index attribute to the cards
-    let cards = this.props.cards.map((i,k) => {
-      i.index = k;
-      return i;
-    });
-
-    return cards.map((card) => (
-      <Card key={card.id} card={card} />
+  renderCards() {
+    return this.props.cards.map((card) => (
+      <Card key={card.id} card={card} moveCard={this.props.moveCard} />
     ));
   },
 
   render() {
-    const { connectDropTarget } = this.props;
 
-    return connectDropTarget(
+    return (
       <section className="swimlane">
-        <header className="swimlane__header">
-          <h3 className="swimlane__header__text">{this.props.name}</h3>
-        </header>
+        <SwimlaneHeader title={ this.props.name } />
 
         <div className="swimlane__cards">
-        { this._renderCards() }
+        { this.renderCards() }
         </div>
 
         <footer className="swimlane__footer">
@@ -55,4 +29,4 @@ const Swimlane = React.createClass({
   }
 });
 
-export default DropTarget('card', cardTarget, collect)(Swimlane);
+export default Swimlane;

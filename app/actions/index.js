@@ -24,7 +24,7 @@ Actions.getWorkspaces = () => {
           workspaces: data.workspaces
         }
       });
-    })
+    });
   };
 };
 
@@ -87,19 +87,8 @@ function makeSwimlanes(list) {
     }
   }
 
-  // give cards an initial index
-  // swimlanes.map((s) => (s.cards = addObjectIndex(s.cards)))
-
   return swimlanes;
 }
-
-
-// function addObjectIndex(arr) {
-//   return arr.map((i,k) => {
-//     i.index = k;
-//     return i;
-//   });
-// }
 
 Actions.getTasks = (projectId) => {
   return (dispatch) => {
@@ -115,43 +104,41 @@ Actions.getTasks = (projectId) => {
         opt_fields: 'id,name,completed_at,completed,due_at'
       })
       .then((collection) => {
-
-        const swimlanes = makeSwimlanes(collection.data)
-
         dispatch({
           type: 'SET_SWIMLANES_AND_INITIAL_TASKS',
           payload: {
-            swimlanes: swimlanes
+            swimlanes: makeSwimlanes(collection.data)
           }
         });
       });
   };
 };
 
+Actions.moveCard = (idToMove, idToInsertAfter) => {
+  return (dispatch) => {
+    // dispatch updating (info notification)
+    // update ui with new task order
+    // asana call
+    //  if success
+    //    dispatch update complete (info notifcation)
+    //  if error
+    //    dispatch update fail (info notifcation)
+    //    reload the project data from asana
 
-// const getTaskDetails = (taskId) => {
-//   return (dispatch) => {
-
-//     dispatch({
-//       type: 'REQUEST_TASK_DETAILS'
-//     })
-
-//     AsanaClient
-//       .tasks
-//       .findById(taskId)
-//       .then((task) => {
-//         dispatch({
-//           type: 'RECEIVE_TASK_DETAILS',
-//           payload: {
-//             task: task
-//           }
-//         });
-//       });
-//   };
-// };
+    dispatch({
+      type: 'MOVING_TASK',
+      payload: {
+        idToMove: idToMove,
+        idToInsertAfter: idToInsertAfter
+      }
+    });
 
 
-
+    dispatch({
+      type: 'MOVED_TASK'
+    });
+  };
+};
 
 Actions.checkAuth = () => {
   return () => {
@@ -176,18 +163,15 @@ Actions.checkAuth = () => {
 
           localStorage.setItem('token_death', expires_at);
           localStorage.setItem('access_token', AsanaClient.dispatcher.authenticator.credentials.access_token);
-        })
-
+        });
     }
-
-  }
-}
+  };
+};
 
 Actions.doAuth = () => {
   return () => {
     AsanaClient.authorize();
   }
 }
-
 
 export default Actions;
