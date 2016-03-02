@@ -23,6 +23,36 @@ const initalState = {
           'completed_at': null,
           'due_on': null,
           'due_at': null
+        },
+        {
+          'id': 4,
+          'name': 'Move a task',
+          'completed': false,
+          'completed_at': null,
+          'due_on': null,
+          'due_at': null
+        }
+      ]
+    },
+    {
+      'name': 'In progress:',
+      'id': 11,
+      'cards': [
+        {
+          'id': 12,
+          'name': 'Open Reddit',
+          'completed': false,
+          'completed_at': null,
+          'due_on': null,
+          'due_at': null
+        },
+        {
+          'id': 13,
+          'name': 'Battle Asana',
+          'completed': false,
+          'completed_at': null,
+          'due_on': null,
+          'due_at': null
         }
       ]
     },
@@ -125,6 +155,8 @@ export default function reducer(state = initalState, action) {
       const card = state.sections[fromXY[0]].cards[fromXY[1]];
 
       const newState = removeCard(state, fromXY[0], fromXY[1]);
+
+      console.log(toXY);
 
       return insertCard(newState, toXY[0], toXY[1], card);
     }

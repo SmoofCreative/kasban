@@ -118,8 +118,6 @@ Actions.getTasks = (projectId) => {
 Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
   return (dispatch) => {
 
-    console.log(projectId);
-
     dispatch({
       type: 'MOVING_TASK',
       payload: {
@@ -127,7 +125,6 @@ Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
         idToInsertAfter: idToInsertAfter
       }
     });
-
 
     AsanaClient
       .tasks
