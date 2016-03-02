@@ -72,6 +72,31 @@ const moveCard = (state, idToMove, idToInsertAfter) => {
   return { fromXY: fromXY, toXY: toXY };
 };
 
+const removeCard = (state, sectionIndex, listIndex) => {
+  return update(state, {
+    sections: {
+      [sectionIndex]: {
+        cards: {
+          $splice: [[listIndex,1]]
+        }
+      }
+    }
+  });
+};
+
+const insertCard = (state, sectionIndex, listIndex, card) => {
+  // Insert the card into it's new place
+  return update(state, {
+    sections: {
+      [sectionIndex]: {
+        cards: {
+          $splice: [[listIndex,0, card]]
+        }
+      }
+    }
+  });
+};
+
 export default function reducer(state = initalState, action) {
 
   switch (action.type) {
@@ -97,28 +122,9 @@ export default function reducer(state = initalState, action) {
       // Get the card to move
       const card = state.sections[fromXY[0]].cards[fromXY[1]];
 
-      // Remove the card from the state
-      const newState = update(state, {
-        sections: {
-          [fromXY[0]]: {
-            cards: {
-              $splice: [[fromXY[1],1]]
-            }
-          }
-        }
-      });
+      const newState = removeCard(state, fromXY[0], fromXY[1]);
 
-      // Insert the card into it's new place
-      return update(newState, {
-        sections: {
-          [toXY[0]]: {
-            cards: {
-              $splice: [[toXY[1],0, card]]
-            }
-          }
-        }
-      });
-
+      return insertCard(newState, toXY[0], toXY[1], card);
     }
     default: {
       return state;

@@ -143,6 +143,11 @@ Actions.moveCard = (idToMove, idToInsertAfter) => {
         dispatch({
           type: 'MOVED_TASK'
         });
+      })
+      .catch((error) => {
+        dispatch({
+          type: 'MOVED_TASK_FAILED'
+        });
       });
   };
 };
