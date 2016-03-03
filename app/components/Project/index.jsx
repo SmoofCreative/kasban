@@ -41,8 +41,8 @@ const Project = React.createClass({
 });
 
 const mapStateToProps = (state) => ({
-  sections: state.sections,
-  currentProjectId: state.currentProjectId
+  sections: state.boards.sections,
+  currentProjectId: state.boards.currentProjectId
 });
 
 export default _flow(

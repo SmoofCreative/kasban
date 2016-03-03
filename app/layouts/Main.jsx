@@ -24,8 +24,8 @@ const Main = React.createClass({
 });
 
 const mapStateToProps = (state) => ({
-  projects: state.projects,
-  workspaces: state.workspaces
+  projects: state.boards.projects,
+  workspaces: state.boards.workspaces
 });
 
 export default connect(mapStateToProps)(Main);
