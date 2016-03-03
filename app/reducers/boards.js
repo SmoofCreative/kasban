@@ -7,6 +7,7 @@ const initialState = {
     {
       'name': 'Todo:',
       'id': 1,
+      'slug': 'todo',
       'cards': [
         {
           'id': 2,
@@ -37,6 +38,7 @@ const initialState = {
     {
       'name': 'In progress:',
       'id': 11,
+      'slug': 'in-progress',
       'cards': [
         {
           'id': 12,
@@ -59,6 +61,7 @@ const initialState = {
     {
       'name': 'Completed:',
       'id': 0,
+      'slug': 'completed',
       'cards': []
     }
   ],

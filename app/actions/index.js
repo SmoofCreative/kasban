@@ -56,6 +56,7 @@ function makeSwimlanes(list) {
   swimlanes.unshift({
     id: 0,
     name: 'Completed:',
+    slug: 'completed',
     cards: []
   });
 
@@ -63,15 +64,23 @@ function makeSwimlanes(list) {
     swimlanes.unshift({
       id: 1,
       name: 'Prelisted:',
+      slug: 'prelisted',
       cards: []
     });
   }
 
   for (let item of list) {
     if (item.name.slice(-1) === ':') {
+      // Create a slug by lowercasing and removing the colon
+      let slug = item.name.toLowerCase().substring(0, item.length -1);
+
+      // Also replace spaces with a hypen
+      slug = slug.replace(' ', '-');
+
       swimlanes.unshift({
         id: item.id,
         name: item.name,
+        slug: slug,
         cards: []
       });
 
@@ -117,7 +126,8 @@ Actions.getTasks = (projectId) => {
 
 Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
   return (dispatch) => {
-    if (idToMove !== idToInsertAfter) {
+    if (idToMove !== idToInsertAfter && projectId) {
+      // Move the cards and update asana
       dispatch({
         type: 'MOVING_TASK',
         payload: {
@@ -147,10 +157,6 @@ Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
             type: 'MOVED_TASK_FAILED'
           });
         });
-    } else {
-      dispatch({
-        type: 'MOVED_TASK_SELF'
-      });
     }
   };
 };

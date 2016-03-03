@@ -20,6 +20,7 @@ const Project = React.createClass({
       <Swimlane key={section.id}
                 cards={section.cards}
                 name={section.name}
+                slug={section.slug}
                 id={section.id}
                 moveCard={this.handleCardMove} />
     ))
