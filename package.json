@@ -4,7 +4,7 @@
   "description": "Kanban board for Asana",
   "main": "main.js",
   "scripts": {
-    "postinstall": "NODE_ENV=production CLIENT_ID=96449622081618 webpack --config ./webpack.config.js --progress --colors",
+    "postinstall": "npm rebuild node-sass && NODE_ENV=production webpack --config ./webpack.config.js --progress --colors",
     "start": "node server.js",
     "test": "CLIENT_ID=1337 babel-tape-runner tests/**/*.js"
   },
