@@ -3,6 +3,8 @@ var rucksack = require('rucksack-css');
 var webpack  = require('webpack');
 
 var NODE_ENV = JSON.stringify(process.env.NODE_ENV || 'development');
+var CLIENT_ID = JSON.stringify(process.env.CLIENT_ID || '93624243720041');
+
 var isDevelopment = (NODE_ENV == JSON.stringify('development'));
 var isProduction = (NODE_ENV == JSON.stringify('production'));
 
@@ -19,7 +21,7 @@ var plugins = [
   new webpack.DefinePlugin({
     'process.env': {
       NODE_ENV: NODE_ENV,
-      CLIENT_ID: JSON.stringify(process.env.CLIENT_ID)
+      CLIENT_ID: CLIENT_ID
     }
   })
 ];
