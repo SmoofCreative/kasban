@@ -10,7 +10,9 @@ var port = process.env.PORT || 3000;
 app.use(express.static(static_path));
 
 app.get('/', function (req, res) {
-  res.sendFile('./build/index.html');
+  res.sendFile('index.html', {
+    root: static_path
+  });
 });
 
 app.listen(port, function (err) {
@@ -25,10 +27,14 @@ if (isDevelopment) {
 
   var devServer = new WebpackDevServer(webpack(config), {
     contentBase: 'build',
-    hot: true
+    hot: true,
+    stats: {
+      colors: true,
+      progress: true
+    }
   });
 
-  devServer.listen(8080, 'localhost', function (err, result) {
+  devServer.listen(8080, 'localhost', function (err) {
     if (err) { console.log(err) }
     console.log('Development server listening on port: 8080');
   });
