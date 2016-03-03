@@ -3,19 +3,50 @@ var rucksack = require('rucksack-css');
 var webpack  = require('webpack');
 
 var NODE_ENV = JSON.stringify(process.env.NODE_ENV || 'development');
+var CLIENT_ID = JSON.stringify(process.env.CLIENT_ID || '93624243720041');
 
-console.log('NODE_ENV', NODE_ENV)
+var isDevelopment = (NODE_ENV == JSON.stringify('development'));
+var isProduction = (NODE_ENV == JSON.stringify('production'));
+
+console.log('NODE_ENV', NODE_ENV);
+
+var devTool = isDevelopment ? 'eval' : 'source-map';
 
 var entry = [path.resolve(__dirname, 'app/index.jsx')]
-if (NODE_ENV == JSON.stringify('development')) {
-  entry.push('webpack/hot/dev-server', 'webpack-dev-server/client?http://localhost:8080')
+if (isDevelopment) {
+  entry.push('webpack/hot/dev-server', 'webpack-dev-server/client?http://localhost:8080');
+}
+
+var plugins = [
+  new webpack.DefinePlugin({
+    'process.env': {
+      NODE_ENV: NODE_ENV,
+      CLIENT_ID: CLIENT_ID
+    }
+  })
+];
+
+if (isDevelopment) {
+  plugins.push(new webpack.HotModuleReplacementPlugin());
+}
+
+if (isProduction) {
+  plugins.push(
+    new webpack.optimize.UglifyJsPlugin({
+      minimize: true,
+      compress: {
+        warnings: false
+      }
+    })
+  );
 }
 
 var config = {
+  devtool: devTool,
   entry: entry,
   output: {
     path: path.resolve(__dirname, 'build'),
-    filename: 'bundle.js',
+    filename: 'bundle.js'
   },
   module: {
     preLoaders: [
@@ -39,14 +70,7 @@ var config = {
   node: {
     readline: 'empty'
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: NODE_ENV,
-        CLIENT_ID: JSON.stringify(process.env.CLIENT_ID)
-      }
-    })
-  ],
+  plugins: plugins,
 };
 
 module.exports = config;
