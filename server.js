@@ -4,14 +4,14 @@ var webpack = require('webpack');
 var app = express();
 
 var isDevelopment = (process.env.NODE_ENV !== 'production');
-var static_path = path.join(__dirname, 'build');
+var staticPath = path.join(__dirname, 'build');
 var port = process.env.PORT || 3000;
 
-app.use(express.static(static_path));
+app.use(express.static(staticPath));
 
 app.get('/', function (req, res) {
   res.sendFile('index.html', {
-    root: static_path
+    root: staticPath
   });
 });
 
@@ -26,7 +26,7 @@ if (isDevelopment) {
   var WebpackDevServer = require('webpack-dev-server');
 
   var devServer = new WebpackDevServer(webpack(config), {
-    contentBase: 'build',
+    contentBase: staticPath,
     hot: true,
     stats: {
       colors: true,
