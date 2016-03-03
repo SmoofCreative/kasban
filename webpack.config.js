@@ -12,7 +12,7 @@ console.log('NODE_ENV', NODE_ENV);
 
 var devTool = isDevelopment ? 'eval' : 'source-map';
 
-var entry = [path.resolve(__dirname, 'app/index.jsx')]
+var entry = ['./app/index.jsx']
 if (isDevelopment) {
   entry.push('webpack/hot/dev-server', 'webpack-dev-server/client?http://localhost:8080');
 }
@@ -41,17 +41,22 @@ if (isProduction) {
   );
 }
 
+var preLoaders = [];
+
+if (isDevelopment) {
+  preLoaders.push({ test: /\.jsx?$/, exclude: /node_modules/, loader: 'eslint' });
+}
+
 var config = {
   devtool: devTool,
   entry: entry,
   output: {
-    path: path.resolve(__dirname, 'build'),
-    filename: 'bundle.js'
+    path: path.join(__dirname, 'build'),
+    filename: 'bundle.js',
+    publicPath: '/public/'
   },
   module: {
-    preLoaders: [
-      { test: /\.jsx?$/, exclude: /node_modules/, loader: 'eslint' }
-    ],
+    preLoaders: preLoaders,
     loaders: [
       { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader' },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass!postcss-loader' },
