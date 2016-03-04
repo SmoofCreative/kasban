@@ -9,13 +9,12 @@ import Actions from '../actions';
 const Main = React.createClass({
   componentDidMount() {
     this.props.dispatch(Actions.checkAuth());
-    this.props.dispatch(Actions.getWorkspaces());
   },
 
   render() {
     return (
       <div>
-        <Header workspaces={this.props.workspaces} projects={this.props.projects} />
+        <Header auth={this.props.auth} workspaces={this.props.workspaces} projects={this.props.projects} />
 
         <Project />
       </div>
@@ -25,7 +24,8 @@ const Main = React.createClass({
 
 const mapStateToProps = (state) => ({
   projects: state.boards.projects,
-  workspaces: state.boards.workspaces
+  workspaces: state.boards.workspaces,
+  auth: state.auth
 });
 
 export default connect(mapStateToProps)(Main);

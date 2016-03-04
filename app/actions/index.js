@@ -1,15 +1,22 @@
 import Asana from 'asana';
-import qs from 'querystringify';
+import querystringify from 'querystringify';
 
 const Actions = {};
 
-const access_token = localStorage.getItem('access_token')
-const AsanaClient = Asana.Client.create({
-  clientId: process.env.CLIENT_ID,
-  redirectUri: document.location['href']
-}).useOauth({
-  credentials: access_token
-});
+const AsanaClient = function() {
+  let authCreds = {}
+  const access_token = localStorage.getItem('access_token') || false;
+  if (access_token) {
+    authCreds = {
+      credentials: access_token
+    }
+  }
+
+  return Asana.Client.create({
+    clientId: process.env.CLIENT_ID,
+    redirectUri: document.location['href']
+  }).useOauth(authCreds);
+}()
 
 Actions.getWorkspaces = () => {
   return (dispatch) => {
@@ -155,30 +162,89 @@ Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
   };
 };
 
+
+function oneHourFromNow () {
+  let theFuture = Date.now() + 60*60*1000;
+  return theFuture;
+}
+
+
 Actions.checkAuth = () => {
-  return () => {
+  return (dispatch) => {
 
-    let params = qs.parse(location.hash.slice(1))
+    dispatch({
+      type: 'STARTING_ASANA_AUTH'
+    });
+
+    // The access_token is returned from Asana in a url hash --> /#access_token=XXXXXX
+    // Lop off the # and parse the params
+    let params = querystringify.parse(location.hash.slice(1))
+
+    /**
+     * Asana redirect_uri action - just set token to local storage and bail.
+     */
     if (typeof params.access_token !== 'undefined') {
-      console.log('theres a token')
-
-      localStorage.setItem('access_token', params.access_token)
-      localStorage.setItem('token_death', Date.now() + 100)
+      localStorage.setItem('access_token', params.access_token);
+      localStorage.setItem('token_death', oneHourFromNow());
+      document.location = '/';
+      return;
     }
 
-    // do not touch the date!!
-    if ( localStorage.getItem('access_token') !== null && localStorage.getItem('token_death') > Date.now() ) {
-      console.log('new token time')
+    /**
+     * Check token age
+     * If the token isn't dead yet, we can try using it.
+     */
+    if ( localStorage.getItem('access_token') &&
+         parseInt(localStorage.getItem('token_death')) > Date.now()
+        ) {
+          // we 'assume' they are authed
+          dispatch({
+            type: 'ASANA_AUTH_COMPLETE',
+            payload: {
+              isAsanaAuthed: true
+            }
+          });
 
+          // FIXME: is there a way to try/catch a dispatch?
+          dispatch(Actions.getWorkspaces());
+
+          return;
+    }
+
+    /**
+     * Update outdated stored token
+     * If a token exists and we haven't already bailed, then we need to reauth
+     */
+    else if ( localStorage.getItem('access_token') ) {
       AsanaClient
         .authorize()
         .then(() => {
-          let expires_in = parseInt(AsanaClient.dispatcher.authenticator.credentials.expires_in);
-          let expires_at = Date.now() + expires_in;
 
-          localStorage.setItem('token_death', expires_at);
           localStorage.setItem('access_token', AsanaClient.dispatcher.authenticator.credentials.access_token);
+          localStorage.setItem('token_death', oneHourFromNow());
+
+          dispatch({
+            type: 'ASANA_AUTH_COMPLETE',
+            payload: {
+              isAsanaAuthed: true
+            }
+          });
+
+          dispatch(Actions.getWorkspaces());
+
         });
+
+    /**
+     * No token
+     * Probably haven't clicked the Auth button
+     */
+    } else {
+      dispatch({
+        type: 'ASANA_AUTH_COMPLETE',
+        payload: {
+          isAsanaAuthed: false
+        }
+      });
     }
   };
 };

@@ -1,8 +1,20 @@
 
-export default function auth(state = {}, action) {
+const initialState = {
+  isAsanaAuthed: false,
+  checkInProgress: false
+}
+
+export default function auth(state = initialState, action) {
   switch (action.type) {
     case 'STARTING_ASANA_AUTH': {
-      return state;
+      return Object.assign({}, state, { checkInProgress: true });
+    }
+
+    case 'ASANA_AUTH_COMPLETE': {
+      return Object.assign({}, state, {
+        isAsanaAuthed: action.payload.isAsanaAuthed,
+        checkInProgress: false
+      });
     }
 
     default: {
