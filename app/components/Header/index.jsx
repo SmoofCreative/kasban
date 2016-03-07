@@ -3,12 +3,13 @@ import React from 'react';
 import './style';
 import Auth from '../Auth';
 import BoardSelector from '../BoardSelector';
+import { asanaUrl } from '../../utils'
 
 const Header = ({workspaces, projects, auth}) => {
 
   let headerButton = <Auth />;
   if (auth.isAsanaAuthed) {
-    headerButton = <button className="header__cta cta">Open asana</button>;
+    headerButton = <a className="header__cta cta" href={asanaUrl()} target="_blank">Open asana</a>;
   }
 
   return (
