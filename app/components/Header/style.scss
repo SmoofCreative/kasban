@@ -27,6 +27,7 @@ $header-text-colour: #FFFFFF;
   }
 
   &__cta {
+    display: inline-block;
     color: #FFFFFF;
     background-color: #68ACD0;
     border-radius: 4px;
@@ -36,6 +37,7 @@ $header-text-colour: #FFFFFF;
     padding-left: 15px;
     margin-top: 9px;
     font-size: 16px;
-    border:none;
+    border: none;
+    text-decoration: none;
   }
 }
