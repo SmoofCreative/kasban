@@ -1,70 +1,84 @@
 import update from 'react/lib/update';
 
-const initialState = {
+let initialState = {
   'workspaces': [],
   'projects': [],
-  'sections': [
-    {
-      'name': 'Todo:',
-      'id': 1,
-      'cards': [
-        {
-          'id': 2,
-          'name': 'Select a workspace',
-          'completed': false,
-          'completed_at': null,
-          'due_on': null,
-          'due_at': null
-        },
-        {
-          'id': 3,
-          'name': 'Select a project',
-          'completed': false,
-          'completed_at': null,
-          'due_on': null,
-          'due_at': null
-        },
-        {
-          'id': 4,
-          'name': 'Move a task',
-          'completed': false,
-          'completed_at': null,
-          'due_on': null,
-          'due_at': null
-        }
-      ]
-    },
-    {
-      'name': 'In progress:',
-      'id': 11,
-      'cards': [
-        {
-          'id': 12,
-          'name': 'Open Reddit',
-          'completed': false,
-          'completed_at': null,
-          'due_on': null,
-          'due_at': null
-        },
-        {
-          'id': 13,
-          'name': 'Battle Asana',
-          'completed': false,
-          'completed_at': null,
-          'due_on': null,
-          'due_at': null
-        }
-      ]
-    },
-    {
-      'name': 'Completed:',
-      'id': 'completed',
-      'cards': []
-    }
-  ],
+  'sections': [],
   'currentProjectId': null,
   'currentWorkspaceId': null
-};
+}
+
+const persistedState = localStorage.getItem('boards');
+
+if (persistedState) {
+  initialState = JSON.parse(persistedState)
+} else {
+  initialState = {
+    'workspaces': [],
+    'projects': [],
+    'sections': [
+      {
+        'name': 'Todo:',
+        'id': 1,
+        'cards': [
+          {
+            'id': 2,
+            'name': 'Select a workspace',
+            'completed': false,
+            'completed_at': null,
+            'due_on': null,
+            'due_at': null
+          },
+          {
+            'id': 3,
+            'name': 'Select a project',
+            'completed': false,
+            'completed_at': null,
+            'due_on': null,
+            'due_at': null
+          },
+          {
+            'id': 4,
+            'name': 'Move a task',
+            'completed': false,
+            'completed_at': null,
+            'due_on': null,
+            'due_at': null
+          }
+        ]
+      },
+      {
+        'name': 'In progress:',
+        'id': 11,
+        'cards': [
+          {
+            'id': 12,
+            'name': 'Open Reddit',
+            'completed': false,
+            'completed_at': null,
+            'due_on': null,
+            'due_at': null
+          },
+          {
+            'id': 13,
+            'name': 'Battle Asana',
+            'completed': false,
+            'completed_at': null,
+            'due_on': null,
+            'due_at': null
+          }
+        ]
+      },
+      {
+        'name': 'Completed:',
+        'id': 0,
+        'cards': []
+      }
+    ],
+    'currentProjectId': null,
+    'currentWorkspaceId': null
+  }
+}
 
 const moveCard = (state, idToMove, idToInsertAfter) => {
 
