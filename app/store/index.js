@@ -4,6 +4,8 @@ import thunk from 'redux-thunk';
 import _debounce from 'lodash/debounce';
 
 import reducers from '../reducers';
+import AsanaClient from '../utils/AsanaClient';
+import Actions from '../actions'
 
 const loggerMiddleware = createLogger({
   level: 'info',
@@ -32,7 +34,32 @@ export default function configureStore() {
         localStorage.setItem('boards', JSON.stringify(currentState.boards));
       }, 300)
     }
+  })
 
+
+  store.subscribe(() => {
+    let currentState = store.getState();
+
+    if (currentState.boards.currentProjectId) {
+      _debounce(()=>{
+        const cid = currentState.boards.currentProjectId
+
+        AsanaClient.events.stream(cid, {
+          periodSeconds: 3,
+          continueOnError: true
+        })
+        .on('data', (event) => {
+          console.log('asana event', event)
+
+          // one could figure out the diff... or just re-poll the project
+          store.dispatch({
+            type: 'RECEIVE_EVENT'
+          });
+
+          store.dispatch(Actions.getTasks(cid));
+        })
+      }, 1000)
+    }
   })
 
   return store;
