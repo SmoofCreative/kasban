@@ -58,7 +58,7 @@ const initialState = {
     },
     {
       'name': 'Completed:',
-      'id': 0,
+      'id': 'completed',
       'cards': []
     }
   ],
