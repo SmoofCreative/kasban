@@ -177,7 +177,7 @@ Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
         project: projectId
       }
 
-      if (idToInsertAfter) {
+      if (idToInsertAfter && idToInsertAfter !== 'completed') {
         // If moved to uncategorised then set to null for top of the list
         if (idToInsertAfter === 'uncategorised') {
           idToInsertAfter = null;
