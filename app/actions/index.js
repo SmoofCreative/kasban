@@ -117,7 +117,7 @@ Actions.getTasks = (projectId) => {
       .tasks
       .findByProject(projectId, {
         limit: 100,
-        opt_fields: 'id,name,completed_at,completed,due_at,projects'
+        opt_fields: 'id,name,completed_at,completed,due_on,projects'
       })
       .then((collection) => {
         dispatch({
