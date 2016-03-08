@@ -61,14 +61,14 @@ function makeSwimlanes(list) {
   let swimlanes = [];
 
   swimlanes.unshift({
-    id: 0,
+    id: 'completed',
     name: 'Completed:',
     cards: []
   });
 
   if (list[0].name.slice(-1) !== ':') {
     swimlanes.unshift({
-      id: 1,
+      id: 'prelisted',
       name: 'Prelisted:',
       cards: []
     });
