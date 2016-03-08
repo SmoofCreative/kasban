@@ -68,8 +68,8 @@ function makeSwimlanes(list) {
 
   if (list[0].name.slice(-1) !== ':') {
     swimlanes.unshift({
-      id: 'prelisted',
-      name: 'Prelisted:',
+      id: 'uncategorised',
+      name: 'Uncategorised:',
       cards: []
     });
   }
