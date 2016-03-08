@@ -56,16 +56,17 @@ Actions.getProjects = (workspaceId) => {
   };
 };
 
-
 function makeSwimlanes(list) {
   let swimlanes = [];
 
+  // First push on the completed swimlane
   swimlanes.unshift({
     id: 'completed',
     name: 'Completed:',
     cards: []
   });
 
+  // If the first task we have in not a section then we have uncategorised tasks
   if (list[0].name.slice(-1) !== ':') {
     swimlanes.unshift({
       id: 'uncategorised',
@@ -74,23 +75,31 @@ function makeSwimlanes(list) {
     });
   }
 
-  for (let item of list) {
-    if (item.name.slice(-1) === ':') {
+  // Go through the list of tasks
+  for (let task of list) {
+    // If the task is a new section push it to the front of the array
+    if (task.name.slice(-1) === ':') {
       swimlanes.unshift({
-        id: item.id,
-        name: item.name,
+        id: task.id,
+        name: task.name,
         cards: []
       });
 
       continue;
     }
 
-    if (item.completed) {
-      // Completed should always be the last lane...
-      //  is it defined first in this func?
-      swimlanes[swimlanes.length - 1].cards.push(item);
-    } else {
-      swimlanes[0].cards.push(item);
+    // Completed should be the last lane
+    // If task is not completed then add to current swimlane
+    let laneIndex = task.completed ? (swimlanes.length - 1) : 0;
+    swimlanes[laneIndex].cards.push(task);
+  }
+
+  // As we want the uncategorised swimlane first find and splice it to the front
+  for (let swimlaneIndex in swimlanes) {
+    if (swimlanes[swimlaneIndex].id === 'uncategorised') {
+      let uncategorisedSwimlane = swimlanes.splice(swimlaneIndex, 1)[0];
+      swimlanes.unshift(uncategorisedSwimlane);
+      break;
     }
   }
 
@@ -169,6 +178,10 @@ Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
       }
 
       if (idToInsertAfter) {
+        // If moved to uncategorised then set to null for top of the list
+        if (idToInsertAfter === 'uncategorised') {
+          idToInsertAfter = null;
+        }
         data.insert_after = idToInsertAfter
       }
 
