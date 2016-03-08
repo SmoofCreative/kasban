@@ -122,6 +122,29 @@ Actions.getTasks = (projectId) => {
   };
 };
 
+const completeCard = (dispatch, taskId) => {
+  dispatch({
+    type: 'COMPLETING_TASK',
+    payload: { taskId: taskId }
+  });
+
+  AsanaClient
+    .tasks
+    .update(taskId, {
+      completed: true
+    })
+    .then(() => {
+      dispatch({
+        type: 'COMPLETED_TASK_SUCCESS'
+      });
+    })
+    .catch(() => {
+      dispatch({
+        type: 'COMPLETED_TASK_FAILED'
+      });
+    });
+};
+
 Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
   return (dispatch) => {
     if (idToInsertAfter === 'completed') {
@@ -166,28 +189,6 @@ Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
   };
 };
 
-const completeCard = (dispatch, taskId) => {
-  dispatch({
-    type: 'COMPLETING_TASK',
-    payload: { taskId: taskId }
-  });
-
-  AsanaClient
-    .tasks
-    .update(taskId, {
-      completed: true
-    })
-    .then(() => {
-      dispatch({
-        type: 'COMPLETED_TASK_SUCCESS'
-      });
-    })
-    .catch(() => {
-      dispatch({
-        type: 'COMPLETED_TASK_FAILED'
-      });
-    });
-};
 
 function oneHourFromNow () {
   let theFuture = Date.now() + 60*60*1000;
