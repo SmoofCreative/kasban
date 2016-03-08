@@ -124,7 +124,15 @@ Actions.getTasks = (projectId) => {
 
 Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
   return (dispatch) => {
-    if (idToMove !== idToInsertAfter) {
+    if (idToInsertAfter === 'completed') {
+      completeCard(dispatch, idToMove);
+    }
+
+    if (idToMove === idToInsertAfter) {
+      dispatch({
+        type: 'MOVED_TASK_SELF'
+      });
+    } else {
       dispatch({
         type: 'MOVING_TASK',
         payload: {
@@ -154,14 +162,32 @@ Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
             type: 'MOVED_TASK_FAILED'
           });
         });
-    } else {
-      dispatch({
-        type: 'MOVED_TASK_SELF'
-      });
     }
   };
 };
 
+const completeCard = (dispatch, taskId) => {
+  dispatch({
+    type: 'COMPLETING_TASK',
+    payload: { taskId: taskId }
+  });
+
+  AsanaClient
+    .tasks
+    .update(taskId, {
+      completed: true
+    })
+    .then(() => {
+      dispatch({
+        type: 'COMPLETED_TASK_SUCCESS'
+      });
+    })
+    .catch(() => {
+      dispatch({
+        type: 'COMPLETED_TASK_FAILED'
+      });
+    });
+};
 
 function oneHourFromNow () {
   let theFuture = Date.now() + 60*60*1000;
