@@ -44,19 +44,29 @@ const formatDate = (date) => {
 };
 
 const dueDateClasses = (date) => {
-  let classArr = [];
+  let classes = [];
 
   if (date !== null) {
     let today = moment().startOf('day');
     let dueDate = moment(date).startOf('day');
 
-    classArr.push({
+    classes.push({
       'swimcard__date--today': today.isSame(dueDate),
       'swimcard__date--late': dueDate.isBefore(today)
     });
   }
 
-  return classNames('swimcard__date', classArr);
+  return classNames('swimcard__date', classes);
+};
+
+const renderDueDate = ({due_on, completed}) => {
+  if (completed) return false;
+
+  return (
+    <time className={ dueDateClasses(due_on) }>
+      { formatDate(due_on) }
+    </time>
+  );
 };
 
 const Card = ({ card }) => ({
@@ -66,12 +76,9 @@ const Card = ({ card }) => ({
     return connectDragSource(connectDropTarget(
       <article className="swimcard__card pure-g">
         <div className="swimcard__card-border">
-
           <div className="pure-u-4-5 swimcard__card-content">
             <p className="swimcard__task">{card.name}</p>
-            <time className={dueDateClasses(card.due_on)}>
-              {formatDate(card.due_on)}
-            </time>
+            { renderDueDate(card) }
           </div>
         </div>
       </article>
