@@ -16,7 +16,7 @@
     height: 100%;
     width: 100%;
     padding-bottom: 10px;
-    border-bottom: 1px solid #E6E6E6;
+    border-bottom: 1px solid #DCDCDD;
   }
 
   &__user-image {
@@ -32,6 +32,14 @@
   &__date {
     font-size: 14px;
     color: #656872;
+
+    &--today {
+      color: #73C293;
+    }
+
+    &--late {
+      color: #D6595A;
+    }
   }
 
 }

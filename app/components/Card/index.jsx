@@ -1,6 +1,8 @@
 import React from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
 import _flow from 'lodash/flow';
+import moment from 'moment';
+import classNames from 'classnames';
 
 import './style';
 
@@ -26,7 +28,36 @@ const sourceCollect = (connect, monitor) => ({
 
 const targetCollect = (connect) => ({
   connectDropTarget: connect.dropTarget()
-})
+});
+
+const formatDate = (date) => {
+  let today = moment().startOf('day');
+  let dueDate = moment(date).startOf('day');
+
+  if (date === null) {
+    return 'No due date';
+  } else if (today.isSame(dueDate)) {
+    return 'Today';
+  } else {
+    return moment(date).format('MMM DD');
+  }
+};
+
+const dueDateClasses = (date) => {
+  let classArr = [];
+
+  if (date !== null) {
+    let today = moment().startOf('day');
+    let dueDate = moment(date).startOf('day');
+
+    classArr.push({
+      'swimcard__date--today': today.isSame(dueDate),
+      'swimcard__date--late': dueDate.isBefore(today)
+    });
+  }
+
+  return classNames('swimcard__date', classArr);
+};
 
 const Card = ({ card }) => ({
   render() {
@@ -38,7 +69,9 @@ const Card = ({ card }) => ({
 
           <div className="pure-u-4-5 swimcard__card-content">
             <p className="swimcard__task">{card.name}</p>
-            <time className="swimcard__date">{card.due_at}</time>
+            <time className={dueDateClasses(card.due_on)}>
+              {formatDate(card.due_on)}
+            </time>
           </div>
         </div>
       </article>
