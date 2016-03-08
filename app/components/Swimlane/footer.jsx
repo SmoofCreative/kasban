@@ -1,0 +1,52 @@
+import React from 'react';
+
+const SwimlaneFooter = React.createClass({
+  getInitialState() {
+    return {
+      isAdding: false,
+      newTaskText: ''
+    };
+  },
+
+  handleNewTaskClick() {
+    this.setState({ isAdding: true });
+  },
+
+  handleNewTaskSubmit(e) {
+    e.preventDefault();
+    let task = { name: this.state.newTaskText };
+    this.setState({ isAdding: false, newTaskText: '' });
+    this.props.onSubmit(task);
+  },
+
+  handleNewTaskTextChange(e) {
+    this.setState({ newTaskText: e.target.value });
+  },
+
+  renderText() {
+    return (
+      <span>Add task...</span>
+    );
+  },
+
+  renderInput() {
+    return (
+      <form onSubmit={ this.handleNewTaskSubmit }>
+        <input type="text"
+               autoFocus
+               onChange={ this.handleNewTaskTextChange }
+               value={ this.state.newTaskText } />
+      </form>
+    );
+  },
+
+  render() {
+    return (
+      <footer className="swimlane__footer" onClick={ this.handleNewTaskClick }>
+        { this.state.isAdding ? this.renderInput() : this.renderText() }
+      </footer>
+    );
+  }
+});
+
+export default SwimlaneFooter;

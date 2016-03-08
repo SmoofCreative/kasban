@@ -62,7 +62,8 @@ const initialState = {
       'cards': []
     }
   ],
-  'currentProjectId': null
+  'currentProjectId': null,
+  'currentWorkspaceId': null
 };
 
 const moveCard = (state, idToMove, idToInsertAfter) => {
@@ -147,7 +148,8 @@ export default function boards(state = initialState, action) {
     }
     case 'RECEIVE_PROJECTS': {
       return Object.assign({}, state, {
-        projects: action.payload.projects
+        projects: action.payload.projects,
+        currentWorkspaceId: action.payload.workspaceId
       });
     }
     case 'SET_SWIMLANES_AND_INITIAL_TASKS': {
