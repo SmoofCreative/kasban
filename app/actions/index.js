@@ -49,7 +49,8 @@ Actions.getProjects = (workspaceId) => {
         dispatch({
           type: 'RECEIVE_PROJECTS',
           payload: {
-            projects: collection.data
+            projects: collection.data,
+            workspaceId: workspaceId
           }
         });
       });
@@ -202,6 +203,36 @@ Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
   };
 };
 
+Actions.createTask = (params) => {
+  return (dispatch) => {
+    let task = params.task;
+
+    task.memberships = [{
+      project: params.projectId,
+      section: params.sectionId
+    }];
+
+    task.workspace = params.workspaceId;
+
+    dispatch({
+      type: 'CREATING_TASK'
+    });
+
+    AsanaClient
+      .tasks
+      .create(task)
+      .then(() => {
+        dispatch({
+          type: 'CREATE_TASK_SUCCESS'
+        });
+      })
+      .catch(() => {
+        dispatch({
+          type: 'CREATE_TASK_FAILED'
+        });
+      });
+  };
+};
 
 function oneHourFromNow () {
   let theFuture = Date.now() + 60*60*1000;

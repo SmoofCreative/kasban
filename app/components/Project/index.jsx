@@ -15,14 +15,26 @@ const Project = React.createClass({
     dispatch(Actions.moveCard(idToMove, idToInsertAfter, currentProjectId));
   },
 
+  handleNewTaskSubmit(task, swimlaneId) {
+    const { dispatch, currentWorkspaceId, currentProjectId } = this.props;
+
+    dispatch(Actions.createTask({
+      task: task,
+      workspaceId: currentWorkspaceId,
+      projectId: currentProjectId,
+      sectionId: swimlaneId
+    }));
+  },
+
   renderSwimlanes () {
     return this.props.sections.map((section) => (
       <Swimlane key={section.id}
                 cards={section.cards}
                 name={section.name}
                 id={section.id}
-                moveCard={this.handleCardMove} />
-    ))
+                moveCard={this.handleCardMove}
+                newTaskSubmit={this.handleNewTaskSubmit} />
+    ));
   },
 
   render() {
@@ -42,7 +54,8 @@ const Project = React.createClass({
 
 const mapStateToProps = (state) => ({
   sections: state.boards.sections,
-  currentProjectId: state.boards.currentProjectId
+  currentProjectId: state.boards.currentProjectId,
+  currentWorkspaceId: state.boards.currentWorkspaceId
 });
 
 export default _flow(
