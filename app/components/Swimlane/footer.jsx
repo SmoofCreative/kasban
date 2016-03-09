@@ -25,7 +25,7 @@ const SwimlaneFooter = React.createClass({
 
   renderText() {
     return (
-      <span>Add task...</span>
+      <span className="swimlane__placeholder">Add task...</span>
     );
   },
 
@@ -33,6 +33,7 @@ const SwimlaneFooter = React.createClass({
     return (
       <form onSubmit={ this.handleNewTaskSubmit }>
         <input type="text"
+               className="swimlane__add-task"
                autoFocus
                onChange={ this.handleNewTaskTextChange }
                value={ this.state.newTaskText } />
