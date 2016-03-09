@@ -1,22 +1,9 @@
-import Asana from 'asana';
 import querystringify from 'querystringify';
 
+import { oneHourFromNow } from '../utils';
+import AsanaClient from '../utils/AsanaClient';
+
 const Actions = {};
-
-const AsanaClient = function() {
-  let authCreds = {}
-  const access_token = localStorage.getItem('access_token') || false;
-  if (access_token) {
-    authCreds = {
-      credentials: access_token
-    }
-  }
-
-  return Asana.Client.create({
-    clientId: process.env.CLIENT_ID,
-    redirectUri: document.location['href']
-  }).useOauth(authCreds);
-}()
 
 Actions.getWorkspaces = () => {
   return (dispatch) => {
@@ -129,6 +116,7 @@ Actions.getTasks = (projectId) => {
           }
         });
       });
+
   };
 };
 
@@ -233,12 +221,6 @@ Actions.createTask = (params) => {
       });
   };
 };
-
-function oneHourFromNow () {
-  let theFuture = Date.now() + 60*60*1000;
-  return theFuture;
-}
-
 
 Actions.checkAuth = () => {
   return (dispatch) => {

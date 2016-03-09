@@ -14,3 +14,8 @@ export function asanaUrl (params = []) {
 
   return baseUrl + returnPath;
 }
+
+export function oneHourFromNow () {
+  let theFuture = Date.now() + 60*60*1000;
+  return theFuture;
+}
