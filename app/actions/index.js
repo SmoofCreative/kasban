@@ -193,11 +193,19 @@ Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
 
 Actions.createTask = (params) => {
   return (dispatch) => {
-    let task = params.task;
+    let { task, sectionId, projectId } = params;
+
+    if (sectionId == 'completed') {
+      task.completed = true;
+    }
+
+    if (sectionId == 'uncategorised' || sectionId == 'completed') {
+      sectionId = null
+    }
 
     task.memberships = [{
-      project: params.projectId,
-      section: params.sectionId
+      project: projectId,
+      section: sectionId
     }];
 
     task.workspace = params.workspaceId;
