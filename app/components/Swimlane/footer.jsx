@@ -12,6 +12,10 @@ const SwimlaneFooter = React.createClass({
     this.setState({ isAdding: true });
   },
 
+  handleNewTaskBlur() {
+    this.setState({ isAdding: false, newTaskText: '' });
+  },
+
   handleNewTaskSubmit(e) {
     e.preventDefault();
     let task = { name: this.state.newTaskText };
@@ -35,6 +39,7 @@ const SwimlaneFooter = React.createClass({
         <input type="text"
                className="swimlane__add-task"
                autoFocus
+               onBlur={this.handleNewTaskBlur}
                onChange={ this.handleNewTaskTextChange }
                value={ this.state.newTaskText } />
       </form>

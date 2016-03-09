@@ -31,7 +31,7 @@ const Swimlane = React.createClass({
           { this.renderCards() }
         </div>
 
-        <SwimlaneFooter onSubmit={ this.handleNewTaskSubmit } />
+        <SwimlaneFooter id={id} onSubmit={ this.handleNewTaskSubmit } />
       </section>
     );
   }
