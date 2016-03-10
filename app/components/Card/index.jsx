@@ -23,6 +23,7 @@ const cardTarget = {
 
 const sourceCollect = (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
+  connectDragPreview: connect.dragPreview(),
   isDragging: monitor.isDragging()
 });
 
@@ -69,17 +70,43 @@ const renderDueDate = ({due_on, completed}) => {
   );
 };
 
+const renderDragHandle = () => {
+  return (
+    <div className="pure-u-1-8 swimcard__drag-handle">
+      <div className="v-wrap">
+        <div className="v-content">
+          <svg className="swimcard__drag-handle__icon" viewBox="0 0 32 32" title="drag handle">
+            <rect x="6" y="2" width="4" height="4"></rect>
+            <rect x="14" y="2" width="4" height="4"></rect>
+            <rect x="6" y="10" width="4" height="4"></rect>
+            <rect x="14" y="10" width="4" height="4"></rect>
+            <rect x="6" y="18" width="4" height="4"></rect>
+            <rect x="14" y="18" width="4" height="4"></rect>
+            <rect x="6" y="26" width="4" height="4"></rect>
+            <rect x="14" y="26" width="4" height="4"></rect>
+            <rect x="22" y="2" width="4" height="4"></rect>
+            <rect x="22" y="10" width="4" height="4"></rect>
+            <rect x="22" y="18" width="4" height="4"></rect>
+            <rect x="22" y="26" width="4" height="4"></rect>
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Card = ({ card }) => ({
   render() {
-    const { connectDragSource, connectDropTarget } = this.props;
+    const { connectDragSource, connectDropTarget, connectDragPreview } = this.props;
 
-    return connectDragSource(connectDropTarget(
+    return connectDragPreview(connectDropTarget(
       <article className="swimcard__card pure-g">
         <div className="swimcard__card-border">
-          <div className="pure-u-4-5 swimcard__card-content">
+          <div className="pure-u-7-8 swimcard__card-content">
             <p className="swimcard__task">{card.name}</p>
             { renderDueDate(card) }
           </div>
+          { connectDragSource(renderDragHandle()) }
         </div>
       </article>
     ));
