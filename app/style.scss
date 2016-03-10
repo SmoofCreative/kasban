@@ -20,3 +20,15 @@ body {
 .pull-right {
   float: right;
 }
+
+.v-wrap {
+  display: table;
+  height: 100%;
+  width: 100%;
+}
+
+.v-content {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
