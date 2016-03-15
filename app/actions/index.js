@@ -2,6 +2,7 @@ import querystringify from 'querystringify';
 
 import { oneHourFromNow } from '../utils';
 import AsanaClient from '../utils/AsanaClient';
+import Task from './task';
 
 const Actions = {};
 
@@ -121,26 +122,12 @@ Actions.getTasks = (projectId) => {
 };
 
 const completeCard = (dispatch, taskId) => {
-  dispatch({
-    type: 'COMPLETING_TASK',
-    payload: { taskId: taskId }
-  });
+  dispatch({ type: 'COMPLETING_TASK', payload: { taskId: taskId } });
 
-  AsanaClient
-    .tasks
-    .update(taskId, {
-      completed: true
-    })
-    .then(() => {
-      dispatch({
-        type: 'COMPLETED_TASK_SUCCESS'
-      });
-    })
-    .catch(() => {
-      dispatch({
-        type: 'COMPLETED_TASK_FAILED'
-      });
-    });
+  const task = Task(taskId);
+  task.complete(AsanaClient)
+  .then(() => { dispatch({ type: 'COMPLETED_TASK_SUCCESS' }); })
+  .catch(() => { dispatch({ type: 'COMPLETED_TASK_FAILED' }); });
 };
 
 Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
@@ -193,40 +180,42 @@ Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
 
 Actions.createTask = (params) => {
   return (dispatch) => {
-    let { task, sectionId, projectId } = params;
+    let { taskDetails, sectionId, projectId } = params;
 
     if (sectionId == 'completed') {
-      task.completed = true;
+      taskDetails.completed = true;
     }
 
     if (sectionId == 'uncategorised' || sectionId == 'completed') {
       sectionId = null
     }
 
-    task.memberships = [{
+    taskDetails.memberships = [{
       project: projectId,
       section: sectionId
     }];
 
-    task.workspace = params.workspaceId;
+    taskDetails.workspace = params.workspaceId;
 
-    dispatch({
-      type: 'CREATING_TASK'
-    });
+    dispatch({ type: 'CREATING_TASK' });
 
-    AsanaClient
-      .tasks
-      .create(task)
-      .then(() => {
-        dispatch({
-          type: 'CREATE_TASK_SUCCESS'
-        });
-      })
-      .catch(() => {
-        dispatch({
-          type: 'CREATE_TASK_FAILED'
-        });
-      });
+    const task = Task(null);
+    task.create(taskDetails, AsanaClient)
+    .then(() => { dispatch({ type: 'CREATE_TASK_SUCCESS' }); })
+    .catch(() => { dispatch({ type: 'CREATE_TASK_FAILED' }); });
+  };
+};
+
+Actions.updateTask = (params) => {
+  return (dispatch) => {
+    let { taskDetails } = params;
+
+    dispatch({ type: 'UPDATING_TASK' });
+
+    const task = Task(taskDetails.id);
+    task.update(taskDetails, AsanaClient)
+    .then(() => { dispatch({ type: 'UPDATING_TASK_SUCCESS' }); })
+    .catch(() => { dispatch({ type: 'UPDATING_TASK_FAILED' }); });
   };
 };
 

@@ -13,8 +13,10 @@ const Swimlane = React.createClass({
   },
 
   renderCards() {
-    return this.props.cards.map((card) => (
-      <Card key={card.id} card={card} moveCard={this.props.moveCard} />
+    const { cards, moveCard, taskUpdate } = this.props;
+
+    return cards.map((card) => (
+      <Card key={card.id} card={card} moveCard={moveCard} taskUpdate={taskUpdate} />
     ));
   },
 

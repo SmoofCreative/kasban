@@ -1,3 +1,5 @@
+$font-size: 14px;
+
 .swimcard {
   &__card {
     position: relative;
@@ -45,12 +47,36 @@
     border-radius: 50%;
   }
 
+  &__update-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    color: #000000;
+    border: none;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    font-size: $font-size;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &__update-form {
+    position: relative;
+    height: 16px;
+  }
+
   &__task {
-    font-size: 14px;
+    font-size: $font-size;
+    cursor: pointer;
   }
 
   &__date {
-    font-size: 14px;
+    font-size: $font-size;
     color: #656872;
 
     &--today {
