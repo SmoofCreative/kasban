@@ -19,10 +19,18 @@ const Project = React.createClass({
     const { dispatch, currentWorkspaceId, currentProjectId } = this.props;
 
     dispatch(Actions.createTask({
-      task: task,
+      taskDetails: task,
       workspaceId: currentWorkspaceId,
       projectId: currentProjectId,
       sectionId: swimlaneId
+    }));
+  },
+
+  handleTaskUpdate(task) {
+    const { dispatch } = this.props;
+
+    dispatch(Actions.updateTask({
+      taskDetails: task
     }));
   },
 
@@ -33,7 +41,8 @@ const Project = React.createClass({
                 name={section.name}
                 id={section.id}
                 moveCard={this.handleCardMove}
-                newTaskSubmit={this.handleNewTaskSubmit} />
+                newTaskSubmit={this.handleNewTaskSubmit}
+                taskUpdate={this.handleTaskUpdate} />
     ));
   },
 

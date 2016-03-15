@@ -180,27 +180,27 @@ Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
 
 Actions.createTask = (params) => {
   return (dispatch) => {
-    let { task, sectionId, projectId } = params;
+    let { taskDetails, sectionId, projectId } = params;
 
     if (sectionId == 'completed') {
-      task.completed = true;
+      taskDetails.completed = true;
     }
 
     if (sectionId == 'uncategorised' || sectionId == 'completed') {
       sectionId = null
     }
 
-    task.memberships = [{
+    taskDetails.memberships = [{
       project: projectId,
       section: sectionId
     }];
 
-    task.workspace = params.workspaceId;
+    taskDetails.workspace = params.workspaceId;
 
     dispatch({ type: 'CREATING_TASK' });
 
-    const taskCreator = Task(null);
-    taskCreator.create(task, AsanaClient)
+    const task = Task(null);
+    task.create(taskDetails, AsanaClient)
     .then(() => { dispatch({ type: 'CREATE_TASK_SUCCESS' }); })
     .catch(() => { dispatch({ type: 'CREATE_TASK_FAILED' }); });
   };
@@ -208,6 +208,14 @@ Actions.createTask = (params) => {
 
 Actions.updateTask = (params) => {
   return (dispatch) => {
+    let { taskDetails } = params;
+
+    dispatch({ type: 'UPDATING_TASK' });
+
+    const task = Task(taskDetails.id);
+    task.update(taskDetails, AsanaClient)
+    .then(() => { dispatch({ type: 'UPDATING_TASK_SUCCESS' }); })
+    .catch(() => { dispatch({ type: 'UPDATING_TASK_FAILED' }); });
   };
 };
 

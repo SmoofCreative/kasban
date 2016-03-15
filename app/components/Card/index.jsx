@@ -31,87 +31,148 @@ const targetCollect = (connect) => ({
   connectDropTarget: connect.dropTarget()
 });
 
-const formatDate = (date) => {
-  let today = moment().startOf('day');
-  let dueDate = moment(date).startOf('day');
+const Card = React.createClass({
+  getInitialState() {
+    return {
+      isUpdatingName: false,
+      taskName: this.props.card.name
+    };
+  },
 
-  if (date === null) {
-    return 'No due date';
-  } else if (today.isSame(dueDate)) {
-    return 'Today';
-  } else {
-    return moment(date).format('MMM DD');
-  }
-};
-
-const dueDateClasses = (date) => {
-  let classes = [];
-
-  if (date !== null) {
+  formatDate(date) {
     let today = moment().startOf('day');
     let dueDate = moment(date).startOf('day');
 
-    classes.push({
-      'swimcard__date--today': today.isSame(dueDate),
-      'swimcard__date--late': dueDate.isBefore(today)
-    });
-  }
+    if (date === null) {
+      return 'No due date';
+    } else if (today.isSame(dueDate)) {
+      return 'Today';
+    } else {
+      return moment(date).format('MMM DD');
+    }
+  },
 
-  return classNames('swimcard__date', classes);
-};
+  dueDateClasses(date) {
+    let classes = [];
 
-const renderDueDate = ({due_on, completed}) => {
-  if (completed) return false;
+    if (date !== null) {
+      let today = moment().startOf('day');
+      let dueDate = moment(date).startOf('day');
 
-  return (
-    <time className={ dueDateClasses(due_on) }>
-      { formatDate(due_on) }
-    </time>
-  );
-};
+      classes.push({
+        'swimcard__date--today': today.isSame(dueDate),
+        'swimcard__date--late': dueDate.isBefore(today)
+      });
+    }
 
-const renderDragHandle = () => {
-  return (
-    <div className="pure-u-1-8 swimcard__drag-handle">
-      <div className="v-wrap">
-        <div className="v-content">
-          <svg className="swimcard__drag-handle__icon" viewBox="0 0 32 32" title="drag handle">
-            <rect x="6" y="2" width="4" height="4"></rect>
-            <rect x="14" y="2" width="4" height="4"></rect>
-            <rect x="6" y="10" width="4" height="4"></rect>
-            <rect x="14" y="10" width="4" height="4"></rect>
-            <rect x="6" y="18" width="4" height="4"></rect>
-            <rect x="14" y="18" width="4" height="4"></rect>
-            <rect x="6" y="26" width="4" height="4"></rect>
-            <rect x="14" y="26" width="4" height="4"></rect>
-            <rect x="22" y="2" width="4" height="4"></rect>
-            <rect x="22" y="10" width="4" height="4"></rect>
-            <rect x="22" y="18" width="4" height="4"></rect>
-            <rect x="22" y="26" width="4" height="4"></rect>
-          </svg>
+    return classNames('swimcard__date', classes);
+  },
+
+  renderDueDate(card) {
+    if (card.completed) return false;
+
+    return (
+      <time className={ this.dueDateClasses(card.due_on) }>
+        { this.formatDate(card.due_on) }
+      </time>
+    );
+  },
+
+  renderDragHandle() {
+    return (
+      <div className="pure-u-1-8 swimcard__drag-handle">
+        <div className="v-wrap">
+          <div className="v-content">
+            <svg className="swimcard__drag-handle__icon" viewBox="0 0 32 32" title="drag handle">
+              <rect x="6" y="2" width="4" height="4"></rect>
+              <rect x="14" y="2" width="4" height="4"></rect>
+              <rect x="6" y="10" width="4" height="4"></rect>
+              <rect x="14" y="10" width="4" height="4"></rect>
+              <rect x="6" y="18" width="4" height="4"></rect>
+              <rect x="14" y="18" width="4" height="4"></rect>
+              <rect x="6" y="26" width="4" height="4"></rect>
+              <rect x="14" y="26" width="4" height="4"></rect>
+              <rect x="22" y="2" width="4" height="4"></rect>
+              <rect x="22" y="10" width="4" height="4"></rect>
+              <rect x="22" y="18" width="4" height="4"></rect>
+              <rect x="22" y="26" width="4" height="4"></rect>
+            </svg>
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  },
 
-const Card = ({ card }) => ({
+  handleTaskNameClick() {
+    // Show the input
+    this.setState({ isUpdatingName: true });
+  },
+
+  handleTaskUpdate(e) {
+    e.preventDefault();
+    let task = {
+      id: this.props.card.id,
+      name: this.state.taskName
+    };
+
+    // Reset the UI, we'll change the task name in the stores
+    this.setState({ isUpdatingName: false, taskName: '' });
+    this.props.taskUpdate(task);
+  },
+
+  handleTaskUpdateChange(e) {
+    this.setState({ taskName: e.target.value });
+  },
+
+  handleTaskUpdateBlur() {
+    // Remove the input and reset the name
+    this.setState({
+      isUpdatingName: false,
+      taskName: this.props.card.name
+    });
+  },
+
+  renderName(name) {
+    return (
+      <p className="swimcard__task">{name}</p>
+    );
+  },
+
+  renderInput() {
+    return (
+      <form className="swimcard__update-form" onSubmit={ this.handleTaskUpdate }>
+        <input type="text"
+               className="swimcard__update-input"
+               autoFocus
+               onBlur={ this.handleTaskUpdateBlur }
+               onChange={ this.handleTaskUpdateChange }
+               value={ this.state.taskName } />
+      </form>
+    );
+  },
+
   render() {
-    const { connectDragSource, connectDropTarget, connectDragPreview } = this.props;
+    const { card, connectDragSource, connectDropTarget, connectDragPreview } = this.props;
 
     return connectDragPreview(connectDropTarget(
       <article className="swimcard__card pure-g">
         <div className="swimcard__card-border">
           <div className="pure-u-7-8 swimcard__card-content">
-            <p className="swimcard__task">{card.name}</p>
-            { renderDueDate(card) }
+            <div onClick={ this.handleTaskNameClick }>
+              {
+                this.state.isUpdatingName ?
+                this.renderInput(card.name) :
+                this.renderName(card.name)
+              }
+            </div>
+            { this.renderDueDate(card) }
           </div>
-          { connectDragSource(renderDragHandle()) }
+          { connectDragSource(this.renderDragHandle()) }
         </div>
       </article>
     ));
   }
-})
+});
 
 export default _flow(
   DragSource('card', cardSource, sourceCollect),
