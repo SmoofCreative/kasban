@@ -2,6 +2,7 @@ import querystringify from 'querystringify';
 
 import { oneHourFromNow } from '../utils';
 import AsanaClient from '../utils/AsanaClient';
+import Task from './task';
 
 const Actions = {};
 
@@ -121,26 +122,12 @@ Actions.getTasks = (projectId) => {
 };
 
 const completeCard = (dispatch, taskId) => {
-  dispatch({
-    type: 'COMPLETING_TASK',
-    payload: { taskId: taskId }
-  });
+  dispatch({ type: 'COMPLETING_TASK', payload: { taskId: taskId } });
 
-  AsanaClient
-    .tasks
-    .update(taskId, {
-      completed: true
-    })
-    .then(() => {
-      dispatch({
-        type: 'COMPLETED_TASK_SUCCESS'
-      });
-    })
-    .catch(() => {
-      dispatch({
-        type: 'COMPLETED_TASK_FAILED'
-      });
-    });
+  const task = Task(taskId);
+  task.complete(AsanaClient)
+  .then(() => { dispatch({ type: 'COMPLETED_TASK_SUCCESS' }); })
+  .catch(() => { dispatch({ type: 'COMPLETED_TASK_FAILED' }); });
 };
 
 Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
@@ -210,23 +197,17 @@ Actions.createTask = (params) => {
 
     task.workspace = params.workspaceId;
 
-    dispatch({
-      type: 'CREATING_TASK'
-    });
+    dispatch({ type: 'CREATING_TASK' });
 
-    AsanaClient
-      .tasks
-      .create(task)
-      .then(() => {
-        dispatch({
-          type: 'CREATE_TASK_SUCCESS'
-        });
-      })
-      .catch(() => {
-        dispatch({
-          type: 'CREATE_TASK_FAILED'
-        });
-      });
+    const taskCreator = Task(null);
+    taskCreator.create(task, AsanaClient)
+    .then(() => { dispatch({ type: 'CREATE_TASK_SUCCESS' }); })
+    .catch(() => { dispatch({ type: 'CREATE_TASK_FAILED' }); });
+  };
+};
+
+Actions.updateTask = (params) => {
+  return (dispatch) => {
   };
 };
 
