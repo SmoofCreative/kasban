@@ -8,75 +8,93 @@ let initialState = {
   'currentWorkspaceId': null
 }
 
-const persistedState = localStorage.getItem('boards');
+const persistedState = false; //localStorage.getItem('boards');
 
 if (persistedState) {
   initialState = JSON.parse(persistedState)
 } else {
   initialState = {
-    'workspaces': [],
-    'projects': [],
-    'sections': [
+    workspaces: [
       {
-        'name': 'Todo:',
-        'id': 1,
-        'cards': [
+        id: 31,
+        name: 'Smoof',
+        projects: [
           {
-            'id': 2,
-            'name': 'Select a workspace',
-            'completed': false,
-            'completed_at': null,
-            'due_on': null,
-            'due_at': null
+            id: 21,
+            name: 'Some project',
+            'sections': [
+              {
+                'name': 'Todo:',
+                'id': 1,
+                'cards': [
+                  {
+                    'id': 2,
+                    'name': 'Select a workspace',
+                    'completed': false,
+                    'completed_at': null,
+                    'due_on': null,
+                    'due_at': null
+                  },
+                  {
+                    'id': 3,
+                    'name': 'Select a project',
+                    'completed': false,
+                    'completed_at': null,
+                    'due_on': null,
+                    'due_at': null
+                  },
+                  {
+                    'id': 4,
+                    'name': 'Move a task',
+                    'completed': false,
+                    'completed_at': null,
+                    'due_on': null,
+                    'due_at': null
+                  }
+                ]
+              },
+              {
+                'name': 'In progress:',
+                'id': 11,
+                'cards': [
+                  {
+                    'id': 12,
+                    'name': 'Open Reddit',
+                    'completed': false,
+                    'completed_at': null,
+                    'due_on': null,
+                    'due_at': null
+                  },
+                  {
+                    'id': 13,
+                    'name': 'Battle Asana',
+                    'completed': false,
+                    'completed_at': null,
+                    'due_on': null,
+                    'due_at': null
+                  }
+                ]
+              },
+              {
+                'name': 'Completed:',
+                'id': 0,
+                'cards': []
+              }
+            ]
           },
           {
-            'id': 3,
-            'name': 'Select a project',
-            'completed': false,
-            'completed_at': null,
-            'due_on': null,
-            'due_at': null
-          },
-          {
-            'id': 4,
-            'name': 'Move a task',
-            'completed': false,
-            'completed_at': null,
-            'due_on': null,
-            'due_at': null
+            id: 22,
+            name: 'Kasban',
           }
         ]
       },
       {
-        'name': 'In progress:',
-        'id': 11,
-        'cards': [
-          {
-            'id': 12,
-            'name': 'Open Reddit',
-            'completed': false,
-            'completed_at': null,
-            'due_on': null,
-            'due_at': null
-          },
-          {
-            'id': 13,
-            'name': 'Battle Asana',
-            'completed': false,
-            'completed_at': null,
-            'due_on': null,
-            'due_at': null
-          }
-        ]
-      },
-      {
-        'name': 'Completed:',
-        'id': 0,
-        'cards': []
+        id: 32,
+        name: 'Personal Projects'
       }
     ],
-    'currentProjectId': null,
-    'currentWorkspaceId': null
+    currentProjectId: 21,
+    currentWorkspaceId: 31
   }
 }
 

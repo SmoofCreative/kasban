@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 
 import './style';
 import Header from '../components/Header';
-import Project from '../components/Project';
+import CurrentProject from '../containers/CurrentProjectContainer';
+import Sidebar from '../components/Sidebar';
 import Actions from '../actions';
 
 const Main = React.createClass({
@@ -12,11 +13,10 @@ const Main = React.createClass({
   },
 
   render() {
+
     return (
       <div>
-        <Header auth={this.props.auth} workspaces={this.props.workspaces} projects={this.props.projects} />
-
-        <Project />
+        <CurrentProject />
       </div>
     );
   }
@@ -24,8 +24,21 @@ const Main = React.createClass({
 
 const mapStateToProps = (state) => ({
   projects: state.boards.projects,
+  currentProjectId: state.boards.currentProjectId,
   workspaces: state.boards.workspaces,
-  auth: state.auth
+  auth: state.auth,
+  ui: state.ui
 });
 
 export default connect(mapStateToProps)(Main);
+
+// const currentProject = this.props.projects.filter((project) => {
+//   return project.id == this.props.currentProjectId;
+// })[0];
+
+// <Header auth={this.props.auth} currentProject={currentProject} />
+// <Sidebar
+//   workspaces={ this.props.workspaces }
+//   projects={ this.props.projects }
+//   currentProject={ currentProject }
+//   visible={ this.props.ui.showSidebar } />
