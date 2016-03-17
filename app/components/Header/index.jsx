@@ -5,7 +5,7 @@ import Auth from '../Auth';
 import BoardSelector from '../BoardSelector';
 import { asanaUrl } from '../../utils'
 
-const Header = ({workspaces, projects, auth}) => {
+const Header = ({auth, projectName}) => {
 
   let headerButton = <Auth />;
   if (auth.isAsanaAuthed) {
@@ -14,11 +14,14 @@ const Header = ({workspaces, projects, auth}) => {
 
   return (
     <header className="header">
-      <div className="pure-u-2-3">
-        <img className="header__logo" src="logo.png" />
+      <div className="pure-u-1-3">
         <div className="header__breadcrumbs">
-          <BoardSelector workspaces={workspaces} projects={projects} />
+          <BoardSelector />
+          <span className="header__current-project">{projectName}</span>
         </div>
+      </div>
+      <div className="pure-u-1-3 header__logo__wrapper">
+        <img className="header__logo" src="logo.png" />
       </div>
       <div className="pure-u-1-3">
         <div className=" pull-right">

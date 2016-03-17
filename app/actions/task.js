@@ -1,3 +1,5 @@
+import Promise from 'bluebird';
+
 const Task = (taskId = null) => {
   const id = taskId;
 
@@ -20,10 +22,25 @@ const Task = (taskId = null) => {
   const complete = (asanaClient) => {
     return update({ completed: true }, asanaClient);
   };
+
+  const move = (params, asanaClient) => {
+    const data = {
+      project: params.projectId,
+      insert_after: params.insertAfter
+    };
+
+    return new Promise((resolve, reject) => {
+      asanaClient.tasks.addProject(id, data)
+      .then((data) => { resolve(data); })
+      .catch((err) => { reject(err); })
+    });
+  };
+
   // Return our public API, this should be quite small
   return {
     create: create,
     complete: complete,
+    move: move,
     update: update
   };
 };

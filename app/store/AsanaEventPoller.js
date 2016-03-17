@@ -50,7 +50,7 @@ const AsanaEventPoller = (store) => {
 
 
       })
-      .catch((err) => {
+      .catch(() => {
         // console.log('data err', err)
         // backoff
         _interval = 9000;

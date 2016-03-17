@@ -8,8 +8,8 @@ import SwimlaneFooter from './footer';
 const Swimlane = React.createClass({
   handleNewTaskSubmit(task) {
     // Add the swimlane id
-    let { id } = this.props;
-    this.props.newTaskSubmit(task, id);
+    let { id, newTaskSubmit} = this.props;
+    newTaskSubmit(task, id);
   },
 
   renderCards() {

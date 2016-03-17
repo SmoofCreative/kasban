@@ -4,41 +4,39 @@ import { connect } from 'react-redux';
 import './style';
 import Header from '../components/Header';
 import CurrentProject from '../containers/CurrentProjectContainer';
-import Sidebar from '../components/Sidebar';
+import Sidebar from '../containers/SidebarContainer';
 import Actions from '../actions';
 
 const Main = React.createClass({
   componentDidMount() {
     this.props.dispatch(Actions.checkAuth());
+    this.props.dispatch(Actions.getWorkspaces(this.props.currentWorkspaceId, this.props.currentProjectId));
   },
 
   render() {
-
     return (
       <div>
+        <Header auth={this.props.auth} />
         <CurrentProject />
+        <Sidebar
+          workspaces={ this.props.workspaces }
+          currentProjectId={ this.props.currentProjectId }
+          visible={ this.props.ui.showSidebar } />
+
       </div>
     );
   }
 });
+const mapStateToProps = (state) => {
+  const boards = state.boards;
 
-const mapStateToProps = (state) => ({
-  projects: state.boards.projects,
-  currentProjectId: state.boards.currentProjectId,
-  workspaces: state.boards.workspaces,
-  auth: state.auth,
-  ui: state.ui
-});
+  return {
+    workspaces: boards.workspaces,
+    currentProjectId: boards.currentProjectId,
+    currentWorkspaceId: boards.currentWorkspaceId,
+    auth: state.auth,
+    ui: state.ui
+  }
+};
 
 export default connect(mapStateToProps)(Main);
-
-// const currentProject = this.props.projects.filter((project) => {
-//   return project.id == this.props.currentProjectId;
-// })[0];
-
-// <Header auth={this.props.auth} currentProject={currentProject} />
-// <Sidebar
-//   workspaces={ this.props.workspaces }
-//   projects={ this.props.projects }
-//   currentProject={ currentProject }
-//   visible={ this.props.ui.showSidebar } />
