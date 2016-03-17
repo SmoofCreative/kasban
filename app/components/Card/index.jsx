@@ -27,8 +27,10 @@ const sourceCollect = (connect, monitor) => ({
   isDragging: monitor.isDragging()
 });
 
-const targetCollect = (connect) => ({
-  connectDropTarget: connect.dropTarget()
+const targetCollect = (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver(),
+  canDrop: monitor.canDrop()
 });
 
 const Card = React.createClass({
@@ -152,11 +154,20 @@ const Card = React.createClass({
   },
 
   render() {
-    const { card, connectDragSource, connectDropTarget, connectDragPreview } = this.props;
+    const {
+      card,
+      connectDragSource,
+      connectDropTarget,
+      connectDragPreview,
+      canDrop,
+      isOver
+    } = this.props;
+
+    const classes = classNames('swimcard__card-border', { active: canDrop && isOver });
 
     return connectDragPreview(connectDropTarget(
       <article className="swimcard__card pure-g">
-        <div className="swimcard__card-border">
+        <div className={classes}>
           <div className="pure-u-7-8 swimcard__card-content">
             <div onClick={ this.handleTaskNameClick }>
               {
