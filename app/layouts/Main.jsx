@@ -10,13 +10,34 @@ import Actions from '../actions';
 const Main = React.createClass({
   componentDidMount() {
     this.props.dispatch(Actions.checkAuth());
-    this.props.dispatch(Actions.getWorkspaces(this.props.currentWorkspaceId, this.props.currentProjectId));
+    this.props.dispatch(Actions.getWorkspaces());
+  },
+
+  projectName() {
+    const { workspaces, currentWorkspaceId, currentProjectId } = this.props;
+
+    let name = '';
+
+    if (currentWorkspaceId !== null && currentProjectId !== null) {
+      const workspace = workspaces.filter((ws) => {
+        return ws.id == currentWorkspaceId;
+      })[0];
+
+      const project = workspace.projects.filter((p) => {
+        return p.id == currentProjectId;
+      })[0];
+
+      name = project.name;
+    }
+
+    return name;
   },
 
   render() {
+
     return (
       <div>
-        <Header auth={this.props.auth} />
+        <Header auth={this.props.auth} projectName={this.projectName()} />
         <CurrentProject />
         <Sidebar
           workspaces={ this.props.workspaces }
