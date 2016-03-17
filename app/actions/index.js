@@ -2,46 +2,128 @@ import querystringify from 'querystringify';
 
 import { oneHourFromNow } from '../utils';
 import AsanaClient from '../utils/AsanaClient';
+
 import Task from './task';
+import Project from './project';
+import Workspace from './workspace';
 
 const Actions = {};
 
 Actions.getWorkspaces = () => {
   return (dispatch) => {
-    dispatch({
-      type: 'REQUEST_WORKSPACES'
-    });
+    dispatch({ type: 'REQUEST_WORKSPACES_AND_PROJECTS' });
 
-    AsanaClient.users.me().then((data) => {
-      dispatch({
-        type: 'RECEIVE_WORKSPACES',
-        payload: {
-          workspaces: data.workspaces
-        }
+    const workspace = Workspace();
+
+    // Ask for the workspaces
+    workspace.getWorkspaces(AsanaClient)
+    .then((workspaces) => {
+      // For each of the workspaces, get its related projects
+      workspaces.map((ws) => {
+        workspace.getProjects(ws.id, AsanaClient)
+        .then((projects) => {
+          dispatch({
+            type: 'RECEIVED_WORKSPACES_AND_PROJECTS',
+            payload: {
+              workspace: { id: ws.id, name: ws.name },
+              projects: projects
+            }
+          });
+        })
       });
     });
   };
 };
 
-Actions.getProjects = (workspaceId) => {
+const completeCard = (dispatch, taskId) => {
+  dispatch({ type: 'COMPLETING_TASK', payload: { taskId: taskId } });
+
+  const task = Task(taskId);
+  task.complete(AsanaClient)
+  .then(() => { dispatch({ type: 'COMPLETED_TASK_SUCCESS' }); })
+  .catch(() => { dispatch({ type: 'COMPLETED_TASK_FAILED' }); });
+};
+
+Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
   return (dispatch) => {
+    if (idToInsertAfter === 'completed') {
+      completeCard(dispatch, idToMove);
+    }
+
+    if (idToMove === idToInsertAfter) {
+      dispatch({ type: 'MOVED_TASK_SELF' });
+    } else {
+      dispatch({
+        type: 'MOVING_TASK',
+        payload: {
+          idToMove: idToMove,
+          idToInsertAfter: idToInsertAfter
+        }
+      });
+
+      let data = {
+        projectId: projectId,
+        insertAfter: null
+      }
+
+      if (idToInsertAfter) {
+        if (idToInsertAfter !== 'completed' && idToInsertAfter !== 'uncategorised') {
+          data.insertAfter = idToInsertAfter
+        }
+      }
+
+      const task = Task(idToMove);
+      task.move(data, AsanaClient)
+      .then(() => { dispatch({ type: 'MOVED_TASK_SUCCESS' }); })
+      .catch(() => { dispatch({ type: 'MOVED_TASK_FAILED' }); })
+    }
+  };
+};
+
+Actions.createTask = (params) => {
+  return (dispatch) => {
+    let { taskDetails, sectionId, projectId, workspaceId } = params;
 
     dispatch({
-      type: 'REQUEST_PROJECTS'
+      type: 'CREATING_TASK',
+      payload: {
+        task: taskDetails,
+        sectionId: sectionId
+      }
     });
 
-    AsanaClient
-      .projects
-      .findByWorkspace(workspaceId, { limit: 100 })
-      .then((collection) => {
-        dispatch({
-          type: 'RECEIVE_PROJECTS',
-          payload: {
-            projects: collection.data,
-            workspaceId: workspaceId
-          }
-        });
-      });
+    if (sectionId == 'completed') {
+      taskDetails.completed = true;
+    }
+
+    if (sectionId == 'uncategorised' || sectionId == 'completed') {
+      sectionId = null
+    }
+
+    taskDetails.memberships = [{
+      project: projectId,
+      section: sectionId
+    }];
+
+    taskDetails.workspace = workspaceId;
+
+    const task = Task(null);
+    task.create(taskDetails, AsanaClient)
+    .then(() => { dispatch({ type: 'CREATE_TASK_SUCCESS' }); })
+    .catch(() => { dispatch({ type: 'CREATE_TASK_FAILED' }); });
+  };
+};
+
+Actions.updateTask = (params) => {
+  return (dispatch) => {
+    let { taskDetails } = params;
+
+    dispatch({ type: 'UPDATING_TASK' });
+
+    const task = Task(taskDetails.id);
+    task.update(taskDetails, AsanaClient)
+    .then(() => { dispatch({ type: 'UPDATING_TASK_SUCCESS' }); })
+    .catch(() => { dispatch({ type: 'UPDATING_TASK_FAILED' }); });
   };
 };
 
@@ -95,127 +177,30 @@ function makeSwimlanes(list) {
   return swimlanes;
 }
 
-Actions.getTasks = (projectId) => {
+Actions.selectProject = (workspaceId, projectId) => {
   return (dispatch) => {
-
+    // First dispatch the selection incase we can get the sections from the tree already
     dispatch({
-      type: 'REQUEST_TASKS'
+      type: 'PROJECT_SELECTED',
+      payload: {
+        workspaceId: workspaceId,
+        projectId: projectId
+      }
     });
 
-    AsanaClient
-      .tasks
-      .findByProject(projectId, {
-        limit: 100,
-        opt_fields: 'id,name,completed_at,completed,due_on,projects'
-      })
-      .then((collection) => {
-        dispatch({
-          type: 'SET_SWIMLANES_AND_INITIAL_TASKS',
-          payload: {
-            swimlanes: makeSwimlanes(collection.data),
-            projectId: projectId
-          }
-        });
-      });
+    const project = Project(projectId);
 
-  };
-};
-
-const completeCard = (dispatch, taskId) => {
-  dispatch({ type: 'COMPLETING_TASK', payload: { taskId: taskId } });
-
-  const task = Task(taskId);
-  task.complete(AsanaClient)
-  .then(() => { dispatch({ type: 'COMPLETED_TASK_SUCCESS' }); })
-  .catch(() => { dispatch({ type: 'COMPLETED_TASK_FAILED' }); });
-};
-
-Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
-  return (dispatch) => {
-    if (idToInsertAfter === 'completed') {
-      completeCard(dispatch, idToMove);
-    }
-
-    if (idToMove === idToInsertAfter) {
+    project.getTasks(AsanaClient)
+    .then((tasks) => {
       dispatch({
-        type: 'MOVED_TASK_SELF'
-      });
-    } else {
-      dispatch({
-        type: 'MOVING_TASK',
+        type: 'RECEIVED_SECTIONS_AND_TASKS',
         payload: {
-          idToMove: idToMove,
-          idToInsertAfter: idToInsertAfter
+          workspaceId: workspaceId,
+          projectId: projectId,
+          sections: makeSwimlanes(tasks)
         }
-      });
-
-      let data = {
-        project: projectId
-      }
-
-      if (idToInsertAfter && idToInsertAfter !== 'completed') {
-        // If moved to uncategorised then set to null for top of the list
-        if (idToInsertAfter === 'uncategorised') {
-          idToInsertAfter = null;
-        }
-        data.insert_after = idToInsertAfter
-      }
-
-      AsanaClient
-        .tasks
-        .addProject(idToMove, data)
-        .then(() => {
-          dispatch({
-            type: 'MOVED_TASK'
-          });
-        })
-        .catch(() => {
-          dispatch({
-            type: 'MOVED_TASK_FAILED'
-          });
-        });
-    }
-  };
-};
-
-Actions.createTask = (params) => {
-  return (dispatch) => {
-    let { taskDetails, sectionId, projectId } = params;
-
-    if (sectionId == 'completed') {
-      taskDetails.completed = true;
-    }
-
-    if (sectionId == 'uncategorised' || sectionId == 'completed') {
-      sectionId = null
-    }
-
-    taskDetails.memberships = [{
-      project: projectId,
-      section: sectionId
-    }];
-
-    taskDetails.workspace = params.workspaceId;
-
-    dispatch({ type: 'CREATING_TASK' });
-
-    const task = Task(null);
-    task.create(taskDetails, AsanaClient)
-    .then(() => { dispatch({ type: 'CREATE_TASK_SUCCESS' }); })
-    .catch(() => { dispatch({ type: 'CREATE_TASK_FAILED' }); });
-  };
-};
-
-Actions.updateTask = (params) => {
-  return (dispatch) => {
-    let { taskDetails } = params;
-
-    dispatch({ type: 'UPDATING_TASK' });
-
-    const task = Task(taskDetails.id);
-    task.update(taskDetails, AsanaClient)
-    .then(() => { dispatch({ type: 'UPDATING_TASK_SUCCESS' }); })
-    .catch(() => { dispatch({ type: 'UPDATING_TASK_FAILED' }); });
+      })
+    });
   };
 };
 
