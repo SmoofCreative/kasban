@@ -11,7 +11,7 @@ const mapStateToProps = () => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onProjectSelected: (workspaceId, projectId) => {
-      dispatch(Actions.selectProject(workspaceId, projectId));
+      dispatch(Actions.getTasksForProject(workspaceId, projectId));
       dispatch(UIActions.hideSidebar());
     }
   };

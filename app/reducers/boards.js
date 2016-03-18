@@ -241,7 +241,7 @@ export default function boards(state = initialState, action) {
 
       return addedProjectState;
     }
-    case 'PROJECT_SELECTED': {
+    case 'REQUEST_SECTIONS_AND_TASKS': {
       const { workspaceId, projectId } = action.payload;
       return setCurrentProject(state, workspaceId, projectId);
     }

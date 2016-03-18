@@ -177,11 +177,11 @@ function makeSwimlanes(list) {
   return swimlanes;
 }
 
-Actions.selectProject = (workspaceId, projectId) => {
+Actions.getTasksForProject = (workspaceId, projectId) => {
   return (dispatch) => {
     // First dispatch the selection incase we can get the sections from the tree already
     dispatch({
-      type: 'PROJECT_SELECTED',
+      type: 'REQUEST_SECTIONS_AND_TASKS',
       payload: {
         workspaceId: workspaceId,
         projectId: projectId
