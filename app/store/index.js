@@ -47,7 +47,7 @@ export default function configureStore() {
   let stateTracker = store.getState();
 
   const poller = AsanaEventPoller(store);
-  poller.init(stateTracker.boards.currentProjectId);
+  poller.init(stateTracker.boards.currentWorkspaceId, stateTracker.boards.currentProjectId);
   poller.start();
 
   store.subscribe(() => {
@@ -55,7 +55,7 @@ export default function configureStore() {
     // So refer check against reference state.
     let currentState = store.getState();
     if (currentState.boards.currentProjectId !== stateTracker.boards.currentProjectId ) {
-      poller.changeProject(currentState.boards.currentProjectId);
+      poller.changeProject(currentState.boards.currentWorkspaceId, currentState.boards.currentProjectId);
       // Update the reference state for next time!
       stateTracker = currentState;
     }

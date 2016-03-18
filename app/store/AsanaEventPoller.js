@@ -3,12 +3,14 @@ import Actions from '../actions';
 
 const AsanaEventPoller = (store) => {
 
-  let _projectId,
+  let _workspaceId,
+      _projectId,
       _syncToken,
       _interval,
       _rerun = true;
 
-  const init = (projectId, options = { syncToken: '', interval: 3000 }) => {
+  const init = (workspaceId, projectId, options = { syncToken: '', interval: 3000 }) => {
+    _workspaceId = workspaceId;
     _projectId = projectId;
     _syncToken = options.syncToken;
     _interval = options.interval;
@@ -34,7 +36,7 @@ const AsanaEventPoller = (store) => {
               type: 'RECEIVE_EVENT'
             });
 
-            store.dispatch(Actions.getTasks(_projectId));
+            store.dispatch(Actions.getTasksForProject(_workspaceId, _projectId));
           }
         }
 
@@ -75,10 +77,11 @@ const AsanaEventPoller = (store) => {
     _rerun = false;
   };
 
-  const changeProject = (projectId) => {
+  const changeProject = (workspaceId, projectId) => {
     stop();
 
     setTimeout(() => {
+      _workspaceId = workspaceId;
       _projectId = projectId;
       start();
     }, _interval + 100);
