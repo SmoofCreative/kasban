@@ -21,13 +21,14 @@ const Swimlane = React.createClass({
   },
 
   render() {
-    const { id, name, moveCard } = this.props;
+    const { id, name, moveCard, taskUpdate } = this.props;
 
     return (
       <section className="swimlane">
         <SwimlaneHeader id={id}
                         title={name}
-                        moveCard={moveCard} />
+                        moveCard={moveCard}
+                        taskUpdate={taskUpdate} />
 
         <div className="swimlane__cards">
           { this.renderCards() }
