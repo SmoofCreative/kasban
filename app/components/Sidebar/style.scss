@@ -1,13 +1,69 @@
+$sidebar-width: 300px;
+$header-height: 45px;
+$header-color: #F9FAFB;
+$header-border-color: #DCDCDD;
+$header-padding-left: 15px;
+$font-size: 14px;
+
 .sidebar {
   display: none;
-  position: absolute;
+  position: fixed;
   top: 50px;
   left: 0;
   height: 100%;
-  width: 300px;
+  width: $sidebar-width;
   background-color: #FFFFFF;
 
   &.active {
     display: block;
+    overflow-y: scroll;
+  }
+
+  &__section {
+    position: relative;
+    height: $header-height;
+    overflow-y: hidden;
+    cursor: pointer;
+
+    &.active {
+      height: auto;
+      overflow-y: scroll;
+    }
+
+    &__header {
+      display: block;
+      overflow: hidden;
+      width: 100%;
+      height: $header-height;
+      padding-left: $header-padding-left;
+      line-height: $header-height;
+      background-color: $header-color;
+      border-bottom: 1px solid $header-border-color;
+      font-size: $font-size;
+      font-weight: 600;
+      text-transform: uppercase;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
+  &__projects {
+    padding-left: 15px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    list-style: none;
+  }
+
+  &__project {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: $font-size;
+    font-weight: 100;
+    cursor: pointer;
+
+    &:hover,
+    &.active {
+      color: #DE716A;
+    }
   }
 }
