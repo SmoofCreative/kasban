@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import './style';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 import CurrentProject from '../containers/CurrentProjectContainer';
 import Sidebar from '../containers/SidebarContainer';
 import Actions from '../actions';
@@ -59,6 +60,7 @@ const Main = React.createClass({
           currentProjectId={ this.props.currentProjectId }
           visible={ this.props.ui.showSidebar }
           currentWorkspaceId={ this.props.currentWorkspaceId} />
+        <Footer />
       </div>
     );
   }
