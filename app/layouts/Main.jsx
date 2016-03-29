@@ -40,7 +40,9 @@ const Main = React.createClass({
         return p.id == currentProjectId;
       })[0];
 
-      name = project.name;
+      if (typeof project !== 'undefined') {
+        name = project.name;
+      }
     }
 
     return name;
@@ -57,7 +59,6 @@ const Main = React.createClass({
           currentProjectId={ this.props.currentProjectId }
           visible={ this.props.ui.showSidebar }
           currentWorkspaceId={ this.props.currentWorkspaceId} />
-
       </div>
     );
   }

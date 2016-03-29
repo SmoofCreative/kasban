@@ -1,7 +1,7 @@
 $sidebar-width: 300px;
 $header-height: 45px;
 $header-color: #F9FAFB;
-$header-border-color: #DCDCDD;
+$border-color: #DCDCDD;
 $header-padding-left: 15px;
 $font-size: 14px;
 
@@ -13,6 +13,7 @@ $font-size: 14px;
   height: 100%;
   width: $sidebar-width;
   background-color: #FFFFFF;
+  border-right: 1px solid $border-color;
 
   &.active {
     display: block;
@@ -38,7 +39,7 @@ $font-size: 14px;
       padding-left: $header-padding-left;
       line-height: $header-height;
       background-color: $header-color;
-      border-bottom: 1px solid $header-border-color;
+      border-bottom: 1px solid $border-color;
       font-size: $font-size;
       font-weight: 600;
       text-transform: uppercase;
