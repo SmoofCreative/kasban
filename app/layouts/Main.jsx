@@ -8,6 +8,19 @@ import Sidebar from '../containers/SidebarContainer';
 import Actions from '../actions';
 
 const Main = React.createClass({
+  componentWillMount() {
+    (function(d) {
+      var config = {
+        kitId: 'ctj8mvm',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,'')+' wf-inactive';},config.scriptTimeout),tk=d.createElement('script'),f=false,s=d.getElementsByTagName('script')[0],a;h.className+=' wf-loading';tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;clearTimeout(t);
+
+      try{Typekit.load(config)}catch(e){console.log(e)}};s.parentNode.insertBefore(tk,s)
+    })(document);
+  },
+
   componentDidMount() {
     this.props.dispatch(Actions.checkAuth());
     this.props.dispatch(Actions.getWorkspaces());
@@ -42,7 +55,8 @@ const Main = React.createClass({
         <Sidebar
           workspaces={ this.props.workspaces }
           currentProjectId={ this.props.currentProjectId }
-          visible={ this.props.ui.showSidebar } />
+          visible={ this.props.ui.showSidebar }
+          currentWorkspaceId={ this.props.currentWorkspaceId} />
 
       </div>
     );
