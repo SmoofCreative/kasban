@@ -3,23 +3,29 @@ import classNames from 'classnames';
 
 import './style';
 
-const Sidebar = ({workspaces, currentProjectId, visible, onProjectSelected}) => {
-  const classes = classNames('sidebar', { active: visible });
+import AccordionSection from './accordion-section';
+
+const Sidebar = ({workspaces, currentWorkspaceId, currentProjectId, visible, onProjectSelected}) => {
+  const sidebarClasses = classNames('sidebar', { active: visible });
 
   return (
-    <div className={classes}>
+    <div className={sidebarClasses}>
       {
         workspaces.map((workspace) => {
           return (
-            <div key={workspace.id}>
-              <h4>{workspace.name}</h4>
-              <ul>
+            <AccordionSection
+              key={workspace.id}
+              classname="sidebar__section"
+              title={workspace.name}
+              active={ currentWorkspaceId == workspace.id}>
+              <ul className="sidebar__projects">
                 {
                   workspace.projects.map((project) => {
+                    let projectClasses = classNames('sidebar__project', { active: currentProjectId == project.id });
                     return (
                       <li
                         key={project.id}
-                        className={ currentProjectId == project.id ? 'active' : '' }
+                        className={ projectClasses }
                         onClick={onProjectSelected.bind(this, workspace.id, project.id)}>
                         { project.name }
                       </li>
@@ -27,8 +33,8 @@ const Sidebar = ({workspaces, currentProjectId, visible, onProjectSelected}) => 
                   })
                 }
               </ul>
-            </div>
-          )
+            </AccordionSection>
+          );
         })
       }
     </div>

@@ -61,9 +61,9 @@ const SwimlaneHeader = React.createClass({
 
   renderInput() {
     return (
-      <form className="swimcard__update-form" onSubmit={ this.handleTitleUpdate }>
+      <form className="swimlane__header__update-form" onSubmit={ this.handleTitleUpdate }>
         <input type="text"
-               className="swimcard__update-input"
+               className="swimlane__header__update-input"
                autoFocus
                onBlur={ this.handleTitleUpdateBlur }
                onChange={ this.handleTitleUpdateChange }
