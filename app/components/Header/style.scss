@@ -7,7 +7,7 @@ $header-text-colour: #FFFFFF;
 .header {
   position: fixed;
   width: 100%;
-  height: 50px;
+  height: $header-height;
   background-color: #333B54;
   color: #FFFFFF;
   padding-right: 15px;
