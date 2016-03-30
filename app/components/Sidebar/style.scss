@@ -9,7 +9,7 @@ $header-padding-left: 15px;
 .sidebar {
   display: none;
   position: fixed;
-  top: 50px;
+  top: $header-height;
   left: 0;
   height: 100%;
   width: $sidebar-width;
@@ -45,6 +45,12 @@ $header-padding-left: 15px;
       font-weight: $font-weight-bold;
       white-space: nowrap;
       text-overflow: ellipsis;
+    }
+
+    &:last-of-type {
+      & .sidebar__projects {
+        margin-bottom: $header-height + 10px;
+      }
     }
   }
 
