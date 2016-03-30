@@ -21,7 +21,7 @@ const Header = ({auth, projectName}) => {
         </div>
       </div>
       <div className="pure-u-1-3 header__logo__wrapper">
-        <img className="header__logo" src="logo.png" />
+        <img className="header__logo" src="logo.jpg" />
       </div>
       <div className="pure-u-1-3">
         <div className="pull-right">
