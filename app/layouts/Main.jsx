@@ -24,7 +24,6 @@ const Main = React.createClass({
 
   componentDidMount() {
     this.props.dispatch(Actions.checkAuth());
-    this.props.dispatch(Actions.getWorkspaces());
   },
 
   projectName() {
