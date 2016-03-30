@@ -130,47 +130,48 @@ Actions.updateTask = (params) => {
 function makeSwimlanes(list) {
   let swimlanes = [];
 
-  // First push on the completed swimlane
+  // First push on the completed and uncategorised swimlane
   swimlanes.unshift({
     id: 'completed',
     name: 'Completed:',
     cards: []
   });
 
-  // If the first task we have in not a section then we have uncategorised tasks
-  if (list[0].name.slice(-1) !== ':') {
-    swimlanes.unshift({
-      id: 'uncategorised',
-      name: 'Uncategorised:',
-      cards: []
-    });
-  }
+  swimlanes.unshift({
+    id: 'uncategorised',
+    name: 'Uncategorised:',
+    cards: []
+  });
 
-  // Go through the list of tasks
-  for (let task of list) {
-    // If the task is a new section push it to the front of the array
-    if (task.name.slice(-1) === ':') {
-      swimlanes.unshift({
-        id: task.id,
-        name: task.name,
-        cards: []
-      });
 
-      continue;
+  if (list.length) {
+
+    // Go through the list of tasks
+    for (let task of list) {
+      // If the task is a new section push it to the front of the array
+      if (task.name.slice(-1) === ':') {
+        swimlanes.unshift({
+          id: task.id,
+          name: task.name,
+          cards: []
+        });
+
+        continue;
+      }
+
+      // Completed should be the last lane
+      // If task is not completed then add to current swimlane
+      let laneIndex = task.completed ? (swimlanes.length - 1) : 0;
+      swimlanes[laneIndex].cards.push(task);
     }
 
-    // Completed should be the last lane
-    // If task is not completed then add to current swimlane
-    let laneIndex = task.completed ? (swimlanes.length - 1) : 0;
-    swimlanes[laneIndex].cards.push(task);
-  }
-
-  // As we want the uncategorised swimlane first find and splice it to the front
-  for (let swimlaneIndex in swimlanes) {
-    if (swimlanes[swimlaneIndex].id === 'uncategorised') {
-      let uncategorisedSwimlane = swimlanes.splice(swimlaneIndex, 1)[0];
-      swimlanes.unshift(uncategorisedSwimlane);
-      break;
+    // As we want the uncategorised swimlane first find and splice it to the front
+    for (let swimlaneIndex in swimlanes) {
+      if (swimlanes[swimlaneIndex].id === 'uncategorised') {
+        let uncategorisedSwimlane = swimlanes.splice(swimlaneIndex, 1)[0];
+        swimlanes.unshift(uncategorisedSwimlane);
+        break;
+      }
     }
   }
 
