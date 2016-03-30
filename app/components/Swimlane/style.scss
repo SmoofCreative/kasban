@@ -30,6 +30,8 @@ $swimlane-header-horizontal-padding: 15px;
       padding-bottom: $swimlane-header-horizontal-padding;
       padding-left: $swimlane-header-vertical-padding;
       margin: 0;
+      font-size: $font-size-base;
+      cursor: pointer;
     }
 
     &__update-input {
@@ -40,7 +42,7 @@ $swimlane-header-horizontal-padding: 15px;
       padding-left: $swimlane-header-vertical-padding;
       margin: 0;
       font-weight: $font-weight-bold;
-      font-size: 18px;
+      font-size: $font-size-base;
       border-top-right-radius: $swimlane-border-radius;
       border-top-left-radius: $swimlane-border-radius;
       background-color: #F9FAFB;
