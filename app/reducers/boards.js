@@ -80,6 +80,19 @@ const getProject = (projects, projectId) => {
   return result;
 };
 
+const getSection = (sections, sectionId) => {
+  let result = {};
+
+  result.data = sections.filter((s, index) => {
+    if (s.id == sectionId) {
+      result.index = index;
+      return s;
+    }
+  })[0];
+
+  return result;
+};
+
 const addWorkspace = (state, { id, name }) => {
   // Get the workspace
   const workspace = getWorkspace(state.workspaces, id);
@@ -252,11 +265,13 @@ export default function boards(state = initialState, action) {
       const { task, sectionId } = action.payload;
       const { currentWorkspaceId, currentProjectId } = state;
 
-      const toInsertAfterCoords =  findCardPosition(state, currentWorkspaceId, currentProjectId, sectionId);
+      const toInsertAfterCoords = findCardPosition(state, currentWorkspaceId, currentProjectId, sectionId);
 
+      const workspace = getWorkspace(state.workspaces, currentWorkspaceId).data;
+      const project = getProject(workspace.projects, currentProjectId).data;
+      const section = getSection(project.sections, sectionId).data;
 
-
-      return insertCard(state, toInsertAfterCoords.workspace, toInsertAfterCoords.project, toInsertAfterCoords.section, toInsertAfterCoords.card, task);
+      return insertCard(state, toInsertAfterCoords.workspace, toInsertAfterCoords.project, toInsertAfterCoords.section, section.cards.length, task);
     }
     default: {
       return state;
