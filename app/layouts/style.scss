@@ -16,7 +16,7 @@
   &__text {
     padding-left: 10px;
     font-size: ceil($font-size-base * 1.75);
-    font-weight: 300;
+    font-weight: $font-weight-thin;
 
     @media screen and (max-width: $screen-sm) {
       font-size: ceil($font-size-base * 1.28);

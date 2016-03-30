@@ -4,8 +4,10 @@ import Actions from '../actions';
 import UIActions from '../actions/ui';
 import Sidebar from '../components/Sidebar';
 
-const mapStateToProps = () => {
-  return {}
+const mapStateToProps = (state) => {
+  return {
+    showSidebarLoading: state.ui.showSidebarLoading
+  }
 };
 
 const mapDispatchToProps = (dispatch) => {

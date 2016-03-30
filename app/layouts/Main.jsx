@@ -46,17 +46,31 @@ const Main = React.createClass({
     );
   },
 
-  render() {
+  renderContent() {
+    if (this.props.showProjectLoading) {
+      return (
+        <div className="container">
+          <div className="v-wrap">
+            <div className="v-content">
+              <img className="sidebar__loading" src="loading.gif" />
+              <p>Loading {this.projectName()}</p>
+            </div>
+          </div>
+        </div>
+      );
+    } else if (this.props.currentProjectId === null) {
+      return this.renderSelectAProject();
+    } else {
+      return <CurrentProject />
+    }
+  },
 
+  render() {
     return (
       <div>
         <Header auth={this.props.auth} projectName={this.projectName()} />
         <main className="main">
-          {
-            this.props.currentProjectId === null ?
-            this.renderSelectAProject() :
-            <CurrentProject />
-          }
+          { this.renderContent() }
         </main>
         <Sidebar
           workspaces={ this.props.workspaces }
@@ -76,7 +90,8 @@ const mapStateToProps = (state) => {
     currentProjectId: boards.currentProjectId,
     currentWorkspaceId: boards.currentWorkspaceId,
     auth: state.auth,
-    ui: state.ui
+    ui: state.ui,
+    showProjectLoading: state.ui.showProjectLoading
   }
 };
 
