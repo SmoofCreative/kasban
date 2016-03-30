@@ -1,3 +1,30 @@
-* {
-  font-family: "proxima-nova",sans-serif;
+@import "../scss/variables";
+
+.select-project {
+  padding-left: 40px;
+
+  &__image {
+    @media screen and (max-width: $screen-sm) {
+      width: 75px;
+    }
+
+    @media screen and (max-width: $screen-xs) {
+      width: 40px;
+    }
+  }
+
+  &__text {
+    padding-left: 10px;
+    font-size: ceil($font-size-base * 1.75);
+    font-weight: 300;
+
+    @media screen and (max-width: $screen-sm) {
+      font-size: ceil($font-size-base * 1.28);
+    }
+
+    @media screen and (max-width: $screen-xs) {
+      font-size: ceil($font-size-base * 1.1);
+    }
+  }
+
 }
