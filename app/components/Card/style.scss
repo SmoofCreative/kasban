@@ -30,7 +30,8 @@ $card-date-status: (
     border-bottom: 1px solid #DCDCDD;
 
     &.active {
-      border-bottom: 2px solid #68ACD0;
+      border-width: 0 0 2px 0;
+      border-image: linear-gradient(to right, $gradient-start-color, $gradient-end-color) 100% 1;
     }
   }
 
