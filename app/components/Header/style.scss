@@ -33,16 +33,15 @@ $header-text-colour: #FFFFFF;
 
   &__cta {
     display: inline-block;
-    color: #FFFFFF;
-    background-color: #68ACD0;
-    border-radius: 4px;
+    border-radius: 2px;
     padding-top: 7px;
     padding-right: 15px;
     padding-bottom: 7px;
     padding-left: 15px;
     margin-top: 9px;
-    font-size: 16px;
-    border: none;
-    text-decoration: none;
+    font-size: 14px;
+    background-color: transparent;
+    border: 1px solid #68ACD0;
+    color: #68ACD0;
   }
 }
