@@ -10,12 +10,16 @@ const Project = (projectId = null) => {
 
     return new Promise((resolve, reject) => {
       const data = {
-        limit: 100,
+
         opt_fields: 'id,name,completed_at,completed,due_on,projects'
       }
 
       asana.tasks.findByProject(id, data)
-      .then((collection) => { resolve(collection.data); })
+      .then((collection) => {
+        collection.fetch(1000).then((tasks) => {
+          resolve(tasks);
+        });
+      })
       .catch((err) => { reject(err); });
     });
   };
