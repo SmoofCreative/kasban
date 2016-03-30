@@ -54,13 +54,51 @@ const insertCard = (state, workspaceIndex, projectIndex, sectionIndex, listIndex
   });
 };
 
-const addWorkspace = (state, { id, name }) => {
-  // Check if the workspace already exists
-  const exists = state.workspaces.filter((workspace) => {
-    return workspace.id == id;
-  }).length;
+const getWorkspace = (workspaces, workspaceId) => {
+  let result = {};
 
-  if (!exists) {
+  result.data = workspaces.filter((ws, index) => {
+    if (ws.id == workspaceId) {
+      result.index = index;
+      return ws;
+    }
+  })[0];
+
+  return result;
+};
+
+const getProject = (projects, projectId) => {
+  let result = {};
+
+  result.data = projects.filter((p, index) => {
+    if (p.id == projectId) {
+      result.index = index;
+      return p;
+    }
+  })[0];
+
+  return result;
+};
+
+const getSection = (sections, sectionId) => {
+  let result = {};
+
+  result.data = sections.filter((s, index) => {
+    if (s.id == sectionId) {
+      result.index = index;
+      return s;
+    }
+  })[0];
+
+  return result;
+};
+
+const addWorkspace = (state, { id, name }) => {
+  // Get the workspace
+  const workspace = getWorkspace(state.workspaces, id);
+  let workspaceIndex = workspace.index;
+
+  if (typeof workspaceIndex === 'undefined') {
     // Add the new workspace
     return update(state, {
       workspaces: {
@@ -79,15 +117,12 @@ const addWorkspace = (state, { id, name }) => {
 };
 
 const addProjects = (state, workspaceId, projects) => {
-  let workspaceIndex = null;
+  // Get the workspace
+  const workspace = getWorkspace(state.workspaces, workspaceId);
+  let workspaceIndex = workspace.index;
 
-  const workspaceExists = state.workspaces.filter((workspace, index) => {
-    workspaceIndex = index;
-    return workspace.id == workspaceId;
-  }).length;
-
-  if (workspaceExists) {
-    // Here we're going to blindly overwrite the current projects
+  if (typeof workspaceIndex !== 'undefined') {
+    // Here we're going to overwrite the current projects
     return update(state, {
       workspaces: {
         [workspaceIndex]: {
@@ -115,34 +150,16 @@ const setCurrentProject = (state, workspaceId, projectId) => {
 }
 
 const addSections = (state, workspaceId, projectId, sections) => {
-  const workspaces = state.workspaces;
 
-  let projectIndex = null;
-  let workspaceIndex = null;
-  let exists = false;
+  // Get the workspace
+  const workspace = getWorkspace(state.workspaces, workspaceId);
+  let workspaceIndex = workspace.index;
 
-  // Loop through each workspace until we find the one passed in
-  for(let i = 0; i < workspaces.length; i++) {
-    if (exists) {
-      break;
-    }
+  // Get the project
+  const project = getProject(workspace.data.projects, projectId);
+  let projectIndex = project.index;
 
-    workspaceIndex = i;
-    if (workspaces[workspaceIndex].id == workspaceId) {
-
-      // Loop through each project until we find the one passed in
-      for(let j = 0; j < workspaces[workspaceIndex].projects.length; j++) {
-        projectIndex = j;
-
-        if (workspaces[workspaceIndex].projects[j].id == projectId) {
-          exists = true;
-          break;
-        }
-      }
-    }
-  }
-
-  if (exists) {
+  if (typeof workspaceIndex !== 'undefined' && typeof projectIndex !== 'undefined') {
     return update(state, {
       workspaces: {
         [workspaceIndex]: {
@@ -178,23 +195,15 @@ const findCardPosition = (state, workspaceId, projectId, cardId) => {
   let coords = {};
 
   // Get the workspace
-  const workspace = state.workspaces.filter((ws, index) => {
-    if (ws.id == workspaceId) {
-      coords.workspace = index;
-      return ws;
-    }
-  })[0];
+  const workspace = getWorkspace(state.workspaces, workspaceId);
+  coords.workspace = workspace.index;
 
   // Get the project
-  const project = workspace.projects.filter((p, index) => {
-    if (p.id == projectId) {
-      coords.project = index;
-      return p;
-    }
-  })[0];
+  const project = getProject(workspace.data.projects, projectId);
+  coords.project = project.index;
 
-  for (let sectionIndex = 0; sectionIndex < project.sections.length; sectionIndex++) {
-    let section = project.sections[sectionIndex];
+  for (let sectionIndex = 0; sectionIndex < project.data.sections.length; sectionIndex++) {
+    let section = project.data.sections[sectionIndex];
 
     // Check if the id to move to is a section
     if (section.id === cardId) {
@@ -215,17 +224,6 @@ const findCardPosition = (state, workspaceId, projectId, cardId) => {
   return coords;
 };
 
-const getWorkspace = (workspaces, workspaceId) => {
-  return workspaces.filter((ws) => {
-    return ws.id == workspaceId;
-  })[0];
-};
-
-const getProject = (projects, projectId) => {
-  return projects.filter((p) => {
-    return p.id == projectId;
-  })[0];
-};
 
 export default function boards(state = initialState, action) {
 
@@ -256,8 +254,8 @@ export default function boards(state = initialState, action) {
       const toMoveCoords = findCardPosition(state, currentWorkspaceId, currentProjectId, idToMove);
       const toInsertAfterCoords = findCardPosition(state, currentWorkspaceId, currentProjectId, idToInsertAfter);
 
-      const workspace = getWorkspace(state.workspaces, currentWorkspaceId);
-      const project = getProject(workspace.projects, currentProjectId);
+      const workspace = getWorkspace(state.workspaces, currentWorkspaceId).data;
+      const project = getProject(workspace.projects, currentProjectId).data;
       const card = project.sections[toMoveCoords.section].cards[toMoveCoords.card];
 
       const newState = removeCard(state, toMoveCoords.workspace, toMoveCoords.project, toMoveCoords.section, toMoveCoords.card);
@@ -267,9 +265,13 @@ export default function boards(state = initialState, action) {
       const { task, sectionId } = action.payload;
       const { currentWorkspaceId, currentProjectId } = state;
 
-      const toInsertAfterCoords =  findCardPosition(state, currentWorkspaceId, currentProjectId, sectionId);
+      const toInsertAfterCoords = findCardPosition(state, currentWorkspaceId, currentProjectId, sectionId);
 
-      return insertCard(state, toInsertAfterCoords.workspace, toInsertAfterCoords.project, toInsertAfterCoords.section, toInsertAfterCoords.card, task);
+      const workspace = getWorkspace(state.workspaces, currentWorkspaceId).data;
+      const project = getProject(workspace.projects, currentProjectId).data;
+      const section = getSection(project.sections, sectionId).data;
+
+      return insertCard(state, toInsertAfterCoords.workspace, toInsertAfterCoords.project, toInsertAfterCoords.section, section.cards.length, task);
     }
     default: {
       return state;

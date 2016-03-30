@@ -45,7 +45,7 @@ const Card = React.createClass({
     let today = moment().startOf('day');
     let dueDate = moment(date).startOf('day');
 
-    if (date === null) {
+    if (date === null || typeof date === 'undefined') {
       return 'No due date';
     } else if (today.isSame(dueDate)) {
       return 'Today';
@@ -57,7 +57,7 @@ const Card = React.createClass({
   dueDateClasses(date) {
     let classes = [];
 
-    if (date !== null) {
+    if (date !== null && typeof date !== 'undefined') {
       let today = moment().startOf('day');
       let dueDate = moment(date).startOf('day');
 
