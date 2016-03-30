@@ -1,6 +1,7 @@
 const initialState = {
   showSidebar: false,
-  showSidebarLoading: false
+  showSidebarLoading: false,
+  showProjectLoading: false
 };
 
 export default function auth(state = initialState, action) {
@@ -13,6 +14,12 @@ export default function auth(state = initialState, action) {
     }
     case 'RECEIVED_WORKSPACES_AND_PROJECTS': {
       return Object.assign({}, state, { showSidebarLoading: false });
+    }
+    case 'REQUEST_SECTIONS_AND_TASKS': {
+      return Object.assign({}, state, { showProjectLoading: true });
+    }
+    case 'RECEIVED_SECTIONS_AND_TASKS': {
+      return Object.assign({}, state, { showProjectLoading: false });
     }
     default: {
       return state;
