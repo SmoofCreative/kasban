@@ -35,12 +35,29 @@ const Main = React.createClass({
     return name;
   },
 
+  renderSelectAProject() {
+    return (
+      <div className="select-project">
+        <div className="container">
+          <img className="select-project__image" src="arrow.png" />
+          <span className="select-project__text">Select a project to get started</span>
+        </div>
+      </div>
+    );
+  },
+
   render() {
 
     return (
       <div>
         <Header auth={this.props.auth} projectName={this.projectName()} />
-        <CurrentProject />
+        <main className="main">
+          {
+            this.props.currentProjectId === null ?
+            this.renderSelectAProject() :
+            <CurrentProject />
+          }
+        </main>
         <Sidebar
           workspaces={ this.props.workspaces }
           currentProjectId={ this.props.currentProjectId }
