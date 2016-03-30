@@ -1,15 +1,26 @@
-$font-size: 14px;
+@import "../../scss/variables";
+
+$card-background-color: #FFFFFF;
+$card-horizontal-padding: 5px;
+
+$drag-handle-size: 16px;
+
+$card-date-status: (
+  future: #656872,
+  today: #73C293,
+  late: #D6595A
+);
 
 .swimcard {
   &__card {
     position: relative;
     min-height: 50px;
-    width: 300px;
-    padding-right: 5px;
-    padding-left: 5px;
-    background-color: #FFFFFF;
-    border-right: 1px solid #E6E6E6;
-    border-left: 1px solid #E6E6E6;
+    width: $swimlane-width;
+    padding-right: $card-horizontal-padding;
+    padding-left: $card-horizontal-padding;
+    background-color: $card-background-color;
+    border-right: $swimlane-border;
+    border-left: $swimlane-border;
   }
 
   &__card-border {
@@ -34,16 +45,11 @@ $font-size: 14px;
     display: table-cell;
     height: 100%;
     cursor: move;
-    transition: background-color 200ms ease-in-out;
-
-    &:hover {
-      background-color: darken(#FFFFFF, 10%);
-    }
 
     &__icon {
       fill: #CDCFD2;
-      height: 16px;
-      width: 16px;
+      height: $drag-handle-size;
+      width: $drag-handle-size;
     }
   }
 
@@ -64,7 +70,7 @@ $font-size: 14px;
     padding-right: 0;
     padding-bottom: 0;
     padding-left: 0;
-    font-size: $font-size;
+    font-size: $font-size-base;
 
     &:focus {
       outline: none;
@@ -73,24 +79,24 @@ $font-size: 14px;
 
   &__update-form {
     position: relative;
-    height: 16px;
+    height: $font-size-large;
   }
 
   &__task {
-    font-size: $font-size;
+    font-size: $font-size-base;
     cursor: pointer;
   }
 
   &__date {
-    font-size: $font-size;
-    color: #656872;
+    font-size: $font-size-base;
+    color: map-get($card-date-status, future);
 
     &--today {
-      color: #73C293;
+      color: map-get($card-date-status, today);
     }
 
     &--late {
-      color: #D6595A;
+      color: map-get($card-date-status, late);
     }
   }
 

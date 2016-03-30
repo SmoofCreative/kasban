@@ -1,0 +1,32 @@
+* {
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+p {
+  margin: 0;
+}
+
+body {
+  background-color: #FFFFFF;
+}
+
+.pull-right {
+  float: right;
+}
+
+.v-wrap {
+  display: table;
+  height: 100%;
+  width: 100%;
+}
+
+.v-content {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}

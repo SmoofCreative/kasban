@@ -1,7 +1,9 @@
+@import "../../scss/variables";
+
 .footer {
   margin-left: 15px;
-  font-size: 14px;
-  font-weight: 100;
+  font-size: $font-size-base;
+  font-weight: $font-weight-light;
 
   &__smoof {
     text-transform: uppercase;

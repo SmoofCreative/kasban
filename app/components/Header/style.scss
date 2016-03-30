@@ -1,3 +1,5 @@
+@import "../../scss/variables";
+
 $header-height: 50px;
 $header-bg-colour: #333B54;
 $header-text-colour: #FFFFFF;
@@ -28,20 +30,10 @@ $header-text-colour: #FFFFFF;
 
   &__breadcrumbs {
     height: 100%;
-    font-size: 14px;
+    font-size: $font-size-base;
   }
 
   &__cta {
-    display: inline-block;
-    border-radius: 2px;
-    padding-top: 7px;
-    padding-right: 15px;
-    padding-bottom: 7px;
-    padding-left: 15px;
     margin-top: 9px;
-    font-size: 14px;
-    background-color: transparent;
-    border: 1px solid #68ACD0;
-    color: #68ACD0;
   }
 }

@@ -24,7 +24,7 @@ const Header = ({auth, projectName}) => {
         <img className="header__logo" src="logo.png" />
       </div>
       <div className="pure-u-1-3">
-        <div className=" pull-right">
+        <div className="pull-right">
           {headerButton}
         </div>
       </div>

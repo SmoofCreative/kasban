@@ -1,0 +1,14 @@
+/*
+  For the most part variables should be declared in the local scss file for the component
+  If a value is required across multiple components then add it to this list and import the file
+*/
+
+// Utility
+$font-size-base: 14px;
+$font-size-large: ceil($font-size-base);
+$font-weight-light: 100;
+$font-weight-bold: 600;
+
+// App
+$swimlane-width: 300px;
+$swimlane-border: 1px solid #E6E6E6;
