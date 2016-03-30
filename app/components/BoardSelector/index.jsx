@@ -14,7 +14,7 @@ const BoardSelector = React.createClass({
   render() {
     return(
       <span>
-        <button onClick={ this.handleToggleClick } className="board-selector__toggle pure-button">Projects</button>
+        <button onClick={ this.handleToggleClick } className="board-selector__toggle pure-button cta">Projects</button>
       </span>
     );
   }

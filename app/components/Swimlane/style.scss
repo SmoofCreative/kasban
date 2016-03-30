@@ -1,40 +1,48 @@
+@import "../../scss/variables";
+
+$swimlane-gutter: 5px;
+$swimlane-border-radius: 4px;
+
+$swimlane-header-vertical-padding: 10px;
+$swimlane-header-horizontal-padding: 15px;
+
 .swimlane {
   position: relative;
-  width: 300px;
+  width: $swimlane-width;
   flex: 1;
-  margin-right: 5px;
-  margin-left: 5px;
+  margin-right: $swimlane-gutter;
+  margin-left: $swimlane-gutter;
   overflow-y: scroll;
 
   &__header {
     width: 100%;
-    border-top-right-radius: 4px;
-    border-top-left-radius: 4px;
-    border-top: 1px solid #E6E6E6;
-    border-right: 1px solid #E6E6E6;
+    border-top-right-radius: $swimlane-border-radius;
+    border-top-left-radius: $swimlane-border-radius;
+    border-top: $swimlane-border;
+    border-right: $swimlane-border;
     border-bottom: 1px solid #eee;
-    border-left: 1px solid #E6E6E6;
+    border-left: $swimlane-border;
     background-color: #F9FAFB;
 
     &__text {
-      padding-top: 15px;
-      padding-right: 10px;
-      padding-bottom: 15px;
-      padding-left: 10px;
+      padding-top: $swimlane-header-horizontal-padding;
+      padding-right: $swimlane-header-vertical-padding;
+      padding-bottom: $swimlane-header-horizontal-padding;
+      padding-left: $swimlane-header-vertical-padding;
       margin: 0;
     }
 
     &__update-input {
       width: 100%;
-      padding-top: 15px;
-      padding-right: 10px;
-      padding-bottom: 15px;
-      padding-left: 10px;
+      padding-top: $swimlane-header-horizontal-padding;
+      padding-right: $swimlane-header-vertical-padding;
+      padding-bottom: $swimlane-header-horizontal-padding;
+      padding-left: $swimlane-header-vertical-padding;
       margin: 0;
-      font-weight: 700;
+      font-weight: $font-weight-bold;
       font-size: 18px;
-      border-top-right-radius: 4px;
-      border-top-left-radius: 4px;
+      border-top-right-radius: $swimlane-border-radius;
+      border-top-left-radius: $swimlane-border-radius;
       background-color: #F9FAFB;
       outline: none;
       border: 0;
@@ -42,18 +50,18 @@
   }
 
   &__footer {
-    width: 300px;
+    width: $swimlane-width;
     min-height: 50px;
-    padding-top: 15px;
+    padding-top: $swimlane-header-horizontal-padding;
     padding-right: 5px;
     padding-left: 10px;
-    font-size: 14px;
+    font-size: $font-size-base;
     background-color: #FFFFFF;
-    border-bottom-right-radius: 4px;
-    border-bottom-left-radius: 4px;
-    border-right: 1px solid #E6E6E6;
-    border-bottom: 1px solid #E6E6E6;
-    border-left: 1px solid #E6E6E6;
+    border-bottom-right-radius: $swimlane-border-radius;
+    border-bottom-left-radius: $swimlane-border-radius;
+    border-right: $swimlane-border;
+    border-bottom: $swimlane-border;
+    border-left: $swimlane-border;
     color: #7A7C85;
     cursor: pointer;
   }

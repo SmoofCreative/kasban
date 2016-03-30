@@ -1,9 +1,10 @@
+@import "../../scss/variables";
+
 $sidebar-width: 300px;
-$header-height: 45px;
-$header-color: #F9FAFB;
-$border-color: #DCDCDD;
+$section-header-height: 45px;
+$section-header-color: #F9FAFB;
+$section-header-border-color: #DCDCDD;
 $header-padding-left: 15px;
-$font-size: 14px;
 
 .sidebar {
   display: none;
@@ -13,7 +14,7 @@ $font-size: 14px;
   height: 100%;
   width: $sidebar-width;
   background-color: #FFFFFF;
-  border-right: 1px solid $border-color;
+  border-right: 1px solid $section-header-border-color;
 
   &.active {
     display: block;
@@ -22,7 +23,7 @@ $font-size: 14px;
 
   &__section {
     position: relative;
-    height: $header-height;
+    height: $section-header-height;
     overflow-y: hidden;
     cursor: pointer;
 
@@ -35,13 +36,13 @@ $font-size: 14px;
       display: block;
       overflow: hidden;
       width: 100%;
-      height: $header-height;
+      height: $section-header-height;
       padding-left: $header-padding-left;
-      line-height: $header-height;
-      background-color: $header-color;
-      border-bottom: 1px solid $border-color;
-      font-size: $font-size;
-      font-weight: 600;
+      line-height: $section-header-height;
+      background-color: $section-header-color;
+      border-bottom: 1px solid $section-header-border-color;
+      font-size: $font-size-base;
+      font-weight: $font-weight-bold;
       text-transform: uppercase;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -58,8 +59,8 @@ $font-size: 14px;
   &__project {
     padding-top: 5px;
     padding-bottom: 5px;
-    font-size: $font-size;
-    font-weight: 100;
+    font-size: $font-size-base;
+    font-weight: $font-weight-light;
     cursor: pointer;
 
     &:hover,
