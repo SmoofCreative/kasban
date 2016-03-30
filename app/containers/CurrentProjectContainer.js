@@ -35,8 +35,6 @@ const mapStateToProps = (state) => {
     }
   }
 
-  // console.log(currentProject);
-
   return {
     workspaces: boards.workspaces,
     sections: currentProject.sections || [],
