@@ -32,15 +32,24 @@ const renderWorkspaces = ({ workspaces, currentWorkspaceId, currentProjectId, on
       </AccordionSection>
     );
   })
-}
+};
+
+const handleBackdropClick = (onBackdropClick, e) => {
+  e.stopPropagation();
+  onBackdropClick();
+};
 
 const Sidebar = (params) => {
-  const { visible, showSidebarLoading } = params;
+  const { visible, showSidebarLoading, onBackdropClick } = params;
   const sidebarClasses = classNames('sidebar', { active: visible });
+  const backdropClasses = classNames('sidebar__backdrop', { active: visible });
 
   return (
-    <div className={sidebarClasses}>
-      { showSidebarLoading ? <Loading text="Fetching workspaces" /> : renderWorkspaces(params) }
+    <div>
+      <div className={backdropClasses} onClick={handleBackdropClick.bind(this, onBackdropClick)}></div>
+      <div className={sidebarClasses}>
+        { showSidebarLoading ? <Loading text="Fetching workspaces" /> : renderWorkspaces(params) }
+      </div>
     </div>
   );
 };
