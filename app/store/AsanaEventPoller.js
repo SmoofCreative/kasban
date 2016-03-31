@@ -36,7 +36,7 @@ const AsanaEventPoller = (store) => {
               type: 'RECEIVE_EVENT'
             });
 
-            store.dispatch(Actions.getTasksForProject(_workspaceId, _projectId));
+            store.dispatch(Actions.updateTasksForProject(_workspaceId, _projectId));
           }
         }
 

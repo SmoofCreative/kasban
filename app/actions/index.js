@@ -178,7 +178,22 @@ function makeSwimlanes(list) {
   return swimlanes;
 }
 
-Actions.getTasksForProject = (workspaceId, projectId) => {
+const getTasksForProject = (dispatch, workspaceId, projectId) => {
+  const project = Project(projectId);
+  project.getTasks(AsanaClient)
+  .then((tasks) => {
+    dispatch({
+      type: 'RECEIVED_SECTIONS_AND_TASKS',
+      payload: {
+        workspaceId: workspaceId,
+        projectId: projectId,
+        sections: makeSwimlanes(tasks)
+      }
+    })
+  });
+};
+
+Actions.getInitialTasksForProject = (workspaceId, projectId) => {
   return (dispatch) => {
     // First dispatch the selection incase we can get the sections from the tree already
     dispatch({
@@ -189,21 +204,16 @@ Actions.getTasksForProject = (workspaceId, projectId) => {
       }
     });
 
-    const project = Project(projectId);
-
-    project.getTasks(AsanaClient)
-    .then((tasks) => {
-      dispatch({
-        type: 'RECEIVED_SECTIONS_AND_TASKS',
-        payload: {
-          workspaceId: workspaceId,
-          projectId: projectId,
-          sections: makeSwimlanes(tasks)
-        }
-      })
-    });
+    getTasksForProject(dispatch, workspaceId, projectId);
   };
 };
+
+Actions.updateTasksForProject = (workspaceId, projectId) => {
+  return (dispatch) => {
+    dispatch({ type: 'UPDATE_SECTIONS_AND_TASKS' });
+    getTasksForProject(dispatch, workspaceId, projectId);
+  };
+}
 
 Actions.checkAuth = () => {
   return (dispatch) => {
