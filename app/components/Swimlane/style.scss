@@ -56,6 +56,12 @@ $swimlane-header-horizontal-padding: 15px;
   &__cards {
     overflow-y: scroll;
     height: calc(100vh - (#{$swimlane-header-height} + #{$swimlane-minus-height}));
+
+    // Hide scoll bars
+    // blogs.msdn.microsoft.com/kurlak/2013/11/03/hiding-vertical-scrollbars-with-pure-css-in-chrome-ie-6-firefox-opera-and-safari/
+    -ms-overflow-style: none;
+    overflow: -moz-scrollbars-none;
+    &::-webkit-scrollbar { width: 0 !important }
   }
 
   &__footer {
