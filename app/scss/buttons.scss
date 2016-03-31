@@ -1,8 +1,10 @@
+$cta-colour: #0EB0D1;
+
 .cta {
   display: inline-block;
   background-color: transparent;
-  border: 1px solid #0eb0d1;
-  color: #0eb0d1;
+  border: 1px solid $cta-colour;
+  color: $cta-colour;
   font-size: $font-size-base;
   padding-top: 7px;
   padding-right: 8px;
