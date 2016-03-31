@@ -5,11 +5,17 @@ import Auth from '../Auth';
 import BoardSelector from '../BoardSelector';
 import { asanaUrl } from '../../utils'
 
-const Header = ({auth, projectName}) => {
+const Header = ({auth, projectName, projectId}) => {
 
   let headerButton = <Auth />;
   if (auth.isAsanaAuthed) {
-    headerButton = <a className="header__cta cta" href={asanaUrl()} target="_blank">Open asana</a>;
+    let url = asanaUrl();
+
+    if (projectId !== null) {
+      url = url + `0/${projectId}`;
+    }
+
+    headerButton = <a className="header__cta cta" href={url} target="_blank">Open asana</a>;
   }
 
   return (

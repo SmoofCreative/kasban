@@ -66,7 +66,7 @@ const Main = React.createClass({
   render() {
     return (
       <div>
-        <Header auth={this.props.auth} projectName={this.projectName()} />
+        <Header auth={this.props.auth} projectName={this.projectName()} projectId={this.props.currentProjectId} />
         <main className="main">
           { this.renderContent() }
         </main>
