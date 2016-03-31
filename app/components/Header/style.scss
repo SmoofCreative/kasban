@@ -1,14 +1,14 @@
 @import "../../scss/variables";
 
 $header-height: 50px;
-$header-bg-colour: #333B54;
+$header-bg-colour: #2D3B54;
 $header-text-colour: #FFFFFF;
 
 .header {
   position: fixed;
   width: 100%;
   height: $header-height;
-  background-color: #333B54;
+  background-color: #2D3B54;
   color: #FFFFFF;
   padding-right: 8px;
   padding-left: 8px;
