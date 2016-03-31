@@ -13,7 +13,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onProjectSelected: (workspaceId, projectId) => {
-      dispatch(Actions.getTasksForProject(workspaceId, projectId));
+      dispatch(Actions.getInitialTasksForProject(workspaceId, projectId));
       dispatch(UIActions.hideSidebar());
     }
   };
