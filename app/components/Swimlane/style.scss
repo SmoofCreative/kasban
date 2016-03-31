@@ -3,6 +3,7 @@
 $swimlane-gutter: 5px;
 $swimlane-border-radius: 4px;
 
+$swimlane-header-height: 50px;
 $swimlane-header-vertical-padding: 10px;
 $swimlane-header-horizontal-padding: 15px;
 
@@ -16,6 +17,7 @@ $swimlane-header-horizontal-padding: 15px;
 
   &__header {
     width: 100%;
+    height: $swimlane-header-height;
     border-top-right-radius: $swimlane-border-radius;
     border-top-left-radius: $swimlane-border-radius;
     border-top: $swimlane-border;
@@ -49,6 +51,11 @@ $swimlane-header-horizontal-padding: 15px;
       outline: none;
       border: 0;
     }
+  }
+
+  &__cards {
+    overflow-y: scroll;
+    height: calc(100vh - (#{$swimlane-header-height} + #{$swimlane-minus-height}));
   }
 
   &__footer {
