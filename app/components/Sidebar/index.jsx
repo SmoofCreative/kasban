@@ -4,16 +4,7 @@ import classNames from 'classnames';
 import './style';
 
 import AccordionSection from './accordion-section';
-
-const renderLoading = () => {
-  return (
-    <div className="v-wrap">
-      <div className="v-content">
-        <img className="sidebar__loading" src="loading.gif" />
-      </div>
-    </div>
-  )
-}
+import Loading from '../Loading';
 
 const renderWorkspaces = ({ workspaces, currentWorkspaceId, currentProjectId, onProjectSelected }) => {
   return workspaces.map((workspace) => {
@@ -49,7 +40,7 @@ const Sidebar = (params) => {
 
   return (
     <div className={sidebarClasses}>
-      { showSidebarLoading ? renderLoading() : renderWorkspaces(params) }
+      { showSidebarLoading ? <Loading text="Fetching workspaces" /> : renderWorkspaces(params) }
     </div>
   );
 };

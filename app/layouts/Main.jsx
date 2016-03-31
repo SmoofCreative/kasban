@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import './style';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Loading from '../components/Loading';
 import CurrentProject from '../containers/CurrentProjectContainer';
 import Sidebar from '../containers/SidebarContainer';
 import Actions from '../actions';
@@ -48,14 +49,11 @@ const Main = React.createClass({
 
   renderContent() {
     if (this.props.showProjectLoading) {
+      let loadingText = `Loading ${this.projectName()}`;
+
       return (
         <div className="container">
-          <div className="v-wrap">
-            <div className="v-content">
-              <img className="sidebar__loading" src="loading.gif" />
-              <p>Loading {this.projectName()}</p>
-            </div>
-          </div>
+          <Loading text={loadingText}/>
         </div>
       );
     } else if (this.props.currentProjectId === null) {
@@ -82,6 +80,7 @@ const Main = React.createClass({
     );
   }
 });
+
 const mapStateToProps = (state) => {
   const boards = state.boards;
 

@@ -1,0 +1,15 @@
+@import "../../scss/variables";
+
+$image-width: 35px;
+$image-vertial-padding: 10px;
+
+.loading {
+  &__text {
+    font-size: $font-size-base;
+    margin-top: $image-vertial-padding;
+  }
+
+  &__image {
+    width: $image-width;
+  }
+}
