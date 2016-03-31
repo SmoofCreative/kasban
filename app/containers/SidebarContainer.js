@@ -15,6 +15,9 @@ const mapDispatchToProps = (dispatch) => {
     onProjectSelected: (workspaceId, projectId) => {
       dispatch(Actions.getInitialTasksForProject(workspaceId, projectId));
       dispatch(UIActions.hideSidebar());
+    },
+    onBackdropClick: () => {
+      dispatch(UIActions.hideSidebar());
     }
   };
 };
