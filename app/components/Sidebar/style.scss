@@ -1,10 +1,18 @@
 @import "../../scss/variables";
 
 $sidebar-width: 300px;
+
 $section-header-height: 45px;
 $section-header-color: #F9FAFB;
 $section-header-border-color: #DCDCDD;
-$header-padding-left: 15px;
+$section-header-padding-left: 15px;
+
+$sidebar-tip-colour: #FFFFFF;
+$sidebar-tip-height: 5px;
+$sidebar-tip-width: 10px;
+$sidebar-tip-vertical-border: $sidebar-tip-width solid transparent;
+$sidebar-tip-horizontal-border: $sidebar-tip-height solid $sidebar-tip-colour;
+
 
 .sidebar {
   display: none;
@@ -16,8 +24,22 @@ $header-padding-left: 15px;
   background-color: #FFFFFF;
   border-right: 1px solid $section-header-border-color;
 
+  &:after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 30px;
+    border-left: $sidebar-tip-vertical-border;
+    border-right: $sidebar-tip-vertical-border;
+    border-bottom: $sidebar-tip-horizontal-border;
+  }
+
   &.active {
     display: block;
+  }
+
+  &__sections {
+    height: 100%;
     overflow-y: scroll;
   }
 
@@ -37,7 +59,7 @@ $header-padding-left: 15px;
       overflow: hidden;
       width: 100%;
       height: $section-header-height;
-      padding-left: $header-padding-left;
+      padding-left: $section-header-padding-left;
       line-height: $section-header-height;
       background-color: $section-header-color;
       border-bottom: 1px solid $section-header-border-color;

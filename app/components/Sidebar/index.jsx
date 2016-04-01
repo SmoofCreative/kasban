@@ -48,7 +48,9 @@ const Sidebar = (params) => {
     <div>
       <div className={backdropClasses} onClick={handleBackdropClick.bind(this, onBackdropClick)}></div>
       <div className={sidebarClasses}>
-        { showSidebarLoading ? <Loading text="Fetching workspaces" /> : renderWorkspaces(params) }
+        <div className="sidebar__sections">
+          { showSidebarLoading ? <Loading text="Fetching workspaces" /> : renderWorkspaces(params) }
+        </div>
       </div>
     </div>
   );
