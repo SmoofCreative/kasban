@@ -20,3 +20,8 @@ $cta-hover-colour: #12CFFD;
     border-color: $cta-hover-colour;
   }
 }
+
+.cta:hover {
+  color: #12CFFD;
+  border: 1px solid #12CFFD;
+}
