@@ -6,8 +6,8 @@ import './style';
 
 const BoardSelector = React.createClass({
   handleToggleClick() {
-    const { dispatch, ui } = this.props;
-    let sidebarActive = ui.showSidebar;
+    const { dispatch, showSidebar } = this.props;
+    let sidebarActive = showSidebar;
     dispatch(UIActions.setSidebarVisibilty(!sidebarActive));
   },
 
@@ -21,7 +21,7 @@ const BoardSelector = React.createClass({
 });
 
 const mapStateToProps = (state) => ({
-  ui: state.ui
+  showSidebar: state.ui.showSidebar
 });
 
 export default connect(mapStateToProps)(BoardSelector);
