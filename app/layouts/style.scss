@@ -1,29 +1,14 @@
 @import "../scss/variables";
 
 .select-project {
-  padding-left: 40px;
-
-  &__image {
-    @media screen and (max-width: $screen-sm) {
-      width: 75px;
-    }
-
-    @media screen and (max-width: $screen-xs) {
-      width: 40px;
-    }
-  }
-
   &__text {
-    padding-left: 10px;
-    font-size: ceil($font-size-base * 1.75);
-    font-weight: $font-weight-thin;
-
-    @media screen and (max-width: $screen-sm) {
-      font-size: ceil($font-size-base * 1.28);
-    }
+    color: #555555;
+    padding-bottom: 30px;
+    font-size: ceil($font-size-base * 1.5);
+    font-weight: $font-weight-light;
 
     @media screen and (max-width: $screen-xs) {
-      font-size: ceil($font-size-base * 1.1);
+      font-size: ceil($font-size-base * 1.28);
     }
   }
 

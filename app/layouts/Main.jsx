@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import './style';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import BoardSelector from '../components/BoardSelector';
 import Loading from '../components/Loading';
 import CurrentProject from '../containers/CurrentProjectContainer';
 import Sidebar from '../containers/SidebarContainer';
@@ -40,8 +41,12 @@ const Main = React.createClass({
     return (
       <div className="select-project">
         <div className="container">
-          <img className="select-project__image" src="arrow.png" />
-          <span className="select-project__text">Select a project to get started</span>
+          <div className="v-wrap">
+            <div className="v-content">
+              <div className="select-project__text">Select a project to get started</div>
+              <BoardSelector />
+            </div>
+          </div>
         </div>
       </div>
     );

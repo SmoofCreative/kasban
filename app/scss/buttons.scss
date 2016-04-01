@@ -18,5 +18,6 @@ $cta-hover-colour: #12CFFD;
   &:focus {
     color: $cta-hover-colour;
     border-color: $cta-hover-colour;
+    background-image: none;
   }
 }
