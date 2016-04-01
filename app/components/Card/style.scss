@@ -45,6 +45,7 @@ $card-date-status: (
   &__drag-handle {
     display: table-cell;
     height: 100%;
+    padding-top: 5px;
     cursor: move;
 
     &__icon {

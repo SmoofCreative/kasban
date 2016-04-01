@@ -82,25 +82,18 @@ const Card = React.createClass({
 
   renderDragHandle() {
     return (
-      <div className="pure-u-1-8 swimcard__drag-handle">
-        <div className="v-wrap">
-          <div className="v-content">
-            <svg className="swimcard__drag-handle__icon" viewBox="0 0 32 32" title="drag handle">
-              <rect x="6" y="2" width="4" height="4"></rect>
-              <rect x="14" y="2" width="4" height="4"></rect>
-              <rect x="6" y="10" width="4" height="4"></rect>
-              <rect x="14" y="10" width="4" height="4"></rect>
-              <rect x="6" y="18" width="4" height="4"></rect>
-              <rect x="14" y="18" width="4" height="4"></rect>
-              <rect x="6" y="26" width="4" height="4"></rect>
-              <rect x="14" y="26" width="4" height="4"></rect>
-              <rect x="22" y="2" width="4" height="4"></rect>
-              <rect x="22" y="10" width="4" height="4"></rect>
-              <rect x="22" y="18" width="4" height="4"></rect>
-              <rect x="22" y="26" width="4" height="4"></rect>
-            </svg>
-          </div>
-        </div>
+      <div className="pure-u-1-24 swimcard__drag-handle">
+        <svg className="swimcard__drag-handle__icon" viewBox="0 0 32 32" title="drag handle">
+          <rect x="6" y="2" width="4" height="4"></rect>
+          <rect x="14" y="2" width="4" height="4"></rect>
+          <rect x="6" y="10" width="4" height="4"></rect>
+          <rect x="14" y="10" width="4" height="4"></rect>
+          <rect x="6" y="18" width="4" height="4"></rect>
+          <rect x="14" y="18" width="4" height="4"></rect>
+          <rect x="22" y="2" width="4" height="4"></rect>
+          <rect x="22" y="10" width="4" height="4"></rect>
+          <rect x="22" y="18" width="4" height="4"></rect>
+        </svg>
       </div>
     );
   },
@@ -168,7 +161,7 @@ const Card = React.createClass({
     return connectDragPreview(connectDropTarget(
       <article className="swimcard__card pure-g">
         <div className={classes}>
-          <div className="pure-u-7-8 swimcard__card-content">
+          <div className="pure-u-23-24 swimcard__card-content">
             <div onClick={ this.handleTaskNameClick }>
               {
                 this.state.isUpdatingName ?
