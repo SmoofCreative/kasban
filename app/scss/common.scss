@@ -11,9 +11,17 @@ p {
   margin: 0;
 }
 
+html,
+button,
+input,
+select,
+textarea,
+.pure-g [class *= "pure-u"] {
+  font-family: "proxima-nova",sans-serif;
+}
+
 body {
   background-color: #FFFFFF;
-  font-family: "proxima-nova",sans-serif;
 }
 
 .pull-right {
