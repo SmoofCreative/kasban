@@ -118,7 +118,12 @@ Actions.updateTask = (params) => {
   return (dispatch) => {
     let { taskDetails } = params;
 
-    dispatch({ type: 'UPDATING_TASK' });
+    dispatch({
+      type: 'UPDATING_TASK',
+      payload: {
+        task: taskDetails
+      }
+    });
 
     const task = Task(taskDetails.id);
     task.update(taskDetails, AsanaClient)
