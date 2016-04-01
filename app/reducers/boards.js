@@ -194,6 +194,8 @@ const findCardPosition = (state, workspaceId, projectId, cardId) => {
 
   let coords = {};
 
+  coords.isSection = false;
+
   // Get the workspace
   const workspace = getWorkspace(state.workspaces, workspaceId);
   coords.workspace = workspace.index;
@@ -209,6 +211,7 @@ const findCardPosition = (state, workspaceId, projectId, cardId) => {
     if (section.id === cardId) {
       coords.section = sectionIndex;
       coords.card = 0;
+      coords.isSection = true;
     }
 
     for (let listIndex = 0; listIndex < section.cards.length; listIndex++) {
@@ -251,14 +254,19 @@ export default function boards(state = initialState, action) {
       const { idToMove, idToInsertAfter } = action.payload;
       const { currentWorkspaceId, currentProjectId } = state;
 
+      // First find the exisitng card, store a version of it and remove it from the list
       const toMoveCoords = findCardPosition(state, currentWorkspaceId, currentProjectId, idToMove);
-      const toInsertAfterCoords = findCardPosition(state, currentWorkspaceId, currentProjectId, idToInsertAfter);
 
       const workspace = getWorkspace(state.workspaces, currentWorkspaceId).data;
       const project = getProject(workspace.projects, currentProjectId).data;
       const card = project.sections[toMoveCoords.section].cards[toMoveCoords.card];
-
       const newState = removeCard(state, toMoveCoords.workspace, toMoveCoords.project, toMoveCoords.section, toMoveCoords.card);
+
+      // Now find the card to insert it after and insert our stored version
+      const toInsertAfterCoords = findCardPosition(newState, currentWorkspaceId, currentProjectId, idToInsertAfter);
+
+      toInsertAfterCoords.card = toInsertAfterCoords.isSection === true ? 0 : toInsertAfterCoords.card + 1;
+
       return insertCard(newState, toInsertAfterCoords.workspace, toInsertAfterCoords.project, toInsertAfterCoords.section, toInsertAfterCoords.card, card);
     }
     case 'CREATING_TASK': {
