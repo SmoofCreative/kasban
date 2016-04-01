@@ -23,15 +23,20 @@ $header-text-colour: #FFFFFF;
     }
   }
 
-  &__current-project {
-    padding-left: 15px;
-    line-height: $header-height + 2px;
-  }
-
   &__breadcrumbs {
     height: 100%;
+    line-height: $header-height + 2px;
     font-size: $font-size-base;
   }
+
+  &__current-project {
+    padding-left: 15px;
+
+    @media screen and (max-width: $screen-md) {
+      display: none;
+    }
+  }
+
 
   &__cta {
     margin-top: 9px;
