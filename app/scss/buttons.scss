@@ -15,9 +15,11 @@ $cta-hover-colour: #12CFFD;
   border-radius: 2px;
 
   &:hover,
-  &:focus {
+  &:focus,
+  &:active {
     color: $cta-hover-colour;
     border-color: $cta-hover-colour;
     background-image: none;
+    box-shadow: none;
   }
 }
