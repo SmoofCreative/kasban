@@ -27,6 +27,7 @@ $swimlane-header-horizontal-padding: 15px;
     background-color: #F9FAFB;
 
     &__text {
+      width: $swimlane-width - 1px;
       padding-top: $swimlane-header-horizontal-padding;
       padding-right: $swimlane-header-vertical-padding;
       padding-bottom: $swimlane-header-horizontal-padding;
@@ -34,6 +35,9 @@ $swimlane-header-horizontal-padding: 15px;
       margin: 0;
       font-size: $font-size-base;
       cursor: pointer;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow-x: hidden;
     }
 
     &__update-input {

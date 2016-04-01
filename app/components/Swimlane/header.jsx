@@ -18,10 +18,7 @@ const SwimlaneHeader = React.createClass({
   },
 
   getInitialState() {
-    return {
-      isUpdatingTitle: false,
-      title: this.props.title
-    };
+    return { isUpdatingTitle: false };
   },
 
   handleTitleNameClick() {
@@ -33,24 +30,17 @@ const SwimlaneHeader = React.createClass({
     e.preventDefault();
     let task = {
       id: this.props.id,
-      name: this.state.title
+      name: this.refs.sectionInput.value
     };
 
     // Reset the UI, we'll change the task name in the stores
-    this.setState({ isUpdatingTitle: false, title: this.props.title });
+    this.setState({ isUpdatingTitle: false });
     this.props.taskUpdate(task);
-  },
-
-  handleTitleUpdateChange(e) {
-    this.setState({ title: e.target.value });
   },
 
   handleTitleUpdateBlur() {
     // Remove the input and reset the name
-    this.setState({
-      isUpdatingTitle: false,
-      title: this.props.title
-    });
+    this.setState({ isUpdatingTitle: false });
   },
 
   renderTitle(title) {
@@ -65,9 +55,9 @@ const SwimlaneHeader = React.createClass({
         <input type="text"
                className="swimlane__header__update-input"
                autoFocus
+               ref="sectionInput"
                onBlur={ this.handleTitleUpdateBlur }
-               onChange={ this.handleTitleUpdateChange }
-               value={ this.state.title } />
+               defaultValue={ this.props.title} />
       </form>
     );
   },

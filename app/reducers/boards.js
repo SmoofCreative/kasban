@@ -54,6 +54,48 @@ const insertCard = (state, workspaceIndex, projectIndex, sectionIndex, listIndex
   });
 };
 
+const updateCard = (state, workspaceIndex, projectIndex, sectionIndex, listIndex, card) => {
+  return update(state, {
+    workspaces: {
+      [workspaceIndex]: {
+        projects: {
+          [projectIndex]: {
+            sections: {
+              [sectionIndex]: {
+                cards: {
+                  [listIndex]: {
+                    $set: card
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  });
+};
+
+const updateSectionName = (state, workspaceIndex, projectIndex, sectionIndex, name) => {
+  return update(state, {
+    workspaces: {
+      [workspaceIndex]: {
+        projects: {
+          [projectIndex]: {
+            sections: {
+              [sectionIndex]: {
+                name: {
+                  $set: name
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  });
+};
+
 const getWorkspace = (workspaces, workspaceId) => {
   let result = {};
 
@@ -280,6 +322,19 @@ export default function boards(state = initialState, action) {
       const section = getSection(project.sections, sectionId).data;
 
       return insertCard(state, toInsertAfterCoords.workspace, toInsertAfterCoords.project, toInsertAfterCoords.section, section.cards.length, task);
+    }
+    case 'UPDATING_TASK': {
+      const { task } = action.payload;
+      const { currentWorkspaceId, currentProjectId } = state;
+
+      // Get the location of the task to update
+      const taskCoords = findCardPosition(state, currentWorkspaceId, currentProjectId, task.id);
+
+      if (taskCoords.isSection) {
+        return updateSectionName(state, taskCoords.workspace, taskCoords.project, taskCoords.section, task.name)
+      } else {
+        return updateCard(state, taskCoords.workspace, taskCoords.project, taskCoords.section, taskCoords.card, task);
+      }
     }
     default: {
       return state;

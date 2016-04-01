@@ -35,10 +35,7 @@ const targetCollect = (connect, monitor) => ({
 
 const Card = React.createClass({
   getInitialState() {
-    return {
-      isUpdatingName: false,
-      taskName: this.props.card.name
-    };
+    return { isUpdatingName: false };
   },
 
   formatDate(date) {
@@ -107,24 +104,17 @@ const Card = React.createClass({
     e.preventDefault();
     let task = {
       id: this.props.card.id,
-      name: this.state.taskName
+      name: this.refs.cardName.value
     };
 
     // Reset the UI, we'll change the task name in the stores
-    this.setState({ isUpdatingName: false, taskName: '' });
+    this.setState({ isUpdatingName: false });
     this.props.taskUpdate(task);
-  },
-
-  handleTaskUpdateChange(e) {
-    this.setState({ taskName: e.target.value });
   },
 
   handleTaskUpdateBlur() {
     // Remove the input and reset the name
-    this.setState({
-      isUpdatingName: false,
-      taskName: this.props.card.name
-    });
+    this.setState({ isUpdatingName: false });
   },
 
   renderName(name) {
@@ -140,8 +130,8 @@ const Card = React.createClass({
                className="swimcard__update-input"
                autoFocus
                onBlur={ this.handleTaskUpdateBlur }
-               onChange={ this.handleTaskUpdateChange }
-               value={ this.state.taskName } />
+               ref="cardName"
+               defaultValue={ this.props.card.name } />
       </form>
     );
   },
