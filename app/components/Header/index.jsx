@@ -20,16 +20,16 @@ const Header = ({auth, projectName, projectId}) => {
 
   return (
     <header className="header">
-      <div className="pure-u-1-3">
+      <div className="pure-u-8-24">
         <div className="header__breadcrumbs">
           <BoardSelector />
           <span className="header__current-project">{projectName}</span>
         </div>
       </div>
-      <div className="pure-u-1-3 header__logo__wrapper">
+      <div className="pure-u-8-24 header__logo__wrapper">
         <img className="header__logo" src="logo.jpg" />
       </div>
-      <div className="pure-u-1-3">
+      <div className="pure-u-8-24">
         <div className="pull-right">
           {headerButton}
         </div>
