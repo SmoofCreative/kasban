@@ -1,4 +1,5 @@
 $cta-colour: #0EB0D1;
+$cta-hover-colour: #12CFFD;
 
 .cta {
   display: inline-block;
@@ -12,4 +13,10 @@ $cta-colour: #0EB0D1;
   padding-left: 8px;
   text-decoration: none;
   border-radius: 2px;
+
+  &:hover,
+  &:focus {
+    color: $cta-hover-colour;
+    border-color: $cta-hover-colour;
+  }
 }
