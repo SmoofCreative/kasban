@@ -1,7 +1,10 @@
 @import "../../scss/variables";
 
 $card-background-color: #FFFFFF;
-$card-horizontal-padding: 5px;
+$card-horizontal-padding: 2px;
+$card-top-padding: 15px;
+$card-bottom-padding: 10px;
+$card-text-left-padding: 2px;
 
 $drag-handle-size: 16px;
 
@@ -38,9 +41,9 @@ $card-date-status: (
 
   &__card-content {
     display: table-cell;
-    padding-top: 15px;
-    padding-bottom: 10px;
-    padding-left: 10px;
+    padding-top: $card-top-padding;
+    padding-bottom: $card-bottom-padding;
+    padding-left: $card-text-left-padding;
   }
 
   &__drag-handle {
@@ -80,6 +83,12 @@ $card-date-status: (
     &:focus {
       outline: none;
     }
+  }
+
+  &__image {
+    display: table-cell;
+    text-align: center;
+    padding-top: $card-top-padding;
   }
 
   &__task {

@@ -39,25 +39,31 @@ const Card = React.createClass({
     this.resizeInput();
   },
 
-  formatDate(date) {
+  formatDate({ completed, due_on }) {
     let today = moment().startOf('day');
-    let dueDate = moment(date).startOf('day');
+    let dueDate = moment(due_on).startOf('day');
 
-    if (date === null || typeof date === 'undefined') {
-      return 'No due date';
-    } else if (today.isSame(dueDate)) {
-      return 'Today';
-    } else {
-      return moment(date).format('MMM DD');
+    if (completed) {
+      return 'Completed';
     }
+
+    if (due_on === null || typeof due_on === 'undefined') {
+      return 'No due date';
+    }
+
+    if (today.isSame(dueDate)) {
+      return 'Today';
+    }
+
+    return moment(due_on).format('MMM DD');
   },
 
-  dueDateClasses(date) {
+  dueDateClasses({ completed, due_on }) {
     let classes = [];
 
-    if (date !== null && typeof date !== 'undefined') {
+    if (due_on !== null && typeof due_on !== 'undefined' && !completed) {
       let today = moment().startOf('day');
-      let dueDate = moment(date).startOf('day');
+      let dueDate = moment(due_on).startOf('day');
 
       classes.push({
         'swimcard__date--today': today.isSame(dueDate),
@@ -69,11 +75,9 @@ const Card = React.createClass({
   },
 
   renderDueDate(card) {
-    if (card.completed) return false;
-
     return (
-      <time className={ this.dueDateClasses(card.due_on) }>
-        { this.formatDate(card.due_on) }
+      <time className={ this.dueDateClasses(card) }>
+        { this.formatDate(card) }
       </time>
     );
   },
@@ -177,13 +181,11 @@ const Card = React.createClass({
       <article className="swimcard__card pure-g">
         <div className={classes}>
 
-          <div className="pure-u-3-24 v-wrap">
-            <div className="v-content">
-              <UserImage user={ card.assignee } />
-            </div>
+          <div className="pure-u-4-24 swimcard__image">
+            <UserImage user={ card.assignee } />
           </div>
 
-          <div className="pure-u-20-24 swimcard__card-content">
+          <div className="pure-u-19-24 swimcard__card-content">
             { this.renderInput(card.name) }
             { this.renderDueDate(card) }
           </div>
