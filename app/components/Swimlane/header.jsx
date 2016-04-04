@@ -35,7 +35,7 @@ const SwimlaneHeader = React.createClass({
 
     // Reset the UI, we'll change the task name in the stores
     this.setState({ isUpdatingTitle: false });
-    this.props.taskUpdate(task);
+    this.props.taskUpdate(task, true);
   },
 
   handleTitleUpdateBlur() {
