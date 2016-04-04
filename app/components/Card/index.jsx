@@ -35,8 +35,8 @@ const targetCollect = (connect, monitor) => ({
 });
 
 const Card = React.createClass({
-  getInitialState() {
-    return { isUpdatingName: false };
+  componentDidMount() {
+    this.resizeInput();
   },
 
   formatDate(date) {
@@ -96,43 +96,62 @@ const Card = React.createClass({
     );
   },
 
-  handleTaskNameClick() {
-    // Show the input
-    this.setState({ isUpdatingName: true });
-  },
+  handleTaskUpdate() {
+    const { cardNameInput } = this.refs;
 
-  handleTaskUpdate(e) {
-    e.preventDefault();
-    let task = {
-      id: this.props.card.id,
-      name: this.refs.cardName.value
-    };
+    // Check if there has been any change
+    if (cardNameInput.value.trim() !== cardNameInput.defaultValue.trim()) {
+      let task = {
+        id: this.props.card.id,
+        name: cardNameInput.value.trim()
+      };
 
-    // Reset the UI, we'll change the task name in the stores
-    this.setState({ isUpdatingName: false });
-    this.props.taskUpdate(task);
+      this.props.taskUpdate(task);
+    }
   },
 
   handleTaskUpdateBlur() {
-    // Remove the input and reset the name
-    this.setState({ isUpdatingName: false });
+    // When the user clicks off the textarea, submit their changes
+    this.handleTaskUpdate();
   },
 
-  renderName(name) {
-    return (
-      <p className="swimcard__task">{name}</p>
-    );
+  resizeInput() {
+    const { cardNameInput } = this.refs;
+    let height = 'auto';
+
+    // Change the height of the input to match the content
+    cardNameInput.style.height = height;
+    cardNameInput.style.height = cardNameInput.scrollHeight + 'px';
+  },
+
+  handleTaskKeyDown(e) {
+    // Check if the enter key has been pressed (without shift to still allow functionality)
+    if (e.keyCode === 13 && !e.shiftKey) {
+      // If so, stop the new line
+      e.preventDefault();
+
+      // Focus the parent element to trigger the input blur event
+      e.target.parentElement.focus();
+      return false;
+    }
+  },
+
+  handleTaskKeyUp() {
+    this.resizeInput();
   },
 
   renderInput() {
     return (
-      <form className="swimcard__update-form" onSubmit={ this.handleTaskUpdate }>
-        <input type="text"
+      <form className="swimcard__update-form" tabIndex="-1">
+        <textarea type="text"
+               ref="cardNameInput"
                className="swimcard__update-input"
+               defaultValue={ this.props.card.name.trim() }
+               rows="1"
                autoFocus
                onBlur={ this.handleTaskUpdateBlur }
-               ref="cardName"
-               defaultValue={ this.props.card.name } />
+               onKeyDown={ this.handleTaskKeyDown }
+               onKeyUp={ this.handleTaskKeyUp } />
       </form>
     );
   },
@@ -160,13 +179,7 @@ const Card = React.createClass({
           </div>
 
           <div className="pure-u-20-24 swimcard__card-content">
-            <div onClick={ this.handleTaskNameClick }>
-              {
-                this.state.isUpdatingName ?
-                this.renderInput(card.name) :
-                this.renderName(card.name)
-              }
-            </div>
+            { this.renderInput(card.name) }
             { this.renderDueDate(card) }
           </div>
 

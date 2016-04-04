@@ -56,11 +56,17 @@ $card-date-status: (
     }
   }
 
+  &__update-form {
+    position: relative;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
   &__update-input {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
+    height: $font-size-base;
     color: #000000;
     border: none;
     padding-top: 0;
@@ -68,16 +74,12 @@ $card-date-status: (
     padding-bottom: 0;
     padding-left: 0;
     font-size: $font-size-base;
+    resize: none;
+    overflow: hidden;
 
     &:focus {
       outline: none;
     }
-  }
-
-  &__update-form {
-    position: relative;
-    height: $font-size-large;
-    margin-bottom: 3px;
   }
 
   &__task {
