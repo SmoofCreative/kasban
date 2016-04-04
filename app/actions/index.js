@@ -115,7 +115,7 @@ Actions.createTask = (params) => {
 
 Actions.updateTask = (params) => {
   return (dispatch) => {
-    let { taskDetails } = params;
+    let { taskDetails, updateAsana } = params;
 
     dispatch({
       type: 'UPDATING_TASK',
@@ -124,10 +124,12 @@ Actions.updateTask = (params) => {
       }
     });
 
-    const task = Task(taskDetails.id);
-    task.update(taskDetails, AsanaClient)
-    .then(() => { dispatch({ type: 'UPDATING_TASK_SUCCESS' }); })
-    .catch(() => { dispatch({ type: 'UPDATING_TASK_FAILED' }); });
+    if (updateAsana) {
+      const task = Task(taskDetails.id);
+      task.update(taskDetails, AsanaClient)
+      .then(() => { dispatch({ type: 'UPDATING_TASK_SUCCESS' }); })
+      .catch(() => { dispatch({ type: 'UPDATING_TASK_FAILED' }); });
+    }
   };
 };
 

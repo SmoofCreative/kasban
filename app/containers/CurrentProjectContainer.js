@@ -57,8 +57,12 @@ const mapDispatchToProps = (dispatch) => {
       };
       dispatch(Actions.createTask(options));
     },
-    onTaskUpdate: (task) => {
-      const options = { taskDetails: task };
+    onTaskUpdate: (task, updateAsana) => {
+      const options = {
+        taskDetails: task,
+        updateAsana: updateAsana
+      };
+
       dispatch(Actions.updateTask(options));
     }
   };

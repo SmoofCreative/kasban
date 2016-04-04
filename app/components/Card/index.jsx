@@ -96,7 +96,7 @@ const Card = React.createClass({
     );
   },
 
-  handleTaskUpdate() {
+  handleTaskUpdate(updateAsana = false) {
     const { cardNameInput } = this.refs;
 
     // Check if there has been any change
@@ -106,13 +106,17 @@ const Card = React.createClass({
         name: cardNameInput.value.trim()
       };
 
-      this.props.taskUpdate(task);
+      this.props.taskUpdate(task, updateAsana);
     }
   },
 
   handleTaskUpdateBlur() {
     // When the user clicks off the textarea, submit their changes
-    this.handleTaskUpdate();
+    this.handleTaskUpdate(true);
+  },
+
+  handleTextChange() {
+    this.handleTaskUpdate(false)
   },
 
   resizeInput() {
@@ -146,12 +150,13 @@ const Card = React.createClass({
         <textarea type="text"
                ref="cardNameInput"
                className="swimcard__update-input"
-               defaultValue={ this.props.card.name.trim() }
+               value={ this.props.card.name.trim() }
                rows="1"
                autoFocus
                onBlur={ this.handleTaskUpdateBlur }
                onKeyDown={ this.handleTaskKeyDown }
-               onKeyUp={ this.handleTaskKeyUp } />
+               onKeyUp={ this.handleTaskKeyUp }
+               onChange={ this.handleTextChange } />
       </form>
     );
   },
