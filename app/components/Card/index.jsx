@@ -5,6 +5,7 @@ import moment from 'moment';
 import classNames from 'classnames';
 
 import './style';
+import UserImage from '../UserImage';
 
 const cardSource = {
   beginDrag(props) {
@@ -151,7 +152,14 @@ const Card = React.createClass({
     return connectDragPreview(connectDropTarget(
       <article className="swimcard__card pure-g">
         <div className={classes}>
-          <div className="pure-u-23-24 swimcard__card-content">
+
+          <div className="pure-u-3-24 v-wrap">
+            <div className="v-content">
+              <UserImage user={ card.assignee } />
+            </div>
+          </div>
+
+          <div className="pure-u-20-24 swimcard__card-content">
             <div onClick={ this.handleTaskNameClick }>
               {
                 this.state.isUpdatingName ?
@@ -161,6 +169,7 @@ const Card = React.createClass({
             </div>
             { this.renderDueDate(card) }
           </div>
+
           { connectDragSource(this.renderDragHandle()) }
         </div>
       </article>

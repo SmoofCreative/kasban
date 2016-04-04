@@ -12,7 +12,6 @@ const Actions = {};
 Actions.getWorkspaces = () => {
   return (dispatch) => {
     dispatch({ type: 'REQUEST_WORKSPACES_AND_PROJECTS' });
-
     const workspace = Workspace();
 
     // Ask for the workspaces

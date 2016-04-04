@@ -5,6 +5,7 @@ $card-horizontal-padding: 5px;
 
 $drag-handle-size: 16px;
 
+
 $card-date-status: (
   future: #656872,
   today: #1BC393,
@@ -31,7 +32,7 @@ $card-date-status: (
 
     &.active {
       border-width: 0 0 2px 0;
-      border-image: linear-gradient(to right, $gradient-start-color, $gradient-end-color) 100% 1;
+      border-image: linear-gradient(to right, $brand-pink, $brand-orange) 100% 1;
     }
   }
 
@@ -53,12 +54,6 @@ $card-date-status: (
       height: $drag-handle-size;
       width: $drag-handle-size;
     }
-  }
-
-  &__user-image {
-    width: 30px;
-    height: auto;
-    border-radius: 50%;
   }
 
   &__update-input {

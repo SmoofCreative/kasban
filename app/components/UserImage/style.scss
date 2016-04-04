@@ -1,0 +1,19 @@
+@import "../../scss/variables";
+
+$image-size: 30px;
+
+.user-image {
+    width: $image-size;
+    border-radius: 50%;
+
+    &--image {
+      height: auto;
+    }
+
+    &--initials {
+      height: $image-size;
+      line-height: $image-size;
+      color: #FFFFFF;
+      background-color: $brand-pinky-orange;
+    }
+}
