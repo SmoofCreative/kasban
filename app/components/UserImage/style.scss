@@ -1,10 +1,11 @@
 @import "../../scss/variables";
 
-$image-size: 30px;
+$image-size: 27px;
 
 .user-image {
     width: $image-size;
     border-radius: 50%;
+    margin: 0 auto;
 
     &--image {
       height: auto;
@@ -15,5 +16,6 @@ $image-size: 30px;
       line-height: $image-size;
       color: #FFFFFF;
       background-color: $brand-pinky-orange;
+      font-size: $font-size-base;
     }
 }
