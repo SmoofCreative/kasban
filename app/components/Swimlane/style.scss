@@ -11,9 +11,13 @@ $swimlane-header-horizontal-padding: 15px;
   position: relative;
   width: $swimlane-width;
   flex: 1;
-  margin-right: $swimlane-gutter;
+  margin-right: $swimlane-gutter * 2;
   margin-left: $swimlane-gutter;
   overflow-y: scroll;
+
+  &:last-child {
+    margin-right: $swimlane-gutter;
+  }
 
   &__header {
     width: 100%;
