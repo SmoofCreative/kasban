@@ -6,7 +6,7 @@ import './style';
 const UserImage = ({ user }) => {
   const defaultClass = 'user-image';
 
-  if (user === null) {
+  if (user === null || typeof user === 'undefined') {
     // Show fallback avatar
     const classes = classNames(defaultClass, 'user-image--photo');
     return <img className={ classes } src="avatar.png" />;
