@@ -64,7 +64,7 @@ const updateCard = (state, workspaceIndex, projectIndex, sectionIndex, listIndex
               [sectionIndex]: {
                 cards: {
                   [listIndex]: {
-                    $set: card
+                    $merge: card
                   }
                 }
               }

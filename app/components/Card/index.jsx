@@ -103,15 +103,12 @@ const Card = React.createClass({
   handleTaskUpdate(updateAsana = false) {
     const { cardNameInput } = this.refs;
 
-    // Check if there has been any change
-    if (cardNameInput.value.trim() !== cardNameInput.defaultValue.trim()) {
-      let task = {
-        id: this.props.card.id,
-        name: cardNameInput.value.trim()
-      };
+    let task = {
+      id: this.props.card.id,
+      name: cardNameInput.value.trim()
+    };
 
-      this.props.taskUpdate(task, updateAsana);
-    }
+    this.props.taskUpdate(task, updateAsana);
   },
 
   handleTaskUpdateBlur() {
@@ -156,7 +153,6 @@ const Card = React.createClass({
                className="swimcard__update-input"
                value={ this.props.card.name.trim() }
                rows="1"
-               autoFocus
                onBlur={ this.handleTaskUpdateBlur }
                onKeyDown={ this.handleTaskKeyDown }
                onKeyUp={ this.handleTaskKeyUp }
