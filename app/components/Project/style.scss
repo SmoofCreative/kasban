@@ -4,6 +4,10 @@
   padding-top: 60px;
   padding-right: 4px;
   padding-left: 4px;
+
+  &--task-sidebar-open {
+    padding-right: $task-sidebar-width;
+  }
 }
 
 .container {

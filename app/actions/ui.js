@@ -26,4 +26,25 @@ UIActions.setSidebarVisibilty = (show) => {
   }
 };
 
+UIActions.selectTask = (params) => {
+  const { taskId, sectionId } = params;
+
+  return {
+    type: 'TASK_SELECTED',
+    payload: {
+      taskId: taskId,
+      sectionId: sectionId
+    }
+  };
+};
+
+UIActions.hideTaskDetailsSidebar = () => {
+  return {
+    type: 'UPDATE_TASK_DETAILS_SIDEBAR_VISIBILITY',
+    payload: {
+      showSidebar: false
+    }
+  }
+}
+
 export default UIActions;

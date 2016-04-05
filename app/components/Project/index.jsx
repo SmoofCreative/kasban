@@ -15,6 +15,7 @@ const Project = (props) => {
                       moveCard={props.onCardMove}
                       newTaskSubmit={props.onNewTaskSubmit}
                       taskUpdate={props.onTaskUpdate}
+                      onTaskSelected={props.onTaskSelected}
                       id={section.id} />
           ))
         }

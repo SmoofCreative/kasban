@@ -3,15 +3,12 @@
 $sidebar-width: 300px;
 
 $section-header-height: 45px;
-$section-header-color: #F9FAFB;
-$section-header-border-color: #DCDCDD;
 $section-header-padding-left: 15px;
 
-$sidebar-tip-colour: #FFFFFF;
 $sidebar-tip-height: 5px;
 $sidebar-tip-width: 10px;
 $sidebar-tip-vertical-border: $sidebar-tip-width solid transparent;
-$sidebar-tip-horizontal-border: $sidebar-tip-height solid $sidebar-tip-colour;
+$sidebar-tip-horizontal-border: $sidebar-tip-height solid $sidebar-primary-colour;
 
 
 .sidebar {
@@ -21,8 +18,8 @@ $sidebar-tip-horizontal-border: $sidebar-tip-height solid $sidebar-tip-colour;
   left: 0;
   height: 100%;
   width: $sidebar-width;
-  background-color: #FFFFFF;
-  border-right: 1px solid $section-header-border-color;
+  background-color: $sidebar-primary-colour;
+  border-right: 1px solid $sidebar-border-colour;
 
   &:after {
     content: '';
@@ -61,8 +58,8 @@ $sidebar-tip-horizontal-border: $sidebar-tip-height solid $sidebar-tip-colour;
       height: $section-header-height;
       padding-left: $section-header-padding-left;
       line-height: $section-header-height;
-      background-color: $section-header-color;
-      border-bottom: 1px solid $section-header-border-color;
+      background-color: $sidebar-secondary-colour;
+      border-bottom: 1px solid $sidebar-border-colour;
       font-size: $font-size-base;
       font-weight: $font-weight-bold;
       white-space: nowrap;

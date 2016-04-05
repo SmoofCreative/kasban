@@ -1,0 +1,28 @@
+@import "../../scss/variables";
+
+$card-date-status: (
+  future: #656872,
+  today: #1BC393,
+  late: #F84B57
+);
+
+.due_date {
+  font-size: ceil($font-size-base);
+  color: map-get($card-date-status, future);
+
+  &--small {
+    font-size: ceil($font-size-base * 0.85);
+  }
+
+  &--today {
+    color: map-get($card-date-status, today);
+  }
+
+  &--late {
+    color: map-get($card-date-status, late);
+  }
+
+  &__icon {
+    margin-right: 5px;
+  }
+}

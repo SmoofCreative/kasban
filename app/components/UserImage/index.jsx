@@ -32,7 +32,7 @@ const UserImage = ({ user }) => {
 
     const classes = classNames(defaultClass, 'user-image--initials');
     return (
-      <div className={ classes }>{ initials }</div>
+      <span className={ classes }>{ initials }</span>
     );
   }
 

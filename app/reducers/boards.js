@@ -9,6 +9,8 @@ if (persistedState) {
 } else {
   initialState = {
     workspaces: [],
+    currentTaskId: null,
+    currentSectionId: null,
     currentProjectId: null,
     currentWorkspaceId: null
   }
@@ -191,6 +193,17 @@ const setCurrentProject = (state, workspaceId, projectId) => {
   });
 }
 
+const setCurrentTask = (state, sectionId, taskId) => {
+  return update(state, {
+    currentTaskId: {
+      $set: taskId
+    },
+    currentSectionId: {
+      $set: sectionId
+    }
+  });
+}
+
 const addSections = (state, workspaceId, projectId, sections) => {
 
   // Get the workspace
@@ -286,7 +299,8 @@ export default function boards(state = initialState, action) {
     }
     case 'REQUEST_SECTIONS_AND_TASKS': {
       const { workspaceId, projectId } = action.payload;
-      return setCurrentProject(state, workspaceId, projectId);
+      const currentProjectState = setCurrentProject(state, workspaceId, projectId);
+      return setCurrentTask(currentProjectState, null, null);
     }
     case 'RECEIVED_SECTIONS_AND_TASKS': {
       const { workspaceId, projectId, sections } = action.payload;
@@ -335,6 +349,10 @@ export default function boards(state = initialState, action) {
       } else {
         return updateCard(state, taskCoords.workspace, taskCoords.project, taskCoords.section, taskCoords.card, task);
       }
+    }
+    case 'TASK_SELECTED': {
+      const { taskId, sectionId } = action.payload;
+      return setCurrentTask(state, sectionId, taskId);
     }
     default: {
       return state;
