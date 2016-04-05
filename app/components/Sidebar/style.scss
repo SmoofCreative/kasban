@@ -7,9 +7,9 @@ $section-header-color: #F9FAFB;
 $section-header-border-color: #DCDCDD;
 $section-header-padding-left: 15px;
 
-$sidebar-tip-colour: #FFFFFF;
+$sidebar-tip-colour: #f9fafb;
 $sidebar-tip-height: 5px;
-$sidebar-tip-width: 10px;
+$sidebar-tip-width: 8px;
 $sidebar-tip-vertical-border: $sidebar-tip-width solid transparent;
 $sidebar-tip-horizontal-border: $sidebar-tip-height solid $sidebar-tip-colour;
 
@@ -27,8 +27,8 @@ $sidebar-tip-horizontal-border: $sidebar-tip-height solid $sidebar-tip-colour;
   &:after {
     content: '';
     position: absolute;
-    top: -5px;
-    left: 30px;
+    top: -4px;
+    left: 33px;
     border-left: $sidebar-tip-vertical-border;
     border-right: $sidebar-tip-vertical-border;
     border-bottom: $sidebar-tip-horizontal-border;
