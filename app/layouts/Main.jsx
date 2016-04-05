@@ -5,6 +5,7 @@ import './style';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BoardSelector from '../components/BoardSelector';
+import Auth from '../components/Auth';
 import Loading from '../components/Loading';
 import CurrentProject from '../containers/CurrentProjectContainer';
 import Sidebar from '../containers/SidebarContainer';
@@ -39,11 +40,11 @@ const Main = React.createClass({
 
   renderSelectAProject() {
     return (
-      <div className="select-project">
+      <div className="message">
         <div className="container">
           <div className="v-wrap">
             <div className="v-content">
-              <div className="select-project__text">Select a project to get started</div>
+              <div className="message__text">Select a project to get started</div>
               <BoardSelector />
             </div>
           </div>
@@ -52,20 +53,39 @@ const Main = React.createClass({
     );
   },
 
-  renderContent() {
-    if (this.props.showProjectLoading) {
-      let loadingText = `Loading ${this.projectName()}`;
+  renderAuthenticateMessage() {
+    return (
+      <div className="message">
+        <div className="container">
+          <div className="v-wrap">
+            <div className="v-content">
+              <div className="message__text">Authenticate with Asana to get started</div>
+              <Auth />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  },
 
+  renderContent() {
+    if (!this.props.auth.isAsanaAuthed) {
+      return this.renderAuthenticateMessage();
+    }
+
+    if (this.props.currentProjectId === null) {
+      return this.renderSelectAProject();
+    }
+
+    if (this.props.showProjectLoading) {
       return (
         <div className="container">
-          <Loading text={loadingText}/>
+          <Loading text={`Loading ${this.projectName()}`}/>
         </div>
       );
-    } else if (this.props.currentProjectId === null) {
-      return this.renderSelectAProject();
-    } else {
-      return <CurrentProject />
     }
+
+    return <CurrentProject />
   },
 
   render() {
