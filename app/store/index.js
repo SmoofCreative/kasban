@@ -48,7 +48,10 @@ export default function configureStore() {
 
   const poller = AsanaEventPoller(store);
   poller.init(stateTracker.boards.currentWorkspaceId, stateTracker.boards.currentProjectId);
-  poller.start();
+
+  if (stateTracker.boards.currentProjectId !== null) {
+    poller.start();
+  }
 
   store.subscribe(() => {
     // Any time there's a state update, we want to see if the projectId has changed.
