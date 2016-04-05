@@ -2,10 +2,13 @@
 
 $image-size: 27px;
 
+$initials-background-padding: 5px;
+
 .user-image {
     width: $image-size;
     border-radius: 50%;
     margin: 0 auto;
+    vertical-align: middle;
 
     &--image {
       height: auto;
@@ -17,5 +20,9 @@ $image-size: 27px;
       color: #FFFFFF;
       background-color: $brand-pinky-orange;
       font-size: $font-size-base;
+      padding-top: $initials-background-padding;
+      padding-right: $initials-background-padding;
+      padding-bottom: $initials-background-padding;
+      padding-left: $initials-background-padding;
     }
 }

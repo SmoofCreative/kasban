@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 
 import './style';
 import Header from '../components/Header';
@@ -7,8 +8,11 @@ import Footer from '../components/Footer';
 import BoardSelector from '../components/BoardSelector';
 import Auth from '../components/Auth';
 import Loading from '../components/Loading';
+
 import CurrentProject from '../containers/CurrentProjectContainer';
 import Sidebar from '../containers/SidebarContainer';
+import CurrentTaskDetailsSidebar from '../containers/CurrentTaskDetailsSidebar';
+
 import Actions from '../actions';
 
 const Main = React.createClass({
@@ -89,12 +93,17 @@ const Main = React.createClass({
   },
 
   render() {
+    const mainClasses = classNames('main', {
+      'main--task-sidebar-open': this.props.ui.showTaskDetailsSidebar
+    });
+
     return (
       <div>
         <Header auth={this.props.auth} projectName={this.projectName()} projectId={this.props.currentProjectId} />
-        <main className="main">
+        <main className={ mainClasses }>
           { this.renderContent() }
         </main>
+        <CurrentTaskDetailsSidebar />
         <Sidebar
           workspaces={ this.props.workspaces }
           currentProjectId={ this.props.currentProjectId }

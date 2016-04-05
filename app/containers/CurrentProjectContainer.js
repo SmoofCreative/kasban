@@ -4,6 +4,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 
 import Actions from '../actions';
+import UIActions from '../actions/ui';
 import Project from '../components/Project';
 
 const getWorkspace = (id, workspaces) => {
@@ -64,6 +65,14 @@ const mapDispatchToProps = (dispatch) => {
       };
 
       dispatch(Actions.updateTask(options));
+    },
+    onTaskSelected: (taskId, sectionId) => {
+      const options = {
+        taskId: taskId,
+        sectionId: sectionId
+      }
+
+      dispatch(UIActions.selectTask(options));
     }
   };
 };

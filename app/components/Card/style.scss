@@ -8,13 +8,6 @@ $card-text-left-padding: 2px;
 
 $drag-handle-size: 16px;
 
-
-$card-date-status: (
-  future: #656872,
-  today: #1BC393,
-  late: #F84B57
-);
-
 .swimcard {
   &__card {
     position: relative;
@@ -95,18 +88,4 @@ $card-date-status: (
     font-size: $font-size-base;
     cursor: pointer;
   }
-
-  &__date {
-    font-size: ceil($font-size-base * 0.85);
-    color: map-get($card-date-status, future);
-
-    &--today {
-      color: map-get($card-date-status, today);
-    }
-
-    &--late {
-      color: map-get($card-date-status, late);
-    }
-  }
-
 }

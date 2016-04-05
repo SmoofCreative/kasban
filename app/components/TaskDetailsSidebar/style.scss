@@ -1,0 +1,48 @@
+@import "../../scss/variables";
+
+$sidebar-horizontal-padding: 30px;
+$sidebar-vertical-padding: 15px;
+
+$sidebar-close-colour: #BFC4D5;
+
+.task-details-sidebar {
+  display: none;
+  position: fixed;
+  top: $header-height;
+  right: 0;
+  width: $task-sidebar-width;
+  height: 100%;
+  border-left: 1px solid $sidebar-border-colour;
+  padding-top: $sidebar-vertical-padding;
+  padding-right: $sidebar-horizontal-padding;
+  padding-bottom: 0;
+  padding-left: $sidebar-horizontal-padding;
+  background-color: $sidebar-secondary-colour;
+
+  &.active {
+    display: block;
+  }
+
+  &__close {
+    text-align: right;
+
+    &__icon {
+      color: $sidebar-close-colour;
+      font-size: $font-size-large;
+      cursor: pointer;
+    }
+  }
+
+  &__title {
+    padding-top: 25px;
+  }
+
+  &__description {
+    padding-top: 25px;
+  }
+
+  &__user-name {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}

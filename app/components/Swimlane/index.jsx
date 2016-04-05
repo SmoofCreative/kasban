@@ -12,11 +12,21 @@ const Swimlane = React.createClass({
     newTaskSubmit(task, id);
   },
 
+  handleTaskSelected(taskId) {
+    let { id, onTaskSelected } = this.props;
+    onTaskSelected(taskId, id);
+  },
+
   renderCards() {
     const { cards, moveCard, taskUpdate } = this.props;
 
     return cards.map((card) => (
-      <Card key={card.id} card={card} moveCard={moveCard} taskUpdate={taskUpdate} />
+      <Card
+        key={card.id}
+        card={card}
+        moveCard={moveCard}
+        taskUpdate={taskUpdate}
+        onCardClick={this.handleTaskSelected} />
     ));
   },
 

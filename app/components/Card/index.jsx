@@ -1,11 +1,11 @@
 import React from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
 import _flow from 'lodash/flow';
-import moment from 'moment';
 import classNames from 'classnames';
 
 import './style';
 import UserImage from '../UserImage';
+import DueDate from '../DueDate';
 
 const cardSource = {
   beginDrag(props) {
@@ -37,49 +37,6 @@ const targetCollect = (connect, monitor) => ({
 const Card = React.createClass({
   componentDidMount() {
     this.resizeInput();
-  },
-
-  formatDate({ completed, due_on }) {
-    let today = moment().startOf('day');
-    let dueDate = moment(due_on).startOf('day');
-
-    if (completed) {
-      return 'Completed';
-    }
-
-    if (due_on === null || typeof due_on === 'undefined') {
-      return 'No due date';
-    }
-
-    if (today.isSame(dueDate)) {
-      return 'Today';
-    }
-
-    return moment(due_on).format('MMM DD');
-  },
-
-  dueDateClasses({ completed, due_on }) {
-    let classes = [];
-
-    if (due_on !== null && typeof due_on !== 'undefined' && !completed) {
-      let today = moment().startOf('day');
-      let dueDate = moment(due_on).startOf('day');
-
-      classes.push({
-        'swimcard__date--today': today.isSame(dueDate),
-        'swimcard__date--late': dueDate.isBefore(today)
-      });
-    }
-
-    return classNames('swimcard__date', classes);
-  },
-
-  renderDueDate(card) {
-    return (
-      <time className={ this.dueDateClasses(card) }>
-        { this.formatDate(card) }
-      </time>
-    );
   },
 
   renderDragHandle() {
@@ -145,6 +102,11 @@ const Card = React.createClass({
     this.resizeInput();
   },
 
+  handleTaskSelected() {
+    const { onCardClick, card } = this.props;
+    onCardClick(card.id);
+  },
+
   renderInput() {
     return (
       <form className="swimcard__update-form" tabIndex="-1">
@@ -174,7 +136,7 @@ const Card = React.createClass({
     const classes = classNames('swimcard__card-border', { active: canDrop && isOver });
 
     return connectDragPreview(connectDropTarget(
-      <article className="swimcard__card pure-g">
+      <article onClick={this.handleTaskSelected} className="swimcard__card pure-g">
         <div className={classes}>
 
           <div className="pure-u-4-24 swimcard__image">
@@ -183,7 +145,7 @@ const Card = React.createClass({
 
           <div className="pure-u-19-24 swimcard__card-content">
             { this.renderInput(card.name) }
-            { this.renderDueDate(card) }
+            <DueDate card={card} isSmall={true} />
           </div>
 
           { connectDragSource(this.renderDragHandle()) }

@@ -1,13 +1,21 @@
 const initialState = {
   showSidebar: false,
   showSidebarLoading: false,
-  showProjectLoading: false
+  showProjectLoading: false,
+  showTaskDetailsSidebar: false,
+  showTaskDetailsSidebarLoading: false
 };
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
     case 'UPDATE_SIDEBAR_VISIBILITY': {
       return Object.assign({}, state, { showSidebar: action.payload.showSidebar });
+    }
+    case 'TASK_SELECTED': {
+      return Object.assign({}, state, { showTaskDetailsSidebar: true });
+    }
+    case 'UPDATE_TASK_DETAILS_SIDEBAR_VISIBILITY': {
+      return Object.assign({}, state, { showTaskDetailsSidebar: action.payload.showSidebar });
     }
     case 'REQUEST_WORKSPACES_AND_PROJECTS': {
       return Object.assign({}, state, { showSidebarLoading: true });
