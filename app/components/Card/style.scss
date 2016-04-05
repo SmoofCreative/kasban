@@ -97,7 +97,7 @@ $card-date-status: (
   }
 
   &__date {
-    font-size: $font-size-base;
+    font-size: ceil($font-size-base * 0.85);
     color: map-get($card-date-status, future);
 
     &--today {
