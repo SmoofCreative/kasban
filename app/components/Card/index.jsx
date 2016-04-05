@@ -1,38 +1,9 @@
 import React from 'react';
-import { DragSource, DropTarget } from 'react-dnd';
-import _flow from 'lodash/flow';
 import classNames from 'classnames';
 
 import './style';
 import UserImage from '../UserImage';
 import DueDate from '../DueDate';
-
-const cardSource = {
-  beginDrag(props) {
-    return {
-      id: props.card.id
-    };
-  }
-};
-
-const cardTarget = {
-  drop(props, monitor) {
-    const item = monitor.getItem();
-    props.moveCard(item.id, props.card.id);
-  }
-};
-
-const sourceCollect = (connect, monitor) => ({
-  connectDragSource: connect.dragSource(),
-  connectDragPreview: connect.dragPreview(),
-  isDragging: monitor.isDragging()
-});
-
-const targetCollect = (connect, monitor) => ({
-  connectDropTarget: connect.dropTarget(),
-  isOver: monitor.isOver(),
-  canDrop: monitor.canDrop()
-});
 
 const Card = React.createClass({
   componentDidMount() {
@@ -124,18 +95,11 @@ const Card = React.createClass({
   },
 
   render() {
-    const {
-      card,
-      connectDragSource,
-      connectDropTarget,
-      connectDragPreview,
-      canDrop,
-      isOver
-    } = this.props;
+    const { card, connectDragSource, canDrop, isOver, isDraggable = false } = this.props;
 
     const classes = classNames('swimcard__card-border', { active: canDrop && isOver });
 
-    return connectDragPreview(connectDropTarget(
+    return (
       <article onClick={this.handleTaskSelected} className="swimcard__card pure-g">
         <div className={classes}>
 
@@ -148,14 +112,11 @@ const Card = React.createClass({
             <DueDate card={card} isSmall={true} />
           </div>
 
-          { connectDragSource(this.renderDragHandle()) }
+          { isDraggable && connectDragSource(this.renderDragHandle()) }
         </div>
       </article>
-    ));
+    );
   }
 });
 
-export default _flow(
-  DragSource('card', cardSource, sourceCollect),
-  DropTarget('card', cardTarget, targetCollect)
-)(Card);
+export default Card;

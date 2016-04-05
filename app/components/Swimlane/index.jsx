@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './style';
-import Card from '../Card';
+import DraggableCard from '../../containers/DraggableCard';
 import SwimlaneHeader from './header';
 import SwimlaneFooter from './footer';
 
@@ -21,7 +21,7 @@ const Swimlane = React.createClass({
     const { cards, moveCard, taskUpdate } = this.props;
 
     return cards.map((card) => (
-      <Card
+      <DraggableCard
         key={card.id}
         card={card}
         moveCard={moveCard}
