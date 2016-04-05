@@ -21,25 +21,13 @@ const Main = React.createClass({
   },
 
   projectName() {
-    const { workspaces, currentWorkspaceId, currentProjectId } = this.props;
+    const { projectEntities, currentProjectId } = this.props;
 
-    let name = '';
-
-    if (currentWorkspaceId !== null && currentProjectId !== null) {
-      const workspace = workspaces.filter((ws) => {
-        return ws.id == currentWorkspaceId;
-      })[0];
-
-      const project = workspace.projects.filter((p) => {
-        return p.id == currentProjectId;
-      })[0];
-
-      if (typeof project !== 'undefined') {
-        name = project.name;
-      }
+    if (typeof currentProjectId === 'undefined') {
+      return '';
     }
 
-    return name;
+    return projectEntities[currentProjectId].name;
   },
 
   renderSelectAProject() {
@@ -81,7 +69,7 @@ const Main = React.createClass({
       return this.renderSelectAProject();
     }
 
-    if (this.props.showProjectLoading) {
+    if (this.props.ui.showProjectLoading) {
       return (
         <div className="container">
           <Loading text={`Loading ${this.projectName()}`}/>
@@ -103,12 +91,10 @@ const Main = React.createClass({
         <main className={ mainClasses }>
           { this.renderContent() }
         </main>
-        <CurrentTaskDetailsSidebar />
         <Sidebar
-          workspaces={ this.props.workspaces }
+          workspaces={ this.props.workspacesList }
           currentProjectId={ this.props.currentProjectId }
-          visible={ this.props.ui.showSidebar }
-          currentWorkspaceId={ this.props.currentWorkspaceId} />
+          />
         <Footer />
       </div>
     );
@@ -116,16 +102,20 @@ const Main = React.createClass({
 });
 
 const mapStateToProps = (state) => {
-  const boards = state.boards;
-
   return {
-    workspaces: boards.workspaces,
-    currentProjectId: boards.currentProjectId,
-    currentWorkspaceId: boards.currentWorkspaceId,
+    workspacesList: state.workspacesList,
+    projectEntities: state.entities.projects.records,
+    currentProjectId: state.entities.projects.conditions.currentId,
     auth: state.auth,
-    ui: state.ui,
-    showProjectLoading: state.ui.showProjectLoading
+    ui: state.ui
   }
 };
 
 export default connect(mapStateToProps)(Main);
+
+
+/*
+
+
+
+*/

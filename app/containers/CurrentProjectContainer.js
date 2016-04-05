@@ -22,25 +22,21 @@ const getProject = (id, projects) => {
 }
 
 const mapStateToProps = (state) => {
-  const boards = state.boards;
+  const projects = state.entities.projects;
 
-  let currentProject = {};
+  let sections = [];
 
-  const currentWorkspace = getWorkspace(boards.currentWorkspaceId, boards.workspaces);
-
-  if (typeof currentWorkspace !== 'undefined') {
-    let project = getProject(boards.currentProjectId, currentWorkspace.projects);
-
-    if (typeof project !== 'undefined') {
-      currentProject = project;
-    }
+  if (typeof projects.records[projects.conditions.currentId] !== 'undefined') {
+    sections = projects.records[projects.conditions.currentId].sections;
   }
 
   return {
-    workspaces: boards.workspaces,
-    sections: currentProject.sections || [],
-    currentProjectId: boards.currentProjectId,
-    currentWorkspaceId: boards.currentWorkspaceId
+    sections: sections,
+    currentWorkspaceId: state.entities.workspaces.conditions.currentId,
+    currentProjectId: state.entities.projects.conditions.currentId,
+    sectionEntities: state.entities.sections.records,
+    cardEntities: state.entities.cards.records,
+    currentProjectId: projects.conditions.currentId
   }
 };
 
@@ -79,6 +75,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { currentProjectId, currentWorkspaceId } = stateProps;
+
   return Object.assign({}, ownProps, stateProps, dispatchProps, {
     onNewTaskSubmit: (task, swimlaneId) => {
       dispatchProps.onNewTaskSubmit(task, swimlaneId, currentProjectId, currentWorkspaceId);

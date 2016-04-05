@@ -9,27 +9,82 @@ import Workspace from './workspace';
 
 const Actions = {};
 
+const storeWorkspace = (dispatch, workspace) => {
+  dispatch({ 
+    type: 'ADD_WORKSPACE',
+    payload: {
+      id: workspace.id,
+      workspace: workspace
+    }
+  });
+};
+
+const storeProject = (dispatch, workspaceId, project) => {
+  dispatch({ 
+    type: 'ADD_PROJECT',
+    payload: {
+      id: project.id,
+      project: project,
+      workspaceId: workspaceId
+    }
+  });
+};
+
+const storeSection = (dispatch, projectId, section) => {
+  dispatch({ 
+    type: 'ADD_SECTION',
+    payload: {
+      id: section.id,
+      section: section,
+      projectId: projectId
+    }
+  });
+};
+
+const storeCard = (dispatch, sectionId, card) => {
+  dispatch({ 
+    type: 'ADD_CARD',
+    payload: {
+      id: card.id,
+      card: card,
+      sectionId: sectionId
+    }
+  });
+};
+
+const moveSection = (dispatch, sectionId, projectId, index) => {
+  dispatch({
+    type: 'MOVE_SECTION',
+    payload: {
+      sectionId: sectionId,
+      projectId: projectId,
+      index: index
+    }
+  });
+};
+
 Actions.getWorkspaces = () => {
   return (dispatch) => {
     dispatch({ type: 'REQUEST_WORKSPACES_AND_PROJECTS' });
     const workspace = Workspace();
 
-    // Ask for the workspaces
     workspace.getWorkspaces(AsanaClient)
-    .then((workspaces) => {
-      // For each of the workspaces, get its related projects
+    .then((workspaces) => { 
       workspaces.map((ws) => {
+        storeWorkspace(dispatch, ws);
         workspace.getProjects(ws.id, AsanaClient)
         .then((projects) => {
-          dispatch({
-            type: 'RECEIVED_WORKSPACES_AND_PROJECTS',
-            payload: {
-              workspace: { id: ws.id, name: ws.name },
-              projects: projects
-            }
+          projects.map((project) => {
+            storeProject(dispatch, ws.id, project);
           });
-        })
+        });
       });
+
+      // Return null as otherwise we get a warning about not returning promises
+      return null;
+    })
+    .then(() => {
+      dispatch({ type: 'RECEIVED_WORKSPACES_AND_PROJECTS' });
     });
   };
 };
@@ -100,7 +155,6 @@ Actions.createTask = (params) => {
     }
 
     taskDetails.memberships = [{
-      project: projectId,
       section: sectionId
     }];
 
@@ -133,88 +187,80 @@ Actions.updateTask = (params) => {
   };
 };
 
-function makeSwimlanes(list) {
-  let swimlanes = [];
+const isSection = (item) => {
+  return item.name.slice(-1) === ':';
+};
 
-  // First push on the completed and uncategorised swimlane
-  swimlanes.unshift({
-    id: 'completed',
-    name: 'Completed:',
+const addSectionsAndTasks = (dispatch, projectId, tasks) => {
+  // First add our own hardcoded sections
+
+  const presetSections = [{ 
+    id: 'completed', 
+    name: 'Completed',
     cards: []
-  });
-
-  swimlanes.unshift({
-    id: 'uncategorised',
+  }, 
+  { 
+    id: 'uncategorised', 
     name: 'Uncategorised:',
     cards: []
+  }];
+
+  presetSections.map((section) => {
+    storeSection(dispatch, projectId, section);
   });
 
-
-  if (list.length) {
-
-    // Go through the list of tasks
-    for (let task of list) {
-      // If the task is a new section push it to the front of the array
-      if (task.name.slice(-1) === ':') {
-        swimlanes.unshift({
-          id: task.id,
-          name: task.name,
-          cards: []
-        });
-
+  if (tasks.length) {
+    for (let item of tasks) {
+      if (isSection(item)) {
+        storeSection(dispatch, projectId, item);
         continue;
       }
 
-      // Completed should be the last lane
-      // If task is not completed then add to current swimlane
-      let laneIndex = task.completed ? (swimlanes.length - 1) : 0;
-      swimlanes[laneIndex].cards.push(task);
-    }
+      if (item.completed) {
+        storeCard(dispatch, 'completed', item);
+        continue;
+      } 
 
-    // As we want the uncategorised swimlane first find and splice it to the front
-    for (let swimlaneIndex in swimlanes) {
-      if (swimlanes[swimlaneIndex].id === 'uncategorised') {
-        let uncategorisedSwimlane = swimlanes.splice(swimlaneIndex, 1)[0];
-        swimlanes.unshift(uncategorisedSwimlane);
-        break;
+      if (item.memberships.length) {
+        if (item.memberships[0].section !== null) {          
+          storeCard(dispatch, item.memberships[0].section.id, item);
+          continue;
+        }
       }
+
+      // If here the task is not completed nor in a section
+      storeCard(dispatch, 'uncategorised', item);
     }
   }
 
-  return swimlanes;
-}
+  // Move the uncategorised column to the front
+  moveSection(dispatch, 'uncategorised', projectId, 0)
+};
 
-const getTasksForProject = (dispatch, workspaceId, projectId) => {
-  const project = Project(projectId);
+const getTasksForProject = (dispatch, id) => {
+  const project = Project(id);
   project.getTasks(AsanaClient)
   .then((tasks) => {
-    dispatch({
-      type: 'RECEIVED_SECTIONS_AND_TASKS',
-      payload: {
-        workspaceId: workspaceId,
-        projectId: projectId,
-        sections: makeSwimlanes(tasks)
-      }
-    })
+    addSectionsAndTasks(dispatch, id, tasks);
+  })
+  .then(() => {
+    dispatch({ type: 'RECEIVED_SECTIONS_AND_TASKS' })
   });
 };
 
-Actions.getInitialTasksForProject = (workspaceId, projectId) => {
+Actions.getInitialTasksForProject = (id) => {
   return (dispatch) => {
     // First dispatch the selection incase we can get the sections from the tree already
     dispatch({
       type: 'REQUEST_SECTIONS_AND_TASKS',
-      payload: {
-        workspaceId: workspaceId,
-        projectId: projectId
-      }
+      payload: { id: id }
     });
 
-    getTasksForProject(dispatch, workspaceId, projectId);
+    getTasksForProject(dispatch, id);
   };
 };
 
-Actions.updateTasksForProject = (workspaceId, projectId) => {
+Actions.updateTasksForProject = (projectId) => {
   return (dispatch) => {
     dispatch({ type: 'UPDATE_SECTIONS_AND_TASKS' });
     getTasksForProject(dispatch, workspaceId, projectId);

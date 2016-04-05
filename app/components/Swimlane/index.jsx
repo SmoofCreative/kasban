@@ -33,9 +33,11 @@ const Swimlane = React.createClass({
   },
 
   renderCards() {
-    const { cards, moveCard, taskUpdate, isStatic } = this.props;
+    const { cards, cardEntities, moveCard, taskUpdate, isStatic } = this.props;
 
-    return cards.map((card) => {
+    return cards.map((cardId) => {
+      const card = cardEntities[cardId];
+
       const cardProps = {
         key: card.id,
         card: card,

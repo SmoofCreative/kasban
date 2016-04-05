@@ -9,6 +9,12 @@ if (persistedState) {
 } else {
   initialState = {
     workspaces: [],
+    entities: {
+      workspaces: {},
+      projects: {},
+      sections: {},
+      cards: {}
+    },
     currentTaskId: null,
     currentSectionId: null,
     currentProjectId: null,
