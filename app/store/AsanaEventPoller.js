@@ -3,22 +3,20 @@ import Actions from '../actions';
 
 const AsanaEventPoller = (store) => {
 
-  let _workspaceId,
-      _projectId,
+  let _projectId,
       _syncToken,
       _interval,
       _rerun = true;
 
-  const init = (workspaceId, projectId, options = { syncToken: '', interval: 3000 }) => {
-    _workspaceId = workspaceId;
+  const init = (projectId, options = { syncToken: '', interval: 3000 }) => {
     _projectId = projectId;
     _syncToken = options.syncToken;
     _interval = options.interval;
-  }
+  };
 
   const resetInterval = () => {
     _interval = 3000;
-  }
+  };
 
   const checkEvent = () => {
     AsanaClient.events
@@ -53,7 +51,6 @@ const AsanaEventPoller = (store) => {
 
       })
       .catch(() => {
-        // console.log('data err', err)
         // backoff
         _interval = 9000;
 
@@ -64,7 +61,7 @@ const AsanaEventPoller = (store) => {
         }
       });
 
-  }
+  };
 
   const start = () => {
     _rerun = true;
@@ -77,22 +74,21 @@ const AsanaEventPoller = (store) => {
     _rerun = false;
   };
 
-  const changeProject = (workspaceId, projectId) => {
+  const changeProject = (projectId) => {
     stop();
 
     setTimeout(() => {
-      _workspaceId = workspaceId;
       _projectId = projectId;
       start();
     }, _interval + 100);
-  }
+  };
 
   return {
     init: init,
     start: start,
     stop: stop,
     changeProject: changeProject
-  }
+  };
 };
 
 export default AsanaEventPoller;
