@@ -1,4 +1,5 @@
 import querystringify from 'querystringify';
+import uuid from 'uuid';
 
 import { oneHourFromNow } from '../utils';
 import AsanaClient from '../utils/AsanaClient';
@@ -9,107 +10,206 @@ import Workspace from './workspace';
 
 const Actions = {};
 
+const storeWorkspace = (dispatch, workspace) => {
+  dispatch({ 
+    type: 'ADD_WORKSPACE',
+    payload: {
+      id: workspace.id,
+      workspace: workspace
+    }
+  });
+};
+
+const storeProject = (dispatch, workspaceId, project) => {
+  dispatch({ 
+    type: 'ADD_PROJECT',
+    payload: {
+      id: project.id,
+      project: project,
+      workspaceId: workspaceId
+    }
+  });
+};
+
+const getTasksForProject = (dispatch, id) => {
+  const project = Project(id);
+  project.getTasks(AsanaClient)
+    .then((tasks) => {
+      addSectionsAndCards(dispatch, id, tasks);
+    })
+    .then(() => {
+      dispatch({ type: 'RECEIVED_SECTIONS_AND_TASKS' })
+    });
+};
+
+const storeSection = (dispatch, projectId, section) => {
+  dispatch({ 
+    type: 'ADD_SECTION',
+    payload: {
+      id: section.id,
+      section: section,
+      projectId: projectId
+    }
+  });
+};
+
+const moveSection = (dispatch, sectionId, projectId, index) => {
+  dispatch({
+    type: 'MOVE_SECTION',
+    payload: {
+      sectionId: sectionId,
+      projectId: projectId,
+      index: index
+    }
+  });
+};
+
+const isSection = (item) => {
+  return item.name.slice(-1) === ':';
+};
+
+const storeCard = (dispatch, sectionId, card) => {
+  dispatch({ 
+    type: 'ADD_CARD',
+    payload: {
+      id: card.id,
+      card: card,
+      sectionId: sectionId
+    }
+  });
+};
+
+const removeCard = (dispatch, cardId, sectionId) => {
+  dispatch({
+    type: 'REMOVE_CARD',
+    payload: {
+      sectionId: sectionId,
+      id: cardId
+    }
+  });
+};
+
+const completeCard = (dispatch, taskId) => {
+  dispatch({ type: 'COMPLETING_CARD', payload: { id: taskId } });
+
+  const task = Task(taskId);
+  task.complete(AsanaClient)
+    .then(() => { dispatch({ type: 'COMPLETED_CARD_SUCCESS' }); })
+    .catch(() => { dispatch({ type: 'COMPLETED_CARD_FAILED' }); });
+};
+
+const addSectionsAndCards = (dispatch, projectId, tasks) => {
+  // First add our own hardcoded sections
+
+  const presetSections = [{
+    id: 'completed',
+    name: 'Completed',
+    completed: true,
+
+    cards: []
+  },
+    {
+      id: 'uncategorised',
+      name: 'Uncategorised:',
+      completed: false,
+      cards: []
+    }];
+
+  presetSections.map((section) => {
+    storeSection(dispatch, projectId, section);
+  });
+
+  if (tasks.length) {
+    for (let item of tasks) {
+      if (isSection(item)) {
+        storeSection(dispatch, projectId, item);
+        continue;
+      }
+
+      if (item.completed) {
+        storeCard(dispatch, 'completed', item);
+        continue;
+      }
+
+      if (item.memberships.length) {
+        if (item.memberships[0].section !== null) {
+          storeCard(dispatch, item.memberships[0].section.id, item);
+          continue;
+        }
+      }
+
+      // If here the task is not completed nor in a section
+      storeCard(dispatch, 'uncategorised', item);
+    }
+  }
+
+  // Move the uncategorised column to the front
+  moveSection(dispatch, 'uncategorised', projectId, 0)
+};
+
 Actions.getWorkspaces = () => {
   return (dispatch) => {
     dispatch({ type: 'REQUEST_WORKSPACES_AND_PROJECTS' });
     const workspace = Workspace();
 
-    // Ask for the workspaces
     workspace.getWorkspaces(AsanaClient)
-    .then((workspaces) => {
-      // For each of the workspaces, get its related projects
+    .then((workspaces) => { 
       workspaces.map((ws) => {
+        storeWorkspace(dispatch, ws);
         workspace.getProjects(ws.id, AsanaClient)
         .then((projects) => {
-          dispatch({
-            type: 'RECEIVED_WORKSPACES_AND_PROJECTS',
-            payload: {
-              workspace: { id: ws.id, name: ws.name },
-              projects: projects
-            }
+          projects.map((project) => {
+            storeProject(dispatch, ws.id, project);
           });
-        })
+        });
       });
+
+      // Return null as otherwise we get a warning about not returning promises
+      return null;
+    })
+    .then(() => {
+      dispatch({ type: 'RECEIVED_WORKSPACES_AND_PROJECTS' });
     });
-  };
-};
-
-const completeCard = (dispatch, taskId) => {
-  dispatch({ type: 'COMPLETING_TASK', payload: { taskId: taskId } });
-
-  const task = Task(taskId);
-  task.complete(AsanaClient)
-  .then(() => { dispatch({ type: 'COMPLETED_TASK_SUCCESS' }); })
-  .catch(() => { dispatch({ type: 'COMPLETED_TASK_FAILED' }); });
-};
-
-Actions.moveCard = (idToMove, idToInsertAfter, projectId) => {
-  return (dispatch) => {
-    if (idToInsertAfter === 'completed') {
-      completeCard(dispatch, idToMove);
-    }
-
-    if (idToMove === idToInsertAfter) {
-      dispatch({ type: 'MOVED_TASK_SELF' });
-    } else {
-      dispatch({
-        type: 'MOVING_TASK',
-        payload: {
-          idToMove: idToMove,
-          idToInsertAfter: idToInsertAfter
-        }
-      });
-
-      let data = {
-        projectId: projectId,
-        insertAfter: null
-      }
-
-      if (idToInsertAfter) {
-        if (idToInsertAfter !== 'completed' && idToInsertAfter !== 'uncategorised') {
-          data.insertAfter = idToInsertAfter
-        }
-      }
-
-      const task = Task(idToMove);
-      task.move(data, AsanaClient)
-      .then(() => { dispatch({ type: 'MOVED_TASK_SUCCESS' }); })
-      .catch(() => { dispatch({ type: 'MOVED_TASK_FAILED' }); })
-    }
   };
 };
 
 Actions.createTask = (params) => {
   return (dispatch) => {
-    let { taskDetails, sectionId, projectId, workspaceId } = params;
+    // Generate a temporary id to use for adding to store
+    const cardId = uuid.v4();
 
-    dispatch({
-      type: 'CREATING_TASK',
-      payload: {
-        task: taskDetails,
-        sectionId: sectionId
-      }
-    });
+    let { taskDetails, sectionId, projectId } = params;
+
+    // Store this so we can differentiate between asana and our own stores
+    let asanaSectionId = sectionId;
+
+    taskDetails.id = cardId;
+
+    // Store the card locally
+    storeCard(dispatch, sectionId, taskDetails);
 
     if (sectionId == 'completed') {
       taskDetails.completed = true;
     }
 
     if (sectionId == 'uncategorised' || sectionId == 'completed') {
-      sectionId = null
+      asanaSectionId = null
     }
 
+    taskDetails.projects = [projectId];
+
     taskDetails.memberships = [{
-      project: projectId,
-      section: sectionId
+      section: asanaSectionId,
+      project: projectId
     }];
 
-    taskDetails.workspace = workspaceId;
-
-    const task = Task(null);
+    const task = Task();
     task.create(taskDetails, AsanaClient)
-    .then(() => { dispatch({ type: 'CREATE_TASK_SUCCESS' }); })
-    .catch(() => { dispatch({ type: 'CREATE_TASK_FAILED' }); });
+      .then((data) => {
+        storeCard(dispatch, sectionId, data);
+        removeCard(dispatch, cardId, sectionId);
+      })
+      .catch(() => { dispatch({ type: 'ADD_CARD_FAILED' }); });
   };
 };
 
@@ -118,106 +218,74 @@ Actions.updateTask = (params) => {
     let { taskDetails, updateAsana } = params;
 
     dispatch({
-      type: 'UPDATING_TASK',
+      type: 'UPDATE_CARD',
       payload: {
-        task: taskDetails
+        id: taskDetails.id,
+        card: taskDetails
       }
     });
 
     if (updateAsana) {
       const task = Task(taskDetails.id);
       task.update(taskDetails, AsanaClient)
-      .then(() => { dispatch({ type: 'UPDATING_TASK_SUCCESS' }); })
-      .catch(() => { dispatch({ type: 'UPDATING_TASK_FAILED' }); });
+        .then(() => { dispatch({ type: 'UPDATING_CARD_SUCCESS' }); })
+        .catch(() => { dispatch({ type: 'UPDATING_CARD_FAILED' }); });
     }
   };
 };
 
-function makeSwimlanes(list) {
-  let swimlanes = [];
-
-  // First push on the completed and uncategorised swimlane
-  swimlanes.unshift({
-    id: 'completed',
-    name: 'Completed:',
-    cards: []
-  });
-
-  swimlanes.unshift({
-    id: 'uncategorised',
-    name: 'Uncategorised:',
-    cards: []
-  });
-
-
-  if (list.length) {
-
-    // Go through the list of tasks
-    for (let task of list) {
-      // If the task is a new section push it to the front of the array
-      if (task.name.slice(-1) === ':') {
-        swimlanes.unshift({
-          id: task.id,
-          name: task.name,
-          cards: []
-        });
-
-        continue;
-      }
-
-      // Completed should be the last lane
-      // If task is not completed then add to current swimlane
-      let laneIndex = task.completed ? (swimlanes.length - 1) : 0;
-      swimlanes[laneIndex].cards.push(task);
+Actions.moveCard = (cardToMove, cardToInsertAfter, projectId) => {
+  return (dispatch) => {
+    if (cardToInsertAfter.completed) {
+      completeCard(dispatch, cardToMove.id);
     }
 
-    // As we want the uncategorised swimlane first find and splice it to the front
-    for (let swimlaneIndex in swimlanes) {
-      if (swimlanes[swimlaneIndex].id === 'uncategorised') {
-        let uncategorisedSwimlane = swimlanes.splice(swimlaneIndex, 1)[0];
-        swimlanes.unshift(uncategorisedSwimlane);
-        break;
-      }
-    }
-  }
+    if (cardToMove.id === cardToInsertAfter.id) {
+      dispatch({ type: 'MOVED_CARD_SELF' });
+    } else {
+      dispatch({
+        type: 'MOVE_CARD',
+        payload: {
+          cardToMove: cardToMove,
+          cardToInsertAfter: cardToInsertAfter
+        }
+      });
 
-  return swimlanes;
-}
-
-const getTasksForProject = (dispatch, workspaceId, projectId) => {
-  const project = Project(projectId);
-  project.getTasks(AsanaClient)
-  .then((tasks) => {
-    dispatch({
-      type: 'RECEIVED_SECTIONS_AND_TASKS',
-      payload: {
-        workspaceId: workspaceId,
+      let data = {
         projectId: projectId,
-        sections: makeSwimlanes(tasks)
+        insertAfter: null
+      };
+
+      if (cardToInsertAfter) {
+        if (!cardToInsertAfter.completed && cardToInsertAfter.id !== 'uncategorised') {
+          data.insertAfter = cardToInsertAfter.id
+        }
       }
-    })
-  });
+      
+      const task = Task(cardToMove.id);
+      task.move(data, AsanaClient)
+      .then(() => { dispatch({ type: 'MOVED_CARD_SUCCESS' }); })
+      .catch(() => { dispatch({ type: 'MOVED_CARD_FAILED' }); })
+    }
+  };
 };
 
-Actions.getInitialTasksForProject = (workspaceId, projectId) => {
+Actions.getInitialTasksForProject = (id) => {
   return (dispatch) => {
     // First dispatch the selection incase we can get the sections from the tree already
     dispatch({
       type: 'REQUEST_SECTIONS_AND_TASKS',
-      payload: {
-        workspaceId: workspaceId,
-        projectId: projectId
-      }
+      payload: { id: id }
     });
 
-    getTasksForProject(dispatch, workspaceId, projectId);
+    getTasksForProject(dispatch, id);
   };
 };
 
-Actions.updateTasksForProject = (workspaceId, projectId) => {
+Actions.updateTasksForProject = (projectId) => {
   return (dispatch) => {
     dispatch({ type: 'UPDATE_SECTIONS_AND_TASKS' });
-    getTasksForProject(dispatch, workspaceId, projectId);
+    getTasksForProject(dispatch, projectId);
   };
 }
 

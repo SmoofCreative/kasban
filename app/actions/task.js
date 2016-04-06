@@ -17,7 +17,7 @@ const Task = (taskId = null) => {
       .then((data) => { resolve(data); })
       .catch((err) => { reject(err); })
     });
-  }
+  };
 
   const complete = (asanaClient) => {
     return update({ completed: true }, asanaClient);

@@ -6,23 +6,26 @@ import './style';
 import AccordionSection from './accordion-section';
 import Loading from '../Loading';
 
-const renderWorkspaces = ({ workspaces, currentWorkspaceId, currentProjectId, onProjectSelected }) => {
-  return workspaces.map((workspace) => {
+const renderWorkspaces = ({ workspaces, workspaceEntities, projectEntities, currentProjectId, onProjectSelected }) => {
+  return workspaces.map((workspaceId) => {
+    const workspace = workspaceEntities[workspaceId];
+
     return (
       <AccordionSection
         key={workspace.id}
         classname="sidebar__section"
-        title={workspace.name}
-        active={ currentWorkspaceId == workspace.id}>
+        title={workspace.name}>
         <ul className="sidebar__projects">
           {
-            workspace.projects.map((project) => {
-              let projectClasses = classNames('sidebar__project', { active: currentProjectId == project.id });
+            workspace.projects.map((projectId) => {
+              const project = projectEntities[projectId];
+              const projectClasses = classNames('sidebar__project', { active: currentProjectId == project.id });
+
               return (
                 <li
                   key={project.id}
                   className={ projectClasses }
-                  onClick={onProjectSelected.bind(this, workspace.id, project.id)}>
+                  onClick={onProjectSelected.bind(this, project.id)}>
                   { project.name }
                 </li>
               );

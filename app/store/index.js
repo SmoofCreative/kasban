@@ -28,7 +28,6 @@ export default function configureStore() {
      * update, hence we use _debounce.
      */
     function persistBoardsState (currentState) {
-      console.log('localstore save')
       localStorage.setItem('boards', JSON.stringify(currentState.boards));
     }
 
@@ -44,25 +43,25 @@ export default function configureStore() {
    * Asana Events Polling
    */
   // Reference copy of state before we update it.
-  let stateTracker = store.getState();
+  // let stateTracker = store.getState();
 
-  const poller = AsanaEventPoller(store);
-  poller.init(stateTracker.boards.currentWorkspaceId, stateTracker.boards.currentProjectId);
+  // const poller = AsanaEventPoller(store);
+  // poller.init(stateTracker.boards.currentWorkspaceId, stateTracker.boards.currentProjectId);
 
-  if (stateTracker.boards.currentProjectId !== null) {
-    poller.start();
-  }
+  // if (stateTracker.boards.currentProjectId !== null) {
+  //   poller.start();
+  // }
 
-  store.subscribe(() => {
-    // Any time there's a state update, we want to see if the projectId has changed.
-    // So refer check against reference state.
-    let currentState = store.getState();
-    if (currentState.boards.currentProjectId !== stateTracker.boards.currentProjectId ) {
-      poller.changeProject(currentState.boards.currentWorkspaceId, currentState.boards.currentProjectId);
-      // Update the reference state for next time!
-      stateTracker = currentState;
-    }
-  })
+  // store.subscribe(() => {
+  //   // Any time there's a state update, we want to see if the projectId has changed.
+  //   // So refer check against reference state.
+  //   let currentState = store.getState();
+  //   if (currentState.boards.currentProjectId !== stateTracker.boards.currentProjectId ) {
+  //     poller.changeProject(currentState.boards.currentWorkspaceId, currentState.boards.currentProjectId);
+  //     // Update the reference state for next time!
+  //     stateTracker = currentState;
+  //   }
+  // })
 
   return store;
 }

@@ -27,13 +27,10 @@ UIActions.setSidebarVisibilty = (show) => {
 };
 
 UIActions.selectTask = (params) => {
-  const { taskId, sectionId } = params;
-
   return {
-    type: 'TASK_SELECTED',
+    type: 'CARD_SELECTED',
     payload: {
-      taskId: taskId,
-      sectionId: sectionId
+      id: params.id
     }
   };
 };
@@ -45,6 +42,6 @@ UIActions.hideTaskDetailsSidebar = () => {
       showSidebar: false
     }
   }
-}
+};
 
 export default UIActions;

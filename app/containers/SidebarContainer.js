@@ -5,15 +5,18 @@ import UIActions from '../actions/ui';
 import Sidebar from '../components/Sidebar';
 
 const mapStateToProps = (state) => {
-  return {
-    showSidebarLoading: state.ui.showSidebarLoading
+  return {  
+    workspaceEntities: state.entities.workspaces.records,    
+    projectEntities: state.entities.projects.records,
+    showSidebarLoading: state.ui.showSidebarLoading,
+    visible: state.ui.showSidebar 
   }
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onProjectSelected: (workspaceId, projectId) => {
-      dispatch(Actions.getInitialTasksForProject(workspaceId, projectId));
+    onProjectSelected: (projectId) => {
+      dispatch(Actions.getInitialTasksForProject(projectId));
       dispatch(UIActions.hideSidebar());
     },
     onBackdropClick: () => {
