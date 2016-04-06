@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux'
-import update from 'react/lib/update';
 
 const records = (state = {}, action) => {
-  switch (action.type) {
-    case 'ADD_CARD': {
+  switch (action.type) {    
+    case 'ADD_CARD':
+    case 'ADD_CARD_SUCCESS': {
       return {
         ...state,
         [action.payload.id]: {
@@ -28,17 +28,17 @@ const records = (state = {}, action) => {
 
 const conditions = (state = {}, action) => {
   switch (action.type) {
-    case 'UPDATE_CONDITION': {
+    case 'CARD_SELECTED': {
       return {
         ...state,
-        [action.payload.id]: action.payload.value
+        currentId: action.payload.id
       }
     }
     default: {
       return state;
     }
   }
-}
+};
 
 const cards = combineReducers({
   records,

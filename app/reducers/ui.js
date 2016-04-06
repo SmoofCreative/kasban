@@ -11,7 +11,7 @@ export default function auth(state = initialState, action) {
     case 'UPDATE_SIDEBAR_VISIBILITY': {
       return Object.assign({}, state, { showSidebar: action.payload.showSidebar });
     }
-    case 'TASK_SELECTED': {
+    case 'CARD_SELECTED': {
       return Object.assign({}, state, { showTaskDetailsSidebar: true });
     }
     case 'UPDATE_TASK_DETAILS_SIDEBAR_VISIBILITY': {

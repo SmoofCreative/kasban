@@ -28,7 +28,6 @@ export default function configureStore() {
      * update, hence we use _debounce.
      */
     function persistBoardsState (currentState) {
-      console.log('localstore save')
       localStorage.setItem('boards', JSON.stringify(currentState.boards));
     }
 

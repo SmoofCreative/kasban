@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
 import _flow from 'lodash/flow';
 
@@ -7,7 +7,8 @@ import Card from '../components/Card';
 const cardSource = {
   beginDrag(props) {
     return {
-      id: props.card.id
+      ...props.card,
+      sectionId: props.sectionId
     };
   }
 };
@@ -15,7 +16,13 @@ const cardSource = {
 const cardTarget = {
   drop(props, monitor) {
     const item = monitor.getItem();
-    props.moveCard(item.id, props.card.id);
+
+    const data = {
+      ...props.card,
+      sectionId: props.sectionId
+    };
+
+    props.onCardMoved(item, data);
   }
 };
 
@@ -34,6 +41,13 @@ const targetCollect = (connect, monitor) => ({
 const DraggableCard = (props) => {
   const { connectDropTarget, connectDragPreview } = props;
   return connectDragPreview(connectDropTarget(<div><Card {...props} isDraggable={ true } /></div>))
+};
+
+DraggableCard.propTypes = {
+  card: PropTypes.object.isRequired,
+  onCardMoved: PropTypes.func.isRequired,
+  connectDropTarget: PropTypes.func.isRequired,
+  connectDragPreview: PropTypes.func.isRequired
 };
 
 export default _flow(

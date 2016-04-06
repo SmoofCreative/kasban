@@ -7,6 +7,6 @@ const workspacesList = (state = [], action) => {
       return state;
     }
   }
-}
+};
 
 export default workspacesList;

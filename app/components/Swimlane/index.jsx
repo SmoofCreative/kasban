@@ -14,26 +14,16 @@ const Swimlane = React.createClass({
     return {
       isStatic: false,
       isFullWidth: false,
-      isSubTasks: false
     }
-  },
-
-  handleNewTaskSubmit(task) {
-    // Add the swimlane id
-    let { id, newTaskSubmit} = this.props;
-    newTaskSubmit(task, id);
   },
 
   handleTaskSelected(taskId) {
-    let { id, onTaskSelected, isSubTasks } = this.props;
-
-    if (!isSubTasks) {
-      onTaskSelected(taskId, id);
-    }
+    let { id, onTaskSelected } = this.props;
+    onTaskSelected(taskId, id);
   },
-
+  
   renderCards() {
-    const { cards, cardEntities, moveCard, taskUpdate, isStatic } = this.props;
+    const { id, cards, cardEntities, onCardMoved, onTaskUpdated, isStatic } = this.props;
 
     return cards.map((cardId) => {
       const card = cardEntities[cardId];
@@ -41,18 +31,19 @@ const Swimlane = React.createClass({
       const cardProps = {
         key: card.id,
         card: card,
-        taskUpdate: taskUpdate,
-        onCardClick: this.handleTaskSelected
+        onTaskUpdated: onTaskUpdated,
+        onCardClick: this.handleTaskSelected,
+        sectionId: id
       };
 
       return isStatic
               ? <Card { ...cardProps } />
-              : <DraggableCard { ...cardProps } moveCard={moveCard} />
+              : <DraggableCard { ...cardProps } onCardMoved={onCardMoved} />
     });
   },
 
   render() {
-    const { id, name, moveCard, taskUpdate, isStatic, isFullWidth } = this.props;
+    const { id, name, completed, memberships, onCardMoved, onTaskUpdated, isStatic, isFullWidth } = this.props;
 
     const sectionClasses = classNames('swimlane', {
       'swimlane--full-width': isFullWidth
@@ -60,17 +51,20 @@ const Swimlane = React.createClass({
 
     return (
       <section className={sectionClasses}>
-
         {
           isStatic
-            ? <SwimlaneHeader id={id} title={name} taskUpdate={taskUpdate} />
-            : <DroppableSwimlaneHeader id={id} title={name} moveCard={moveCard} taskUpdate={taskUpdate} />
+            ? <SwimlaneHeader id={id} title={name} onTaskUpdated={onTaskUpdated} />
+            : <DroppableSwimlaneHeader
+                id={id}
+                title={name}
+                completed={completed}
+                memberships={memberships}
+                onCardMoved={onCardMoved}
+                onTaskUpdated={onTaskUpdated} />
         }
-
-
         <div className="swimlane__cards">
           { this.renderCards() }
-          <SwimlaneFooter id={id} onSubmit={ this.handleNewTaskSubmit } />
+          <SwimlaneFooter id={id} onSubmit={ this.props.onNewTaskSubmit } />
         </div>
       </section>
     );

@@ -38,17 +38,11 @@ const records = (state = {}, action) => {
 
 const conditions = (state = {}, action) => {
   switch (action.type) {
-    case 'UPDATE_CONDITION': {
-      return {
-        ...state,
-        [action.payload.id]: action.payload.value
-      }
-    }
     default: {
       return state;
     }
   }
-}
+};
 
 const workspaces = combineReducers({
   records,

@@ -33,10 +33,10 @@ const Card = React.createClass({
 
     let task = {
       id: this.props.card.id,
-      name: cardNameInput.value.trim()
+      name: cardNameInput.value
     };
 
-    this.props.taskUpdate(task, updateAsana);
+    this.props.onTaskUpdated(task, updateAsana);
   },
 
   handleTaskUpdateBlur() {
@@ -84,7 +84,7 @@ const Card = React.createClass({
         <textarea type="text"
                ref="cardNameInput"
                className="swimcard__update-input"
-               value={ this.props.card.name.trim() }
+               value={ this.props.card.name }
                rows="1"
                onBlur={ this.handleTaskUpdateBlur }
                onKeyDown={ this.handleTaskKeyDown }

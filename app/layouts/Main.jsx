@@ -65,7 +65,7 @@ const Main = React.createClass({
       return this.renderAuthenticateMessage();
     }
 
-    if (this.props.currentProjectId === null) {
+    if (typeof this.props.currentProjectId === 'undefined') {
       return this.renderSelectAProject();
     }
 
@@ -91,6 +91,7 @@ const Main = React.createClass({
         <main className={ mainClasses }>
           { this.renderContent() }
         </main>
+        <CurrentTaskDetailsSidebar />
         <Sidebar
           workspaces={ this.props.workspacesList }
           currentProjectId={ this.props.currentProjectId }
@@ -112,10 +113,3 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps)(Main);
-
-
-/*
-
-
-
-*/

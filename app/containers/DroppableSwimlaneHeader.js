@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { DropTarget } from 'react-dnd';
 
 import SwimlaneHeader from '../components/Swimlane/header.jsx';
@@ -6,7 +6,13 @@ import SwimlaneHeader from '../components/Swimlane/header.jsx';
 const cardTarget = {
   drop(props, monitor) {
     const item = monitor.getItem();
-    props.moveCard(item.id, props.id);
+
+    const data = {
+      ...props,
+      sectionId: props.id
+    };
+
+    props.onCardMoved(item, data);
   }
 };
 
@@ -17,6 +23,10 @@ const collect = (connect) => ({
 const DroppableSwimlaneHeader = (props) => {
   const { connectDropTarget } = props;
   return connectDropTarget(<div><SwimlaneHeader {...props} /></div>) ;
+};
+
+DroppableSwimlaneHeader.propTypes = {
+  onCardMoved: PropTypes.func.isRequired
 };
 
 export default DropTarget('card', cardTarget, collect)(DroppableSwimlaneHeader);

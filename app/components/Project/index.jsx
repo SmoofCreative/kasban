@@ -10,15 +10,7 @@ const Project = (props) => {
         {
           props.sections.map((sectionId) => {
             const section = props.sectionEntities[sectionId];
-
-            return <Swimlane key={section.id}
-                      cards={section.cards}
-                      name={section.name}
-                      moveCard={props.onCardMove}
-                      newTaskSubmit={props.onNewTaskSubmit}
-                      taskUpdate={props.onTaskUpdate}
-                      onTaskSelected={props.onTaskSelected}
-                      id={section.id} />;
+            return <Swimlane key={section.id} {...section} />;
           })
         }
       </div>
