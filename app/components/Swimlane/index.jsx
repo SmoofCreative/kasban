@@ -1,11 +1,23 @@
 import React from 'react';
+import classNames from 'classnames';
 
 import './style';
 import DraggableCard from '../../containers/DraggableCard';
+import Card from '../Card';
+import DroppableSwimlaneHeader from '../../containers/DroppableSwimlaneHeader';
 import SwimlaneHeader from './header';
 import SwimlaneFooter from './footer';
 
+
 const Swimlane = React.createClass({
+  getDefaultProps() {
+    return {
+      isStatic: false,
+      isFullWidth: false,
+      isSubTasks: false
+    }
+  },
+
   handleNewTaskSubmit(task) {
     // Add the swimlane id
     let { id, newTaskSubmit} = this.props;
@@ -13,32 +25,46 @@ const Swimlane = React.createClass({
   },
 
   handleTaskSelected(taskId) {
-    let { id, onTaskSelected } = this.props;
-    onTaskSelected(taskId, id);
+    let { id, onTaskSelected, isSubTasks } = this.props;
+
+    if (!isSubTasks) {
+      onTaskSelected(taskId, id);
+    }
   },
 
   renderCards() {
-    const { cards, moveCard, taskUpdate } = this.props;
+    const { cards, moveCard, taskUpdate, isStatic } = this.props;
 
-    return cards.map((card) => (
-      <DraggableCard
-        key={card.id}
-        card={card}
-        moveCard={moveCard}
-        taskUpdate={taskUpdate}
-        onCardClick={this.handleTaskSelected} />
-    ));
+    return cards.map((card) => {
+      const cardProps = {
+        key: card.id,
+        card: card,
+        taskUpdate: taskUpdate,
+        onCardClick: this.handleTaskSelected
+      };
+
+      return isStatic
+              ? <Card { ...cardProps } />
+              : <DraggableCard { ...cardProps } moveCard={moveCard} />
+    });
   },
 
   render() {
-    const { id, name, moveCard, taskUpdate } = this.props;
+    const { id, name, moveCard, taskUpdate, isStatic, isFullWidth } = this.props;
+
+    const sectionClasses = classNames('swimlane', {
+      'swimlane--full-width': isFullWidth
+    });
 
     return (
-      <section className="swimlane">
-        <SwimlaneHeader id={id}
-                        title={name}
-                        moveCard={moveCard}
-                        taskUpdate={taskUpdate} />
+      <section className={sectionClasses}>
+
+        {
+          isStatic
+            ? <SwimlaneHeader id={id} title={name} taskUpdate={taskUpdate} />
+            : <DroppableSwimlaneHeader id={id} title={name} moveCard={moveCard} taskUpdate={taskUpdate} />
+        }
+
 
         <div className="swimlane__cards">
           { this.renderCards() }

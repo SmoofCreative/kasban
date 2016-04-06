@@ -19,6 +19,10 @@ $swimlane-header-horizontal-padding: 15px;
     margin-right: $swimlane-gutter;
   }
 
+  &--full-width{
+    width: 100%;
+  }
+
   &__header {
     width: 100%;
     height: $swimlane-header-height;
@@ -73,7 +77,6 @@ $swimlane-header-horizontal-padding: 15px;
   }
 
   &__footer {
-    width: $swimlane-width;
     min-height: 50px;
     padding-top: $swimlane-header-horizontal-padding;
     padding-right: 5px;

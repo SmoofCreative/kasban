@@ -1,21 +1,6 @@
-import React, { PropTypes }  from 'react';
-import { DropTarget } from 'react-dnd';
-
-const cardTarget = {
-  drop(props, monitor) {
-    const item = monitor.getItem();
-    props.moveCard(item.id, props.id);
-  }
-};
-
-const collect = (connect) => ({
-  connectDropTarget: connect.dropTarget()
-});
+import React from 'react';
 
 const SwimlaneHeader = React.createClass({
-  propTypes: {
-    connectDropTarget: PropTypes.func.isRequired
-  },
 
   getInitialState() {
     return { isUpdatingTitle: false };
@@ -63,9 +48,9 @@ const SwimlaneHeader = React.createClass({
   },
 
   render() {
-    const { connectDropTarget, title } = this.props;
+    const { title } = this.props;
 
-    return connectDropTarget(
+    return (
       <header className="swimlane__header">
         {
           this.state.isUpdatingTitle ?
@@ -77,4 +62,4 @@ const SwimlaneHeader = React.createClass({
   }
 });
 
-export default DropTarget('card', cardTarget, collect)(SwimlaneHeader);
+export default SwimlaneHeader;
