@@ -13,7 +13,7 @@ const Swimlane = React.createClass({
   getDefaultProps() {
     return {
       isStatic: false,
-      isFullWidth: false,
+      isFullWidth: false
     }
   },
 

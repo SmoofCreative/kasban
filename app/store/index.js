@@ -15,7 +15,7 @@ const loggerMiddleware = createLogger({
 
 export default function configureStore() {
   const createStoreWithMiddleware = applyMiddleware(loggerMiddleware, thunk)(createStore);
-  const store = createStoreWithMiddleware(reducers)
+  const store = createStoreWithMiddleware(reducers);
 
   store.subscribe(() => {
     /**
@@ -43,25 +43,28 @@ export default function configureStore() {
    * Asana Events Polling
    */
   // Reference copy of state before we update it.
-  // let stateTracker = store.getState();
+  let stateTracker = store.getState();
 
-  // const poller = AsanaEventPoller(store);
-  // poller.init(stateTracker.boards.currentWorkspaceId, stateTracker.boards.currentProjectId);
+  const poller = AsanaEventPoller(store);
+  poller.init(stateTracker.entities.projects.conditions.currentId);
 
-  // if (stateTracker.boards.currentProjectId !== null) {
-  //   poller.start();
-  // }
+  if (stateTracker.entities.projects.conditions.currentId !== null) {
+    poller.start();
+  }
 
-  // store.subscribe(() => {
-  //   // Any time there's a state update, we want to see if the projectId has changed.
-  //   // So refer check against reference state.
-  //   let currentState = store.getState();
-  //   if (currentState.boards.currentProjectId !== stateTracker.boards.currentProjectId ) {
-  //     poller.changeProject(currentState.boards.currentWorkspaceId, currentState.boards.currentProjectId);
-  //     // Update the reference state for next time!
-  //     stateTracker = currentState;
-  //   }
-  // })
+  store.subscribe(() => {
+    // Any time there's a state update, we want to see if the projectId has changed.
+    // So refer check against reference state.
+    const currentState = store.getState();
+    const currentProjectId = currentState.entities.projects.conditions.currentId;
+
+    if (currentProjectId !== stateTracker.entities.projects.conditions.currentId) {
+      poller.changeProject(currentProjectId);
+
+      // Update the reference state for next time!
+      stateTracker = currentState;
+    }
+  });
 
   return store;
 }
