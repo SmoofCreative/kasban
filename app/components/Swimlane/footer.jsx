@@ -12,15 +12,18 @@ const SwimlaneFooter = React.createClass({
     this.setState({ isAdding: true });
   },
 
-  handleNewTaskBlur() {
-    this.setState({ isAdding: false, newTaskText: '' });
+  handleNewTaskBlur(e) {
+    this.handleNewTaskSubmit(e);
   },
 
   handleNewTaskSubmit(e) {
     e.preventDefault();
     let task = { name: this.state.newTaskText };
     this.setState({ isAdding: false, newTaskText: '' });
-    this.props.onSubmit(task);
+
+    if (task.name.length) {
+      this.props.onSubmit(task);
+    }
   },
 
   handleNewTaskTextChange(e) {
