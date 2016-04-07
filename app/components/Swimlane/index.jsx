@@ -15,7 +15,9 @@ const Swimlane = React.createClass({
       isStatic: false,
       isFullWidth: false,
       showInteractiveIcons: false,
-      isSubTasks: false
+      isSubTasks: false,
+      isSmall: false,
+      hasGutter: true
     }
   },
 
@@ -33,7 +35,7 @@ const Swimlane = React.createClass({
       onTaskSelected,
       onTaskUpdated, 
       isStatic, 
-      showInteractiveIcons 
+      showInteractiveIcons
      } = this.props;
 
     return cards.map((cardId) => {
@@ -59,10 +61,27 @@ const Swimlane = React.createClass({
   },
 
   render() {
-    const { id, name, completed, memberships, onCardMoved, onTaskUpdated, isStatic, isFullWidth } = this.props;
+    const { 
+      id, 
+      name, 
+      completed, 
+      memberships, 
+      onCardMoved, 
+      onTaskUpdated, 
+      isStatic, 
+      isFullWidth, 
+      isSmall,
+      hasGutter
+    } = this.props;
 
     const sectionClasses = classNames('swimlane', {
-      'swimlane--full-width': isFullWidth
+      'swimlane--full-width': isFullWidth,
+      'swimlane--no-gutter': !hasGutter,
+      'swimlane--small' : isSmall
+    });
+
+    const cardClasses = classNames('swimlane__cards', {
+      'swimlane__cards--small' : isSmall
     });
 
     return (
@@ -78,7 +97,7 @@ const Swimlane = React.createClass({
                 onCardMoved={onCardMoved}
                 onTaskUpdated={onTaskUpdated} />
         }
-        <div className="swimlane__cards">
+        <div className={cardClasses}>
           { this.renderCards() }
           <SwimlaneFooter id={id} onSubmit={ this.handleNewTaskSubmit } />
         </div>

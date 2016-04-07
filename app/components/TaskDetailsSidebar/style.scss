@@ -5,6 +5,8 @@ $sidebar-vertical-padding: 15px;
 
 $sidebar-close-colour: #BFC4D5;
 
+$sidebar-components-vertical-padding: 25px;
+
 .task-details-sidebar {
   display: none;
   position: fixed;
@@ -14,9 +16,7 @@ $sidebar-close-colour: #BFC4D5;
   height: 100%;
   border-left: 1px solid $sidebar-border-colour;
   padding-top: $sidebar-vertical-padding;
-  padding-right: $sidebar-horizontal-padding;
   padding-bottom: 0;
-  padding-left: $sidebar-horizontal-padding;
   background-color: $sidebar-secondary-colour;
 
   &.active {
@@ -33,12 +33,23 @@ $sidebar-close-colour: #BFC4D5;
     }
   }
 
+  &__details {
+    padding-right: $sidebar-horizontal-padding;
+    padding-left: $sidebar-horizontal-padding;
+    border-bottom: 1px solid $sidebar-border-colour;
+  }
+
   &__title {
-    padding-top: 25px;
+    padding-top: $sidebar-components-vertical-padding;
   }
 
   &__description {
-    padding-top: 25px;
+    padding-top: $sidebar-components-vertical-padding;
+    padding-bottom: $sidebar-components-vertical-padding;
+  }
+
+  &__sub-tasks {
+    padding-bottom: $sidebar-components-vertical-padding;
   }
 
   &__user-name {

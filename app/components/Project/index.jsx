@@ -10,7 +10,16 @@ const Project = (props) => {
         {
           props.sections.map((sectionId) => {
             const section = props.sectionEntities[sectionId];
-            return <Swimlane key={section.id} {...section} />;
+            return <Swimlane
+                      key={section.id}
+                      isFullWidth={false}
+                      isStatic={false}
+                      showInteractiveIcons={false}
+                      isSubTasks={false}
+                      isSmall={false}
+                      hasGutter={true}
+                      {...section}
+                  />;
           })
         }
       </div>

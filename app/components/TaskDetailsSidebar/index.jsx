@@ -31,14 +31,14 @@ const TaskDetailsSidebar = ({ card, visible, onSidebarClose }) => {
   const classes = classNames('task-details-sidebar', { active: visible });
 
   return (
-    <div>
-      <div className={ classes }>
-        <div className="task-details-sidebar__close">
-          <i onClick={ onSidebarClose }
-             className="fa fa-times task-details-sidebar__close__icon">
-          </i>
-        </div>
+    <div className={ classes }>
+      <div className="task-details-sidebar__close">
+        <i onClick={ onSidebarClose }
+           className="fa fa-times task-details-sidebar__close__icon">
+        </i>
+      </div>
 
+      <div className="task-details-sidebar__details">
         <UserImage user={ card.assignee } />
         { renderDisplayName(card.assignee) }
         <DueDate card={ card } showIcon={true} />
@@ -51,15 +51,19 @@ const TaskDetailsSidebar = ({ card, visible, onSidebarClose }) => {
           { card.notes }
         </p>
 
-        <Swimlane 
-          name="Subtasks" 
-          id={card.id} 
-          cards={card.subtasks} 
-          isFullWidth={true} 
-          isStatic={true} 
-          showInteractiveIcons={true}
-          isSubTasks={true}
-        />
+        <div className="task-details-sidebar__sub-tasks">
+          <Swimlane
+            name="Subtasks"
+            id={card.id}
+            cards={card.subtasks}
+            isFullWidth={true}
+            isStatic={true}
+            showInteractiveIcons={true}
+            isSubTasks={true}
+            isSmall={true}
+            hasGutter={false}
+          />
+        </div>
       </div>
     </div>
   );
