@@ -6,26 +6,15 @@ import UserImage from '../UserImage';
 import DueDate from '../DueDate';
 
 const Card = React.createClass({
-  componentDidMount() {
-    this.resizeInput();
+  getDefaultProps() {
+    return {
+      isDraggable: false,
+      showInteractiveIcons: false
+    };
   },
 
-  renderDragHandle() {
-    return (
-      <div className="pure-u-1-24 swimcard__drag-handle">
-        <svg className="swimcard__drag-handle__icon" viewBox="0 0 32 32" title="drag handle">
-          <rect x="6" y="2" width="4" height="4"></rect>
-          <rect x="14" y="2" width="4" height="4"></rect>
-          <rect x="6" y="10" width="4" height="4"></rect>
-          <rect x="14" y="10" width="4" height="4"></rect>
-          <rect x="6" y="18" width="4" height="4"></rect>
-          <rect x="14" y="18" width="4" height="4"></rect>
-          <rect x="22" y="2" width="4" height="4"></rect>
-          <rect x="22" y="10" width="4" height="4"></rect>
-          <rect x="22" y="18" width="4" height="4"></rect>
-        </svg>
-      </div>
-    );
+  componentDidMount() {
+    this.resizeInput();
   },
 
   handleTaskUpdate(updateAsana = false) {
@@ -78,6 +67,28 @@ const Card = React.createClass({
     onCardClick(card.id);
   },
 
+  renderDragHandle() {
+    return (      
+      <svg className="swimcard__drag-handle__icon" viewBox="0 0 32 32" title="drag handle">
+        <rect x="6" y="2" width="4" height="4"></rect>
+        <rect x="14" y="2" width="4" height="4"></rect>
+        <rect x="6" y="10" width="4" height="4"></rect>
+        <rect x="14" y="10" width="4" height="4"></rect>
+        <rect x="6" y="18" width="4" height="4"></rect>
+        <rect x="14" y="18" width="4" height="4"></rect>
+        <rect x="22" y="2" width="4" height="4"></rect>
+        <rect x="22" y="10" width="4" height="4"></rect>
+        <rect x="22" y="18" width="4" height="4"></rect>
+      </svg>
+    );
+  },
+
+  renderInteractiveIcons() {
+    return (
+      <i className="fa fa-eye" onClick={this.handleTaskSelected}></i>
+    )
+  },
+
   renderInput() {
     return (
       <form className="swimcard__update-form" tabIndex="-1">
@@ -95,12 +106,16 @@ const Card = React.createClass({
   },
 
   render() {
-    const { card, connectDragSource, canDrop, isOver, isDraggable = false } = this.props;
+    const { card, connectDragSource, canDrop, isOver, isDraggable, showInteractiveIcons } = this.props;
 
     const classes = classNames('swimcard__card-border', { active: canDrop && isOver });
 
+    const interactionSectionClasses = classNames('pure-u-1-24', {
+      'swimcard__drag-handle': isDraggable
+    });
+
     return (
-      <article onClick={this.handleTaskSelected} className="swimcard__card pure-g">
+      <article onClick={ !showInteractiveIcons && this.handleTaskSelected } className="swimcard__card pure-g">
         <div className={classes}>
 
           <div className="pure-u-4-24 swimcard__image">
@@ -112,7 +127,10 @@ const Card = React.createClass({
             <DueDate card={card} isSmall={true} />
           </div>
 
-          { isDraggable && connectDragSource(this.renderDragHandle()) }
+          <div className={ interactionSectionClasses }>
+            { isDraggable && connectDragSource(this.renderDragHandle()) }
+            { showInteractiveIcons && this.renderInteractiveIcons() }
+          </div>
         </div>
       </article>
     );

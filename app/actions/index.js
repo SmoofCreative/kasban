@@ -68,13 +68,45 @@ const isSection = (item) => {
   return item.name.slice(-1) === ':';
 };
 
-const storeCard = (dispatch, sectionId, card) => {
+const storeCard = (dispatch, parentId, card, type) => {
+  const dispatchType = `ADD_${type.toUpperCase()}`;
+
+  // Cloning so we can remove the none normalised subtasks
+  // They are populated elsewhere
+  const clonedCard = { ...card, subtasks: [] };
+  
   dispatch({ 
-    type: 'ADD_CARD',
+    type: dispatchType,
+    payload: {
+      id: clonedCard.id,
+      card: clonedCard,
+      parentId: parentId
+    }
+  });
+
+  storeSubtasks(dispatch, card);
+};
+
+const storeSubtasks = (dispatch, card) => { 
+  // If the card has subtasks, normalise the structure
+  if (typeof card.subtasks !== 'undefined' && card.subtasks.length) {
+    // First clone the card so that we can remove the current structure
+    const clonedCard = { ...card, subtasks: [] };
+    updateCard(dispatch, clonedCard);
+
+    // For each subtask, store it
+    card.subtasks.map((subtask) => {
+      storeCard(dispatch, clonedCard.id, subtask, 'subtask');
+    });
+  }
+};
+
+const updateCard = (dispatch, card) => {
+  dispatch({
+    type: 'UPDATE_CARD',
     payload: {
       id: card.id,
-      card: card,
-      sectionId: sectionId
+      card: card
     }
   });
 };
@@ -88,6 +120,16 @@ const removeCard = (dispatch, cardId, sectionId) => {
     }
   });
 };
+
+const removeSubtask = (dispatch, cardId, parentId) => {
+  dispatch({
+    type: 'REMOVE_SUBTASK',
+    payload: {
+      parentId: parentId,
+      id: cardId
+    }
+  });
+}
 
 const completeCard = (dispatch, taskId) => {
   dispatch({ type: 'COMPLETING_CARD', payload: { id: taskId } });
@@ -127,19 +169,19 @@ const addSectionsAndCards = (dispatch, projectId, tasks) => {
       }
 
       if (item.completed) {
-        storeCard(dispatch, 'completed', item);
+        storeCard(dispatch, 'completed', item, 'card');
         continue;
       }
 
       if (item.memberships.length) {
         if (item.memberships[0].section !== null) {
-          storeCard(dispatch, item.memberships[0].section.id, item);
+          storeCard(dispatch, item.memberships[0].section.id, item, 'card');
           continue;
         }
       }
 
       // If here the task is not completed nor in a section
-      storeCard(dispatch, 'uncategorised', item);
+      storeCard(dispatch, 'uncategorised', item, 'card');
     }
   }
 
@@ -186,7 +228,7 @@ Actions.createTask = (params) => {
     taskDetails.id = cardId;
 
     // Store the card locally
-    storeCard(dispatch, sectionId, taskDetails);
+    storeCard(dispatch, sectionId, taskDetails, 'card');
 
     if (sectionId == 'completed') {
       taskDetails.completed = true;
@@ -206,24 +248,39 @@ Actions.createTask = (params) => {
     const task = Task();
     task.create(taskDetails, AsanaClient)
       .then((data) => {
-        storeCard(dispatch, sectionId, data);
+        storeCard(dispatch, sectionId, data, 'card');
         removeCard(dispatch, cardId, sectionId);
       })
       .catch(() => { dispatch({ type: 'ADD_CARD_FAILED' }); });
   };
 };
 
+Actions.createSubTask = (params) => {
+  return (dispatch) => {
+    // Generate a temporary id to use for adding to store
+    const cardId = uuid.v4();
+
+    let { taskDetails, parentId } = params;
+
+    taskDetails.id = cardId;
+
+    // Store the card locally
+    storeCard(dispatch, parentId, taskDetails, 'subtask');
+
+    const task = Task(parentId);
+    task.createSubTask(taskDetails, AsanaClient)
+      .then((data) => {
+        storeCard(dispatch, parentId, data, 'subtask');
+        removeSubtask(dispatch, cardId, parentId);
+      })
+      .catch(() => { removeSubtask(dispatch, cardId, parentId); });
+  };
+};
+
 Actions.updateTask = (params) => {
   return (dispatch) => {
     let { taskDetails, updateAsana } = params;
-
-    dispatch({
-      type: 'UPDATE_CARD',
-      payload: {
-        id: taskDetails.id,
-        card: taskDetails
-      }
-    });
+    updateCard(dispatch, taskDetails);
 
     if (updateAsana) {
       const task = Task(taskDetails.id);
@@ -271,8 +328,7 @@ Actions.moveCard = (cardToMove, cardToInsertAfter, projectId) => {
 };
 
 Actions.getInitialTasksForProject = (id) => {
-  return (dispatch) => {
-    // First dispatch the selection incase we can get the sections from the tree already
+  return (dispatch) => {    
     dispatch({
       type: 'REQUEST_SECTIONS_AND_TASKS',
       payload: { id: id }
@@ -282,10 +338,10 @@ Actions.getInitialTasksForProject = (id) => {
   };
 };
 
-Actions.updateTasksForProject = (projectId) => {
+Actions.updateTasksForProject = (id) => {
   return (dispatch) => {
     dispatch({ type: 'UPDATE_SECTIONS_AND_TASKS' });
-    getTasksForProject(dispatch, projectId);
+    getTasksForProject(dispatch, id);
   };
 }
 

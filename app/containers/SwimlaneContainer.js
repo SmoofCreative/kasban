@@ -14,14 +14,23 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onNewTaskSubmit: (task, sectionId, projectId) => {
-      const options = {
-        taskDetails: task,
-        sectionId: sectionId,
-        projectId: projectId
+    onNewTaskSubmit: (task, isSubTasks, sectionId, projectId) => {
+      let options = {
+        taskDetails: task
       };
 
-      dispatch(Actions.createTask(options));
+      if (isSubTasks) {
+        dispatch(Actions.createSubTask({
+          ...options,
+          parentId: sectionId
+        }));
+      } else {
+        dispatch(Actions.createTask({ 
+          ...options, 
+          sectionId: sectionId,
+          projectId: projectId
+        }));
+      }
     },
     onTaskUpdated: (task, updateAsana) => {
       const options = {
@@ -49,8 +58,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { id } = ownProps;
 
   const functions = {
-    onNewTaskSubmit: (task) => {
-      dispatchProps.onNewTaskSubmit(task, id, currentProjectId);
+    onNewTaskSubmit: (task, isSubTasks) => {
+      dispatchProps.onNewTaskSubmit(task, isSubTasks, id, currentProjectId);
     },
     onCardMoved: (cardToMove, cardToInsertAfter) => {
       dispatchProps.onCardMoved(cardToMove, cardToInsertAfter, currentProjectId);

@@ -36,12 +36,21 @@ const Task = (taskId = null) => {
     });
   };
 
+  const createSubTask = (params, asanaClient) => {
+    return new Promise((resolve, reject) => {
+      asanaClient.tasks.addSubtask(id, params)
+      .then((data) => { resolve(data); })
+      .catch((err) => { reject(err); })
+    });
+  };
+
   // Return our public API, this should be quite small
   return {
     create: create,
     complete: complete,
     move: move,
-    update: update
+    update: update,
+    createSubTask: createSubTask
   };
 };
 
