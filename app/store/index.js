@@ -4,17 +4,20 @@ import thunk from 'redux-thunk';
 import _debounce from 'lodash/debounce';
 
 import reducers from '../reducers';
-// import AsanaClient from '../utils/AsanaClient';
 import AsanaEventPoller from './AsanaEventPoller';
-// import Actions from '../actions';
 
-const loggerMiddleware = createLogger({
-  level: 'info',
-  collapsed: true
-});
+const middlewares = [thunk];
+
+if (process.env.NODE_ENV === 'development') {
+  const loggerMiddleware = createLogger({
+    level: 'info',
+    collapsed: true
+  });
+  middlewares.push(loggerMiddleware);
+}
 
 export default function configureStore() {
-  const createStoreWithMiddleware = applyMiddleware(loggerMiddleware, thunk)(createStore);
+  const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
   const store = createStoreWithMiddleware(reducers);
 
   store.subscribe(() => {
