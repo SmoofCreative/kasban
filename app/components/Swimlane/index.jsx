@@ -67,7 +67,8 @@ const Swimlane = React.createClass({
       completed, 
       memberships, 
       onCardMoved, 
-      onTaskUpdated, 
+      onTaskUpdated,
+      onSectionUpdated,
       isStatic, 
       isFullWidth, 
       isSmall,
@@ -88,7 +89,7 @@ const Swimlane = React.createClass({
       <section className={sectionClasses}>
         {
           isStatic
-            ? <SwimlaneHeader id={id} title={name} onTaskUpdated={onTaskUpdated} />
+            ? <SwimlaneHeader id={id} title={name} onSectionUpdated={onSectionUpdated} />
             : <DroppableSwimlaneHeader
                 id={id}
                 title={name}

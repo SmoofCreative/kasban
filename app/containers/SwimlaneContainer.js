@@ -40,6 +40,14 @@ const mapDispatchToProps = (dispatch) => {
 
       dispatch(Actions.updateTask(options));
     },
+    onSectionUpdated: (section, updateAsana) => {
+      const options = {
+        details: section,
+        updateAsana: updateAsana 
+      };
+      
+      dispatch(Actions.updateSection(options));
+    },
     onTaskSelected: (id) => {
       const options = {
         id: id

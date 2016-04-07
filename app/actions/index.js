@@ -291,6 +291,19 @@ Actions.updateTask = (params) => {
   };
 };
 
+Actions.updateSection = (params) => {
+  return (dispatch) => {
+    let { details, updateAsana } = params;
+
+    if (updateAsana) {
+      const task = Task(details.id);
+      task.update(details, AsanaClient)
+        .then(() => { dispatch({ type: 'UPDATING_CARD_SUCCESS' }); })
+        .catch(() => { dispatch({ type: 'UPDATING_CARD_FAILED' }); });
+    }
+  };
+};
+
 Actions.moveCard = (cardToMove, cardToInsertAfter, projectId) => {
   return (dispatch) => {
     if (cardToInsertAfter.completed) {
