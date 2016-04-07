@@ -24,6 +24,8 @@ $sidebar-components-vertical-padding: 25px;
   }
 
   &__close {
+    padding-right: $sidebar-horizontal-padding;
+    padding-left: $sidebar-horizontal-padding;
     text-align: right;
 
     &__icon {
