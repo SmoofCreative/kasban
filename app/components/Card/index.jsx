@@ -115,20 +115,27 @@ const Card = React.createClass({
     });
 
     return (
-      <article onClick={ !showInteractiveIcons && this.handleTaskSelected } className="swimcard__card pure-g">
+      <article className="swimcard__card pure-g">
         <div className={classes}>
 
-          <div className="pure-u-4-24 swimcard__image">
+          <div onClick={ !showInteractiveIcons && this.handleTaskSelected } className="pure-u-4-24 swimcard__image">
             <UserImage user={ card.assignee } />
           </div>
 
-          <div className="pure-u-19-24 swimcard__card-content">
+          <div onClick={ !showInteractiveIcons && this.handleTaskSelected } className="pure-u-19-24 swimcard__card-content">
             { this.renderInput(card.name) }
             <DueDate card={card} isSmall={true} />
           </div>
 
+          {
+            isDraggable && connectDragSource(
+              <div className={ interactionSectionClasses }>
+                { this.renderDragHandle() }
+              </div>
+            )
+          }
+
           <div className={ interactionSectionClasses }>
-            { isDraggable && connectDragSource(this.renderDragHandle()) }
             { showInteractiveIcons && this.renderInteractiveIcons() }
           </div>
         </div>
