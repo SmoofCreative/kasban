@@ -6,13 +6,6 @@ import UserImage from '../UserImage';
 import DueDate from '../DueDate';
 
 const Card = React.createClass({
-  getDefaultProps() {
-    return {
-      isDraggable: false,
-      showInteractiveIcons: false
-    };
-  },
-
   componentDidMount() {
     this.resizeInput();
   },

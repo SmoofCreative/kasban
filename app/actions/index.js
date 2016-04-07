@@ -111,6 +111,16 @@ const updateCard = (dispatch, card) => {
   });
 };
 
+const updateSection = (dispatch, section) => {
+  dispatch({
+    type: 'UPDATE_SECTION',
+    payload: {
+      id: section.id,
+      section: section
+    }
+  });
+};
+
 const removeCard = (dispatch, cardId, sectionId) => {
   dispatch({
     type: 'REMOVE_CARD',
@@ -294,6 +304,7 @@ Actions.updateTask = (params) => {
 Actions.updateSection = (params) => {
   return (dispatch) => {
     let { details, updateAsana } = params;
+    updateSection(dispatch, details);
 
     if (updateAsana) {
       const task = Task(details.id);

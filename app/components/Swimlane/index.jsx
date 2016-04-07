@@ -96,7 +96,9 @@ const Swimlane = React.createClass({
                 completed={completed}
                 memberships={memberships}
                 onCardMoved={onCardMoved}
-                onTaskUpdated={onTaskUpdated} />
+                onTaskUpdated={onTaskUpdated}
+                onSectionUpdated={onSectionUpdated}
+              />
         }
         <div className={cardClasses}>
           { this.renderCards() }
