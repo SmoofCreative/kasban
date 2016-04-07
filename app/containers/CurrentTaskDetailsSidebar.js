@@ -1,3 +1,4 @@
+import React from 'react';
 import { connect } from 'react-redux';
 
 import UIActions from '../actions/ui';
@@ -7,7 +8,8 @@ const mapStateToProps = (state) => {
   const currentTaskId = state.entities.cards.conditions.currentId;
   return {
     card: state.entities.cards.records[currentTaskId] || {},
-    visible: state.ui.showTaskDetailsSidebar
+    visible: state.ui.showTaskDetailsSidebar,
+    currentTaskId: currentTaskId
   }
 };
 
@@ -19,4 +21,12 @@ const mapDispatchToProps = (dispatch) => {
   }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TaskDetailsSidebar);
+const CurrentTaskDetailsSidebar = (props) => {
+  return (
+    <div>
+      { props.currentTaskId && <TaskDetailsSidebar { ...props } /> }
+    </div>
+  );
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CurrentTaskDetailsSidebar);

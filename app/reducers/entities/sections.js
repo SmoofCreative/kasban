@@ -58,14 +58,13 @@ const records = (state = {}, action) => {
       };
     }
     case 'ADD_CARD': {
-      return addCard(state, action.payload.id, action.payload.sectionId);
+      return addCard(state, action.payload.id, action.payload.parentId);
     }
     case 'REMOVE_CARD': {
       const { id, sectionId } = action.payload;
       return removeCard(state, id, sectionId);
     }
     case 'MOVE_CARD': {
-      // REMEMBER TO UPDATE CARD WITH THE NEW SECTION ID - might do it anyway
       const { cardToMove, cardToInsertAfter } = action.payload;
 
       // First remove the card to move

@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import './style';
 import UserImage from '../UserImage';
 import DueDate from '../DueDate';
+import Swimlane from '../../containers/SwimlaneContainer';
 
 const renderDisplayName = (user) => {
   let displayName = '';
@@ -49,6 +50,16 @@ const TaskDetailsSidebar = ({ card, visible, onSidebarClose }) => {
         <p className="task-details-sidebar__description">
           { card.notes }
         </p>
+
+        <Swimlane 
+          name="Subtasks" 
+          id={card.id} 
+          cards={card.subtasks} 
+          isFullWidth={true} 
+          isStatic={true} 
+          showInteractiveIcons={true}
+          isSubTasks={true}
+        />
       </div>
     </div>
   );

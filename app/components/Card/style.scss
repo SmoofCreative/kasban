@@ -12,7 +12,6 @@ $drag-handle-size: 16px;
   &__card {
     position: relative;
     min-height: 50px;
-    width: $swimlane-width;
     padding-right: $card-horizontal-padding;
     padding-left: $card-horizontal-padding;
     background-color: $card-background-color;
