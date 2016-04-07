@@ -8,7 +8,7 @@ $section-header-padding-left: 15px;
 $sidebar-tip-height: 5px;
 $sidebar-tip-width: 10px;
 $sidebar-tip-vertical-border: $sidebar-tip-width solid transparent;
-$sidebar-tip-horizontal-border: $sidebar-tip-height solid $sidebar-primary-colour;
+$sidebar-tip-horizontal-border: $sidebar-tip-height solid $sidebar-secondary-colour;
 
 
 .sidebar {
@@ -24,8 +24,8 @@ $sidebar-tip-horizontal-border: $sidebar-tip-height solid $sidebar-primary-colou
   &:after {
     content: '';
     position: absolute;
-    top: -5px;
-    left: 30px;
+    top: -4px;
+    left: 33px;
     border-left: $sidebar-tip-vertical-border;
     border-right: $sidebar-tip-vertical-border;
     border-bottom: $sidebar-tip-horizontal-border;
