@@ -7,6 +7,8 @@ $swimlane-header-height: 50px;
 $swimlane-header-vertical-padding: 10px;
 $swimlane-header-horizontal-padding: 15px;
 
+$swimlane-height-small: 250px;
+
 .swimlane {
   position: relative;
   width: $swimlane-width;
@@ -14,9 +16,24 @@ $swimlane-header-horizontal-padding: 15px;
   margin-right: $swimlane-gutter * 2;
   margin-left: $swimlane-gutter;
   overflow-y: scroll;
+  border-bottom-right-radius: $swimlane-border-radius;
+  border-bottom-left-radius: $swimlane-border-radius;
 
   &:last-child {
     margin-right: $swimlane-gutter;
+  }
+
+  &--full-width{
+    width: 100%;
+  }
+
+  &--no-gutter {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  &--small {
+    border-bottom: $swimlane-border;
   }
 
   &__header {
@@ -70,10 +87,13 @@ $swimlane-header-horizontal-padding: 15px;
     -ms-overflow-style: none;
     overflow: -moz-scrollbars-none;
     &::-webkit-scrollbar { width: 0 !important }
+
+    &--small {
+      height: $swimlane-height-small;
+    }
   }
 
   &__footer {
-    width: $swimlane-width;
     min-height: 50px;
     padding-top: $swimlane-header-horizontal-padding;
     padding-right: 5px;
