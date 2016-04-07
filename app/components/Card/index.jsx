@@ -67,26 +67,48 @@ const Card = React.createClass({
     onCardClick(card.id);
   },
 
-  renderDragHandle() {
-    return (      
-      <svg className="swimcard__drag-handle__icon" viewBox="0 0 32 32" title="drag handle">
-        <rect x="6" y="2" width="4" height="4"></rect>
-        <rect x="14" y="2" width="4" height="4"></rect>
-        <rect x="6" y="10" width="4" height="4"></rect>
-        <rect x="14" y="10" width="4" height="4"></rect>
-        <rect x="6" y="18" width="4" height="4"></rect>
-        <rect x="14" y="18" width="4" height="4"></rect>
-        <rect x="22" y="2" width="4" height="4"></rect>
-        <rect x="22" y="10" width="4" height="4"></rect>
-        <rect x="22" y="18" width="4" height="4"></rect>
-      </svg>
+  renderDragHandle(baseClass) {
+    return (
+      <div className={ baseClass }>
+        <svg className="swimcard__drag-handle__icon" viewBox="0 0 32 32" title="drag handle">
+          <rect x="6" y="2" width="4" height="4"></rect>
+          <rect x="14" y="2" width="4" height="4"></rect>
+          <rect x="6" y="10" width="4" height="4"></rect>
+          <rect x="14" y="10" width="4" height="4"></rect>
+          <rect x="6" y="18" width="4" height="4"></rect>
+          <rect x="14" y="18" width="4" height="4"></rect>
+          <rect x="22" y="2" width="4" height="4"></rect>
+          <rect x="22" y="10" width="4" height="4"></rect>
+          <rect x="22" y="18" width="4" height="4"></rect>
+        </svg>
+      </div>
     );
   },
 
-  renderInteractiveIcons() {
+  renderInteractiveIcons(baseClass) {
     return (
-      <i className="fa fa-eye" onClick={this.handleTaskSelected}></i>
+      <div className={ baseClass }>
+        <i className="fa fa-eye" onClick={this.handleTaskSelected}></i>
+      </div>
     )
+  },
+
+  renderInteractiveSection(baseClass) {
+    const { isDraggable, connectDragSource, showInteractiveIcons } = this.props;
+
+    if (isDraggable) {
+      const interactionSectionClasses = classNames(baseClass, {
+        'swimcard__drag-handle': isDraggable
+      });
+
+      return connectDragSource(this.renderDragHandle(interactionSectionClasses));
+    }
+
+    if (showInteractiveIcons) {
+      return this.renderInteractiveIcons(baseClass);
+    }
+
+    return <span></span>;
   },
 
   renderInput() {
@@ -106,38 +128,24 @@ const Card = React.createClass({
   },
 
   render() {
-    const { card, connectDragSource, canDrop, isOver, isDraggable, showInteractiveIcons } = this.props;
+    const { card, canDrop, isOver, showInteractiveIcons } = this.props;
 
     const classes = classNames('swimcard__card-border', { active: canDrop && isOver });
 
-    const interactionSectionClasses = classNames('pure-u-1-24', {
-      'swimcard__drag-handle': isDraggable
-    });
-
     return (
-      <article className="swimcard__card pure-g">
+      <article onClick={ !showInteractiveIcons && this.handleTaskSelected } className="swimcard__card pure-g">
         <div className={classes}>
 
-          <div onClick={ !showInteractiveIcons && this.handleTaskSelected } className="pure-u-4-24 swimcard__image">
+          <div className="pure-u-4-24 swimcard__image">
             <UserImage user={ card.assignee } />
           </div>
 
-          <div onClick={ !showInteractiveIcons && this.handleTaskSelected } className="pure-u-19-24 swimcard__card-content">
+          <div className="pure-u-19-24 swimcard__card-content">
             { this.renderInput(card.name) }
             <DueDate card={card} isSmall={true} />
           </div>
 
-          {
-            isDraggable && connectDragSource(
-              <div className={ interactionSectionClasses }>
-                { this.renderDragHandle() }
-              </div>
-            )
-          }
-
-          <div className={ interactionSectionClasses }>
-            { showInteractiveIcons && this.renderInteractiveIcons() }
-          </div>
+          { this.renderInteractiveSection('pure-u-1-24') }
         </div>
       </article>
     );
