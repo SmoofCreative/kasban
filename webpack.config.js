@@ -13,7 +13,7 @@ console.log('NODE_ENV', NODE_ENV);
 
 var devTool = isDevelopment ? 'eval' : 'source-map';
 
-var entry = ['./app/index.jsx']
+var entry = ['./app/index.jsx'];
 if (isDevelopment) {
   entry.push('webpack/hot/dev-server', 'webpack-dev-server/client?http://localhost:8080');
 }
@@ -62,9 +62,7 @@ var config = {
     loaders: [
       { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader' },
       { test: /\.scss$/, loader: 'style-loader!css-loader!sass!postcss-loader' },
-      { test: /\.json$/, loader: 'json-loader' },
-      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader?limit=10000&minetype=application/font-woff' },
-      { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file-loader' }
+      { test: /\.json$/, loader: 'json-loader' }
     ]
   },
   postcss: [
@@ -79,7 +77,7 @@ var config = {
   node: {
     readline: 'empty'
   },
-  plugins: plugins,
+  plugins: plugins
 };
 
 module.exports = config;
