@@ -3,9 +3,4 @@ npm-debug.log
 .DS_Store
 build/bundle.js
 build/bundle.js.map
-build/32400f4e08932a94d8bfd2422702c446.eot
-build/a35720c2fed2c7f043bc7e4ffb45e073.woff
-build/a3de2170e4e9df77161ea5d3f31b2668.ttf
-build/db812d8a70a4e88e888744c1c9a27e89.woff2
-build/f775f9cca88e21d45bebe185b27c0e5b.svg
 .idea/
