@@ -111,6 +111,16 @@ const updateCard = (dispatch, card) => {
   });
 };
 
+const updateSection = (dispatch, section) => {
+  dispatch({
+    type: 'UPDATE_SECTION',
+    payload: {
+      id: section.id,
+      section: section
+    }
+  });
+};
+
 const removeCard = (dispatch, cardId, sectionId) => {
   dispatch({
     type: 'REMOVE_CARD',
@@ -285,6 +295,20 @@ Actions.updateTask = (params) => {
     if (updateAsana) {
       const task = Task(taskDetails.id);
       task.update(taskDetails, AsanaClient)
+        .then(() => { dispatch({ type: 'UPDATING_CARD_SUCCESS' }); })
+        .catch(() => { dispatch({ type: 'UPDATING_CARD_FAILED' }); });
+    }
+  };
+};
+
+Actions.updateSection = (params) => {
+  return (dispatch) => {
+    let { details, updateAsana } = params;
+    updateSection(dispatch, details);
+
+    if (updateAsana) {
+      const task = Task(details.id);
+      task.update(details, AsanaClient)
         .then(() => { dispatch({ type: 'UPDATING_CARD_SUCCESS' }); })
         .catch(() => { dispatch({ type: 'UPDATING_CARD_FAILED' }); });
     }

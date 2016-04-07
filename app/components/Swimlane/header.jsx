@@ -1,37 +1,33 @@
 import React from 'react';
 
 const SwimlaneHeader = React.createClass({
-
-  getInitialState() {
-    return { isUpdatingTitle: false };
-  },
-
-  handleTitleNameClick() {
-    // Show the input
-    this.setState({ isUpdatingTitle: true });
-  },
-
-  handleTitleUpdate(e) {
-    e.preventDefault();
-    let task = {
+  handleTextUpdate(updateAsana = false) {
+    let section = {
       id: this.props.id,
       name: this.refs.sectionInput.value
     };
 
-    // Reset the UI, we'll change the task name in the stores
-    this.setState({ isUpdatingTitle: false });
-    this.props.taskUpdate(task, true);
+    this.props.onSectionUpdated(section, updateAsana);
   },
 
-  handleTitleUpdateBlur() {
-    // Remove the input and reset the name
-    this.setState({ isUpdatingTitle: false });
+  handleTextBlur() {
+    this.handleTextUpdate(true)
   },
 
-  renderTitle(title) {
-    return (
-      <h3 className="swimlane__header__text" onClick={ this.handleTitleNameClick }>{title}</h3>
-    );
+  handleTextChange() {
+    this.handleTextUpdate(false)
+  },
+
+  handleTaskKeyDown(e) {
+    // Check if the enter key has been pressed (without shift to still allow functionality)
+    if (e.keyCode === 13 && !e.shiftKey) {
+      // If so, stop the new line
+      e.preventDefault();
+
+      // Focus the parent element to trigger the input blur event
+      e.target.parentElement.focus();
+      return false;
+    }
   },
 
   renderInput() {
@@ -39,24 +35,19 @@ const SwimlaneHeader = React.createClass({
       <form className="swimlane__header__update-form" onSubmit={ this.handleTitleUpdate }>
         <input type="text"
                className="swimlane__header__update-input"
-               autoFocus
                ref="sectionInput"
-               onBlur={ this.handleTitleUpdateBlur }
-               defaultValue={ this.props.title} />
+               onBlur={ this.handleTextBlur }
+               onChange={ this.handleTextChange }
+               onKeyDown={ this.handleTaskKeyDown }
+               value={ this.props.title} />
       </form>
     );
   },
 
   render() {
-    const { title } = this.props;
-
     return (
       <header className="swimlane__header">
-        {
-          this.state.isUpdatingTitle ?
-          this.renderInput() :
-          this.renderTitle(title)
-        }
+        { this.renderInput() }
       </header>
     );
   }
