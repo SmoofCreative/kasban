@@ -1,6 +1,6 @@
 @import "../../scss/variables";
 
-$image-size: 27px;
+$image-size: 30px;
 
 $initials-background-padding: 5px;
 
@@ -16,13 +16,16 @@ $initials-background-padding: 5px;
 
     &--initials {
       height: $image-size;
-      line-height: $image-size;
-      color: #FFFFFF;
-      background-color: $brand-pinky-orange;
-      font-size: $font-size-base;
-      padding-top: $initials-background-padding;
-      padding-right: $initials-background-padding;
-      padding-bottom: $initials-background-padding;
-      padding-left: $initials-background-padding;
+      width: $image-size;
+      webkit-box-align: center;
+      -webkit-align-items: center;
+      -ms-flex-align: center;
+      align-items: center;
+      background: center/cover $brand-pinky-orange;
+      color: #FFF;
+      border-radius: 50%;
+      display: -ms-inline-flexbox;
+      display: inline-flex;
+      justify-content: center;
     }
 }
