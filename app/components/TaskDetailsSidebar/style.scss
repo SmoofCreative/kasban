@@ -18,6 +18,7 @@ $sidebar-components-vertical-padding: 25px;
   padding-top: $sidebar-vertical-padding;
   padding-bottom: 0;
   background-color: $sidebar-secondary-colour;
+  overflow-y: scroll;
 
   &.active {
     display: block;
@@ -39,6 +40,12 @@ $sidebar-components-vertical-padding: 25px;
     padding-right: $sidebar-horizontal-padding;
     padding-left: $sidebar-horizontal-padding;
     border-bottom: 1px solid $sidebar-border-colour;
+  }
+
+  &__comment-list {
+    padding-right: $sidebar-horizontal-padding;
+    padding-left: $sidebar-horizontal-padding;
+    background-color: $sidebar-primary-colour;
   }
 
   &__title {

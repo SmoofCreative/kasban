@@ -11,7 +11,7 @@ import Workspace from './workspace';
 const Actions = {};
 
 const storeWorkspace = (dispatch, workspace) => {
-  dispatch({ 
+  dispatch({
     type: 'ADD_WORKSPACE',
     payload: {
       id: workspace.id,
@@ -21,12 +21,67 @@ const storeWorkspace = (dispatch, workspace) => {
 };
 
 const storeProject = (dispatch, workspaceId, project) => {
-  dispatch({ 
+  dispatch({
     type: 'ADD_PROJECT',
     payload: {
       id: project.id,
       project: project,
       workspaceId: workspaceId
+    }
+  });
+};
+
+const storeSection = (dispatch, projectId, section) => {
+  dispatch({
+    type: 'ADD_SECTION',
+    payload: {
+      id: section.id,
+      section: section,
+      projectId: projectId
+    }
+  });
+};
+
+const storeCard = (dispatch, parentId, card, type) => {
+  const dispatchType = `ADD_${type.toUpperCase()}`;
+
+  // Cloning so we can remove the none normalised subtasks
+  // They are populated elsewhere
+  const clonedCard = { ...card, subtasks: [], comments: [] };
+
+  dispatch({
+    type: dispatchType,
+    payload: {
+      id: clonedCard.id,
+      card: clonedCard,
+      parentId: parentId
+    }
+  });
+
+  storeSubtasks(dispatch, card);
+};
+
+const storeSubtasks = (dispatch, card) => {
+  // If the card has subtasks, normalise the structure
+  if (typeof card.subtasks !== 'undefined' && card.subtasks.length) {
+    // First clone the card so that we can remove the current structure
+    const clonedCard = { ...card, subtasks: [], comments: [] };
+    updateCard(dispatch, clonedCard);
+
+    // For each subtask, store it
+    card.subtasks.map((subtask) => {
+      storeCard(dispatch, clonedCard.id, subtask, 'subtask');
+    });
+  }
+};
+
+const storeComments = (dispatch, cardId, comment) => {
+  dispatch({
+    type: 'ADD_COMMENT',
+    payload: {
+      id: comment.id,
+      comment: comment,
+      cardId: cardId
     }
   });
 };
@@ -42,17 +97,6 @@ const getTasksForProject = (dispatch, id) => {
     });
 };
 
-const storeSection = (dispatch, projectId, section) => {
-  dispatch({ 
-    type: 'ADD_SECTION',
-    payload: {
-      id: section.id,
-      section: section,
-      projectId: projectId
-    }
-  });
-};
-
 const moveSection = (dispatch, sectionId, projectId, index) => {
   dispatch({
     type: 'MOVE_SECTION',
@@ -66,39 +110,6 @@ const moveSection = (dispatch, sectionId, projectId, index) => {
 
 const isSection = (item) => {
   return item.name.slice(-1) === ':';
-};
-
-const storeCard = (dispatch, parentId, card, type) => {
-  const dispatchType = `ADD_${type.toUpperCase()}`;
-
-  // Cloning so we can remove the none normalised subtasks
-  // They are populated elsewhere
-  const clonedCard = { ...card, subtasks: [] };
-  
-  dispatch({ 
-    type: dispatchType,
-    payload: {
-      id: clonedCard.id,
-      card: clonedCard,
-      parentId: parentId
-    }
-  });
-
-  storeSubtasks(dispatch, card);
-};
-
-const storeSubtasks = (dispatch, card) => { 
-  // If the card has subtasks, normalise the structure
-  if (typeof card.subtasks !== 'undefined' && card.subtasks.length) {
-    // First clone the card so that we can remove the current structure
-    const clonedCard = { ...card, subtasks: [] };
-    updateCard(dispatch, clonedCard);
-
-    // For each subtask, store it
-    card.subtasks.map((subtask) => {
-      storeCard(dispatch, clonedCard.id, subtask, 'subtask');
-    });
-  }
 };
 
 const updateCard = (dispatch, card) => {
@@ -153,19 +164,20 @@ const completeCard = (dispatch, taskId) => {
 const addSectionsAndCards = (dispatch, projectId, tasks) => {
   // First add our own hardcoded sections
 
-  const presetSections = [{
-    id: 'completed',
-    name: 'Completed',
-    completed: true,
-
-    cards: []
-  },
+  const presetSections = [
+    {
+      id: 'completed',
+      name: 'Completed',
+      completed: true,
+      cards: []
+    },
     {
       id: 'uncategorised',
       name: 'Uncategorised:',
       completed: false,
       cards: []
-    }];
+    }
+  ];
 
   presetSections.map((section) => {
     storeSection(dispatch, projectId, section);
@@ -199,13 +211,26 @@ const addSectionsAndCards = (dispatch, projectId, tasks) => {
   moveSection(dispatch, 'uncategorised', projectId, 0)
 };
 
+const getCommentsForTask = (dispatch, id) => {
+  const task = Task(id);
+  task.getComments(AsanaClient)
+  .then((comments) => {
+    comments.map((comment) => {
+      storeComments(dispatch, id, comment);
+    });
+
+    dispatch({ type: 'FETCHING_STORIES_FOR_TASK_SUCCESS' });
+  })
+  .catch((err) => { console.log(err); dispatch({ type: 'FETCHING_STORIES_FOR_TASK_FAILED' }); });
+};
+
 Actions.getWorkspaces = () => {
   return (dispatch) => {
     dispatch({ type: 'REQUEST_WORKSPACES_AND_PROJECTS' });
     const workspace = Workspace();
 
     workspace.getWorkspaces(AsanaClient)
-    .then((workspaces) => { 
+    .then((workspaces) => {
       workspaces.map((ws) => {
         storeWorkspace(dispatch, ws);
         workspace.getProjects(ws.id, AsanaClient)
@@ -342,7 +367,7 @@ Actions.moveCard = (cardToMove, cardToInsertAfter, projectId) => {
           data.insertAfter = cardToInsertAfter.id
         }
       }
-      
+
       const task = Task(cardToMove.id);
       task.move(data, AsanaClient)
       .then(() => { dispatch({ type: 'MOVED_CARD_SUCCESS' }); })
@@ -352,7 +377,7 @@ Actions.moveCard = (cardToMove, cardToInsertAfter, projectId) => {
 };
 
 Actions.getInitialTasksForProject = (id) => {
-  return (dispatch) => {    
+  return (dispatch) => {
     dispatch({
       type: 'REQUEST_SECTIONS_AND_TASKS',
       payload: { id: id }
@@ -367,6 +392,13 @@ Actions.updateTasksForProject = (id) => {
     dispatch({ type: 'UPDATE_SECTIONS_AND_TASKS' });
     getTasksForProject(dispatch, id);
   };
+}
+
+Actions.getComments = ({ id }) => {
+  return (dispatch) => {
+    dispatch({ type: 'FETCHING_STORIES_FOR_TASK' });
+    getCommentsForTask(dispatch, id);
+  }
 }
 
 Actions.checkAuth = () => {

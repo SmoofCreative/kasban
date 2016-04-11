@@ -44,13 +44,42 @@ const Task = (taskId = null) => {
     });
   };
 
+  const getStories = (asanaClient) => {
+    if (id === null) {
+      return new Error('No id provided');
+    }
+
+    const options = {
+      opt_expand: 'created_by'
+    }
+
+    return new Promise((resolve, reject) => {
+      asanaClient.tasks.stories(id, options)
+      .then((collection) => { resolve(collection.data); })
+      .catch((err) => { reject(err); })
+    });
+  };
+
+  const filterStories = (stories, type) => {
+    return stories.filter((story) => {
+      return story.type === type
+    });
+  };
+
+  const getComments = (asanaClient) => {
+    const stories = getStories(asanaClient);
+    return filterStories(stories, 'comment');
+  };
+
   // Return our public API, this should be quite small
   return {
     create: create,
     complete: complete,
     move: move,
     update: update,
-    createSubTask: createSubTask
+    createSubTask: createSubTask,
+    getStories: getStories,
+    getComments: getComments
   };
 };
 

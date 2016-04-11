@@ -1,0 +1,22 @@
+@import "../../scss/variables";
+
+.comment {
+  &__image {
+    margin-top: 2px;
+  }
+
+  &__user-name {
+    font-size: $font-size-base;
+    font-weight: 700;
+    margin-right: 10px;
+  }
+
+  &__created-at {
+    font-size: ceil($font-size-base * 0.85);
+    font-weight: 300;
+  }
+
+  &__text {
+    font-size: $font-size-base;
+  }
+}
