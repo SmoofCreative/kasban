@@ -5,11 +5,22 @@ import UIActions from '../actions/ui';
 import TaskDetailsSidebar from '../components/TaskDetailsSidebar';
 
 const mapStateToProps = (state) => {
-  const currentTaskId = state.entities.cards.conditions.currentId;
+  const cards = state.entities.cards;
+  const currentTaskId = cards.conditions.currentId;
+  let comments = []
+
+  if (currentTaskId) {
+    const commentsList = cards.records[currentTaskId].comments;
+    comments = commentsList.map((id) => {
+      return state.entities.comments.records[id];
+    });
+  }
+
   return {
     card: state.entities.cards.records[currentTaskId] || {},
     visible: state.ui.showTaskDetailsSidebar,
-    currentTaskId: currentTaskId
+    currentTaskId: currentTaskId,
+    comments: comments
   }
 };
 

@@ -49,8 +49,12 @@ const Task = (taskId = null) => {
       return new Error('No id provided');
     }
 
+    const options = {
+      opt_expand: 'created_by'
+    }
+
     return new Promise((resolve, reject) => {
-      asanaClient.tasks.stories(id)
+      asanaClient.tasks.stories(id, options)
       .then((collection) => { resolve(collection.data); })
       .catch((err) => { reject(err); })
     });

@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import './style';
 import UserImage from '../UserImage';
 import DueDate from '../DueDate';
+import CommentList from '../CommentList';
 import Swimlane from '../../containers/SwimlaneContainer';
 
 const renderDisplayName = (user) => {
@@ -27,7 +28,7 @@ const renderDisplayName = (user) => {
   return <span className="task-details-sidebar__user-name">{ displayName }</span>;
 };
 
-const TaskDetailsSidebar = ({ card, visible, onSidebarClose }) => {
+const TaskDetailsSidebar = ({ card, visible, onSidebarClose, comments }) => {
   const classes = classNames('task-details-sidebar', { active: visible });
 
   return (
@@ -65,6 +66,9 @@ const TaskDetailsSidebar = ({ card, visible, onSidebarClose }) => {
           />
         </div>
       </div>
+      <div className="task-details-sidebar__comment-list">
+          <CommentList comments={comments} />
+        </div>
     </div>
   );
 };

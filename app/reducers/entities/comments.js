@@ -1,5 +1,4 @@
-import { combineReducers } from 'redux'
-import update from 'react/lib/update';
+import { combineReducers } from 'redux';
 
 const records = (state = {}, action) => {
   switch (action.type) {

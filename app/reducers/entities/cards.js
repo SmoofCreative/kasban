@@ -66,6 +66,12 @@ const records = (state = {}, action) => {
     }
     case 'ADD_COMMENT': {
       const { id, cardId } = action.payload;
+      // First check if the id is already in the list
+
+      if (state[cardId].comments.indexOf(id) > -1) {
+        return state;
+      }
+
       return update(state, {
         [cardId]: {
           comments: {
