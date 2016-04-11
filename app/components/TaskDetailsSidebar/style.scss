@@ -43,6 +43,7 @@ $sidebar-components-vertical-padding: 25px;
   }
 
   &__comment-list {
+    height: 100%;
     padding-right: $sidebar-horizontal-padding;
     padding-left: $sidebar-horizontal-padding;
     background-color: $sidebar-primary-colour;
