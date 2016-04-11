@@ -22,7 +22,7 @@ const Header = ({auth, projectName, projectId}) => {
     <header className="header">
       <div className="pure-u-8-24">
         <div className="header__breadcrumbs">
-          <BoardSelector />
+          { auth.isAsanaAuthed && <BoardSelector /> }
           <span className="header__current-project">{projectName}</span>
         </div>
       </div>
