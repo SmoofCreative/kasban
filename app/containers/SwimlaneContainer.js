@@ -25,8 +25,8 @@ const mapDispatchToProps = (dispatch) => {
           parentId: sectionId
         }));
       } else {
-        dispatch(Actions.createTask({ 
-          ...options, 
+        dispatch(Actions.createTask({
+          ...options,
           sectionId: sectionId,
           projectId: projectId
         }));
@@ -43,9 +43,9 @@ const mapDispatchToProps = (dispatch) => {
     onSectionUpdated: (section, updateAsana) => {
       const options = {
         details: section,
-        updateAsana: updateAsana 
+        updateAsana: updateAsana
       };
-      
+
       dispatch(Actions.updateSection(options));
     },
     onTaskSelected: (id) => {
@@ -54,9 +54,10 @@ const mapDispatchToProps = (dispatch) => {
       };
 
       dispatch(UIActions.selectTask(options));
+      dispatch(Actions.getComments(options));
     },
     onCardMoved: (cardToMove, cardToInsertAfter, projectId) => {
-      dispatch(Actions.moveCard(cardToMove, cardToInsertAfter, projectId));      
+      dispatch(Actions.moveCard(cardToMove, cardToInsertAfter, projectId));
     }
   }
 };

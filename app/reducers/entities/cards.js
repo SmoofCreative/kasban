@@ -27,7 +27,7 @@ const removeCard = (state, cardId, parentId) => {
 };
 
 const records = (state = {}, action) => {
-  switch (action.type) {    
+  switch (action.type) {
     case 'ADD_CARD':
     case 'ADD_CARD_SUCCESS': {
       return addCard(state, action.payload.id, action.payload.card);
@@ -42,7 +42,7 @@ const records = (state = {}, action) => {
       };
     }
     case 'ADD_SUBTASK': {
-      const { id, card, parentId } = action.payload; 
+      const { id, card, parentId } = action.payload;
 
       const clonedCard = { ...card };
 
@@ -61,8 +61,18 @@ const records = (state = {}, action) => {
       });
     }
     case 'REMOVE_SUBTASK': {
-      const { id, parentId } = action.payload; 
+      const { id, parentId } = action.payload;
       return removeCard(state, id, parentId);
+    }
+    case 'ADD_COMMENT': {
+      const { id, cardId } = action.payload;
+      return update(state, {
+        [cardId]: {
+          comments: {
+            $push: [id]
+          }
+        }
+      });
     }
     default: {
       return state;
