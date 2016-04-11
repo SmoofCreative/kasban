@@ -8,12 +8,8 @@ const CommentList = ({ comments }) => {
     return <span></span>;
   }
 
-  const styles = {
-    height: `${70 * comments.length}px`
-  }
-
   return (
-    <ul className="comment-list" style={styles}>
+    <ul className="comment-list">
       {
         comments.map((comment) => {
           return (
