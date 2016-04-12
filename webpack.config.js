@@ -10,6 +10,8 @@ var isDevelopment = (NODE_ENV == JSON.stringify('development'));
 var isProduction = (NODE_ENV == JSON.stringify('production'));
 
 console.log('NODE_ENV', NODE_ENV);
+console.log('CLIENT_ID', CLIENT_ID);
+console.log('TYPEKIT_KIT_ID', TYPEKIT_KIT_ID);
 
 var devTool = isDevelopment ? 'eval' : 'source-map';
 
