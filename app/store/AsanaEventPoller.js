@@ -30,11 +30,9 @@ const AsanaEventPoller = (store) => {
           // and that event is a project change
           if (event.data[0].action === 'changed') {
 
-            store.dispatch({
-              type: 'RECEIVE_EVENT'
-            });
+            store.dispatch({ type: 'RECEIVE_EVENT' });
 
-            store.dispatch(Actions.updateTasksForProject(_projectId));
+            store.dispatch(Actions.getTask(event.data[0].resource.id));
           }
         }
 
