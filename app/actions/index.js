@@ -114,17 +114,14 @@ const isSection = (item) => {
 };
 
 const updateCard = (dispatch, card) => {
-  // Cloning so we can remove the none normalised subtasks
-  // They are populated elsewhere
-  const clonedCard = { ...card, subtasks: [] };
-
   dispatch({
     type: 'UPDATE_CARD',
     payload: {
-      id: clonedCard.id,
-      card: clonedCard
+      id: card.id,
+      card: card
     }
   });
+
   storeSubtasks(dispatch, card);
 };
 

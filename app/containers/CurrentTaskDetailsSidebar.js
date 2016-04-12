@@ -11,9 +11,12 @@ const mapStateToProps = (state) => {
 
   if (currentTaskId) {
     const commentsList = cards.records[currentTaskId].comments;
-    comments = commentsList.map((id) => {
-      return state.entities.comments.records[id];
-    });
+
+    if (typeof commentsList !== 'undefined') {
+      comments = commentsList.map((id) => {
+        return state.entities.comments.records[id];
+      });
+    }
   }
 
   return {

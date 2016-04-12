@@ -18,6 +18,11 @@ const Card = React.createClass({
       name: cardNameInput.value
     };
 
+    // Nothing changed, then there is no need to tell asana
+    if (cardNameInput.value === cardNameInput.defaultValue) {
+      updateAsana = false;
+    }
+
     this.props.onTaskUpdated(task, updateAsana);
   },
 
