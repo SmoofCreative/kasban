@@ -51,7 +51,7 @@ export default function configureStore() {
   const poller = AsanaEventPoller(store);
   poller.init(stateTracker.entities.projects.conditions.currentId);
 
-  if (stateTracker.entities.projects.conditions.currentId !== null) {
+  if (typeof stateTracker.entities.projects.conditions.currentId !== 'undefined') {
     poller.start();
   }
 
