@@ -29,9 +29,7 @@ const removeCard = (state, cardId, parentId) => {
 const records = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_CARD':
-    case 'ADD_CARD_SUCCESS': {
-      return addCard(state, action.payload.id, action.payload.card);
-    }
+    case 'ADD_CARD_SUCCESS':
     case 'UPDATE_CARD': {
       return {
         ...state,

@@ -1,9 +1,10 @@
 import Promise from 'bluebird';
 
-const Task = (taskId = null) => {
+const Task = (asana, taskId = null) => {
   const id = taskId;
+  const asanaClient = asana;
 
-  const create = (params, asanaClient) => {
+  const create = (params) => {
     return new Promise((resolve, reject) => {
       asanaClient.tasks.create(params)
       .then((data) => { resolve(data); })
@@ -11,7 +12,27 @@ const Task = (taskId = null) => {
     });
   };
 
-  const update = (params, asanaClient) => {
+  const get = () => {
+    if (id === null) {
+      return new Error('No id provided');
+    }
+
+    const data = {
+      opt_fields: `
+        id,name,notes,completed_at,completed,due_on,projects,memberships.section,
+        assignee,assignee.name,assignee.photo,
+        subtasks,subtasks.name,subtasks.due_on,subtasks.completed,
+        subtasks.assignee, subtasks.assignee.name, subtasks.assignee.photo`
+    }
+
+    return new Promise((resolve, reject) => {
+      asanaClient.tasks.findById(id, data)
+      .then((data) => { resolve(data); })
+      .catch((err) => { reject(err); })
+    });
+  };
+
+  const update = (params) => {
     return new Promise((resolve, reject) => {
       asanaClient.tasks.update(id, params)
       .then((data) => { resolve(data); })
@@ -19,11 +40,11 @@ const Task = (taskId = null) => {
     });
   };
 
-  const complete = (asanaClient) => {
+  const complete = () => {
     return update({ completed: true }, asanaClient);
   };
 
-  const move = (params, asanaClient) => {
+  const move = (params) => {
     const data = {
       project: params.projectId,
       insert_after: params.insertAfter
@@ -36,7 +57,7 @@ const Task = (taskId = null) => {
     });
   };
 
-  const createSubTask = (params, asanaClient) => {
+  const createSubTask = (params) => {
     return new Promise((resolve, reject) => {
       asanaClient.tasks.addSubtask(id, params)
       .then((data) => { resolve(data); })
@@ -44,7 +65,7 @@ const Task = (taskId = null) => {
     });
   };
 
-  const getStories = (asanaClient) => {
+  const getStories = () => {
     if (id === null) {
       return new Error('No id provided');
     }
@@ -66,13 +87,14 @@ const Task = (taskId = null) => {
     });
   };
 
-  const getComments = (asanaClient) => {
+  const getComments = () => {
     const stories = getStories(asanaClient);
     return filterStories(stories, 'comment');
   };
 
   // Return our public API, this should be quite small
   return {
+    getInformation: get,
     create: create,
     complete: complete,
     move: move,

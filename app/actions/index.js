@@ -1,5 +1,6 @@
 import querystringify from 'querystringify';
 import uuid from 'uuid';
+import Promise from 'bluebird';
 
 import { oneHourFromNow } from '../utils';
 import AsanaClient from '../utils/AsanaClient';
@@ -47,7 +48,7 @@ const storeCard = (dispatch, parentId, card, type) => {
 
   // Cloning so we can remove the none normalised subtasks
   // They are populated elsewhere
-  const clonedCard = { ...card, subtasks: [], comments: [] };
+  const clonedCard = { ...card, subtasks: [] };
 
   dispatch({
     type: dispatchType,
@@ -113,13 +114,18 @@ const isSection = (item) => {
 };
 
 const updateCard = (dispatch, card) => {
+  // Cloning so we can remove the none normalised subtasks
+  // They are populated elsewhere
+  const clonedCard = { ...card, subtasks: [] };
+
   dispatch({
     type: 'UPDATE_CARD',
     payload: {
-      id: card.id,
-      card: card
+      id: clonedCard.id,
+      card: clonedCard
     }
   });
+  storeSubtasks(dispatch, card);
 };
 
 const updateSection = (dispatch, section) => {
@@ -155,8 +161,8 @@ const removeSubtask = (dispatch, cardId, parentId) => {
 const completeCard = (dispatch, taskId) => {
   dispatch({ type: 'COMPLETING_CARD', payload: { id: taskId } });
 
-  const task = Task(taskId);
-  task.complete(AsanaClient)
+  const task = Task(AsanaClient, taskId);
+  task.complete()
     .then(() => { dispatch({ type: 'COMPLETED_CARD_SUCCESS' }); })
     .catch(() => { dispatch({ type: 'COMPLETED_CARD_FAILED' }); });
 };
@@ -212,8 +218,8 @@ const addSectionsAndCards = (dispatch, projectId, tasks) => {
 };
 
 const getCommentsForTask = (dispatch, id) => {
-  const task = Task(id);
-  task.getComments(AsanaClient)
+  const task = Task(AsanaClient, id);
+  task.getComments()
   .then((comments) => {
     comments.map((comment) => {
       storeComments(dispatch, id, comment);
@@ -222,6 +228,18 @@ const getCommentsForTask = (dispatch, id) => {
     dispatch({ type: 'FETCHING_STORIES_FOR_TASK_SUCCESS' });
   })
   .catch((err) => { console.log(err); dispatch({ type: 'FETCHING_STORIES_FOR_TASK_FAILED' }); });
+};
+
+const getTaskInformation = (dispatch, id) => {
+  const task = Task(AsanaClient, id);
+
+  Promise.all([task.getInformation(), task.getComments()])
+  .spread((taskInformation, taskComments) => {
+    updateCard(dispatch, taskInformation);
+    taskComments.map((comment) => {
+      storeComments(dispatch, id, comment);
+    });
+  });
 };
 
 Actions.getWorkspaces = () => {
@@ -280,8 +298,8 @@ Actions.createTask = (params) => {
       project: projectId
     }];
 
-    const task = Task();
-    task.create(taskDetails, AsanaClient)
+    const task = Task(AsanaClient);
+    task.create(taskDetails)
       .then((data) => {
         storeCard(dispatch, sectionId, data, 'card');
         removeCard(dispatch, cardId, sectionId);
@@ -302,8 +320,8 @@ Actions.createSubTask = (params) => {
     // Store the card locally
     storeCard(dispatch, parentId, taskDetails, 'subtask');
 
-    const task = Task(parentId);
-    task.createSubTask(taskDetails, AsanaClient)
+    const task = Task(AsanaClient, parentId);
+    task.createSubTask(taskDetails)
       .then((data) => {
         storeCard(dispatch, parentId, data, 'subtask');
         removeSubtask(dispatch, cardId, parentId);
@@ -318,8 +336,8 @@ Actions.updateTask = (params) => {
     updateCard(dispatch, taskDetails);
 
     if (updateAsana) {
-      const task = Task(taskDetails.id);
-      task.update(taskDetails, AsanaClient)
+      const task = Task(AsanaClient, taskDetails.id);
+      task.update(taskDetails)
         .then(() => { dispatch({ type: 'UPDATING_CARD_SUCCESS' }); })
         .catch(() => { dispatch({ type: 'UPDATING_CARD_FAILED' }); });
     }
@@ -332,8 +350,8 @@ Actions.updateSection = (params) => {
     updateSection(dispatch, details);
 
     if (updateAsana) {
-      const task = Task(details.id);
-      task.update(details, AsanaClient)
+      const task = Task(AsanaClient, details.id);
+      task.update(details)
         .then(() => { dispatch({ type: 'UPDATING_CARD_SUCCESS' }); })
         .catch(() => { dispatch({ type: 'UPDATING_CARD_FAILED' }); });
     }
@@ -368,8 +386,8 @@ Actions.moveCard = (cardToMove, cardToInsertAfter, projectId) => {
         }
       }
 
-      const task = Task(cardToMove.id);
-      task.move(data, AsanaClient)
+      const task = Task(AsanaClient, cardToMove.id);
+      task.move(data)
       .then(() => { dispatch({ type: 'MOVED_CARD_SUCCESS' }); })
       .catch(() => { dispatch({ type: 'MOVED_CARD_FAILED' }); })
     }
@@ -398,6 +416,13 @@ Actions.getComments = ({ id }) => {
   return (dispatch) => {
     dispatch({ type: 'FETCHING_STORIES_FOR_TASK' });
     getCommentsForTask(dispatch, id);
+  }
+}
+
+Actions.getTask = (id) => {
+  return (dispatch) => {
+    dispatch({ type: 'FETCHING_TASK_INFORMATION' });
+    getTaskInformation(dispatch, id);
   }
 }
 
