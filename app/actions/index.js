@@ -90,12 +90,12 @@ const storeComments = (dispatch, cardId, comment) => {
 const getTasksForProject = (dispatch, id) => {
   const project = Project(id);
   project.getTasks(AsanaClient)
-    .then((tasks) => {
-      addSectionsAndCards(dispatch, id, tasks);
-    })
-    .then(() => {
-      dispatch({ type: 'RECEIVED_SECTIONS_AND_TASKS' })
-    });
+  .then((tasks) => {
+    addSectionsAndCards(dispatch, id, tasks);
+  })
+  .then(() => {
+    dispatch({ type: 'RECEIVED_SECTIONS_AND_TASKS' })
+  });
 };
 
 const moveSection = (dispatch, sectionId, projectId, index) => {
@@ -227,15 +227,44 @@ const getCommentsForTask = (dispatch, id) => {
   .catch((err) => { console.log(err); dispatch({ type: 'FETCHING_STORIES_FOR_TASK_FAILED' }); });
 };
 
-const getTaskInformation = (dispatch, id) => {
+const getTaskInformation = (dispatch, id, projectId) => {
   const task = Task(AsanaClient, id);
+
+  dispatch({ type: 'FETCHING_UPDATED_TASK_INFORMATION '});
 
   Promise.all([task.getInformation(), task.getComments()])
   .spread((taskInformation, taskComments) => {
     updateCard(dispatch, taskInformation);
+
+    if (taskInformation.completed) {
+      // Move the card to the completed section
+
+      const cardToMove = {
+        id: taskInformation.id,
+        sectionId: taskInformation.memberships[0].section.id
+      };
+
+      const cardToInsertAfter = {
+        id: null,
+        sectionId: 'completed'
+      };
+
+      dispatch({
+        type: 'MOVE_CARD',
+        payload: {
+          cardToMove: cardToMove,
+          cardToInsertAfter: cardToInsertAfter
+        }
+      });
+    }
+
     taskComments.map((comment) => {
       storeComments(dispatch, id, comment);
     });
+  })
+  .catch(() => {
+    // If we fail, reload the project
+    getTasksForProject(dispatch, projectId);
   });
 };
 
@@ -416,10 +445,10 @@ Actions.getComments = ({ id }) => {
   }
 }
 
-Actions.getTask = (id) => {
+Actions.getTask = (id, projectId) => {
   return (dispatch) => {
     dispatch({ type: 'FETCHING_TASK_INFORMATION' });
-    getTaskInformation(dispatch, id);
+    getTaskInformation(dispatch, id, projectId);
   }
 }
 

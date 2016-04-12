@@ -32,7 +32,11 @@ const AsanaEventPoller = (store) => {
 
             store.dispatch({ type: 'RECEIVE_EVENT' });
 
-            store.dispatch(Actions.getTask(event.data[0].resource.id));
+            if (event.data[0].resource.id === _projectId) {
+              store.dispatch(Actions.updateTasksForProject(event.data[0].resource.id));
+            } else {
+              store.dispatch(Actions.getTask(event.data[0].resource.id), _projectId);
+            }
           }
         }
 
