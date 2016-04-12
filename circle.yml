@@ -6,11 +6,11 @@ deployment:
   production:
     branch: master
     commands:
-      - npm run postinstall
+      - npm run prodbuild
       - surge --project ./build --domain kasban.io
 
   staging:
     branch: develop
     commands:
-      - npm run postinstall
+      - npm run stagingbuild
       - surge --project ./build --domain kasban-staging.surge.sh
