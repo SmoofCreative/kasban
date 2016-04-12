@@ -92,6 +92,12 @@ const conditions = (state = {}, action) => {
         currentId: action.payload.id
       }
     }
+    case 'REQUEST_SECTIONS_AND_TASKS': {
+      return {
+        ...state,
+        currentId: undefined
+      }
+    }
     default: {
       return state;
     }
