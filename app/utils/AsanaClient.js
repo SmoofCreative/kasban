@@ -9,8 +9,6 @@ if (access_token) {
   }
 }
 
-console.log(process.env.CLIENT_ID);
-
 export default Asana.Client.create({
   clientId: process.env.CLIENT_ID,
   redirectUri: document.location['href']
