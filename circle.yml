@@ -3,6 +3,11 @@ machine:
     version: 5.1.0
 
 deployment:
+  production:
+    branch: master
+    commands:
+      - surge --project ./build --domain kasban.surge.sh
+
   staging:
     branch: develop
     commands:
