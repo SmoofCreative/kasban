@@ -6,10 +6,11 @@ deployment:
   production:
     branch: master
     commands:
-      - surge --project ./build --domain kasban.surge.sh
+      - npm run postinstall
+      - surge --project ./build --domain kasban.io
 
   staging:
-    branch: develop
+    branch: feature/add-surge
     commands:
-      - "[[ ! -s \"$(git rev-parse --git-dir)/shallow\" ]] || git fetch --unshallow"
-      - git push git@heroku.com:kasban-staging.git $CIRCLE_SHA1:refs/heads/master
+      - npm run postinstall
+      - surge --project ./build --domain kasban-staging.surge.sh
