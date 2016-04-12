@@ -2,7 +2,9 @@ import { combineReducers } from 'redux'
 import update from 'react/lib/update';
 
 const getCardIndex = (state, cardId, sectionId) => {
-  return state[sectionId].cards.indexOf(cardId);
+  let index = state[sectionId].cards.indexOf(cardId);
+  index = index == -1 ? 0 : index;
+  return index;
 };
 
 const addCard = (state, cardId, sectionId) => {
@@ -71,7 +73,7 @@ const records = (state = {}, action) => {
       const removedCardState = removeCard(state, cardToMove.id, cardToMove.sectionId);
 
       // Find the index of the card to insert after
-      const index = getCardIndex(removedCardState, cardToInsertAfter.id, cardToInsertAfter.sectionId);
+      let index = getCardIndex(removedCardState, cardToInsertAfter.id, cardToInsertAfter.sectionId);
 
       // Insert the card in the new position
       return insertCard(removedCardState, cardToMove.id, cardToInsertAfter.sectionId, index + 1);
