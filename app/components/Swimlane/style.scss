@@ -32,10 +32,6 @@ $swimlane-height-small: 250px;
     margin-left: 0;
   }
 
-  &--small {
-    border-bottom: $swimlane-border;
-  }
-
   &__header {
     width: 100%;
     height: $swimlane-header-height;
@@ -88,8 +84,8 @@ $swimlane-height-small: 250px;
     overflow: -moz-scrollbars-none;
     &::-webkit-scrollbar { width: 0 !important }
 
-    &--small {
-      height: $swimlane-height-small;
+    &--full-height {
+      height: 100%;
     }
   }
 

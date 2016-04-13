@@ -16,7 +16,7 @@ const Project = (props) => {
                       isStatic={false}
                       showInteractiveIcons={false}
                       isSubTasks={false}
-                      isSmall={false}
+                      fullHeight={false}
                       hasGutter={true}
                       {...section}
                   />;

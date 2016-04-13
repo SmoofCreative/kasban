@@ -61,7 +61,7 @@ const TaskDetailsSidebar = ({ card, visible, onSidebarClose, comments }) => {
             isStatic={true}
             showInteractiveIcons={true}
             isSubTasks={true}
-            isSmall={true}
+            fullHeight={true}
             hasGutter={false}
           />
         </div>
