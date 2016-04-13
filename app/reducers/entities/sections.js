@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux'
 import update from 'react/lib/update';
 
+import { isNumeric } from '../../utils';
+
 const getCardIndex = (state, cardId, sectionId) => {
   let index = state[sectionId].cards.indexOf(cardId);
   index = index == -1 ? 0 : index;
@@ -50,6 +52,12 @@ const records = (state = {}, action) => {
         }
       };
     }
+    case 'ADD_SECTIONS': {
+      return {
+        ...state,
+        ...action.payload.sections
+      };
+    }
     case 'UPDATE_SECTION': {
       return {
         ...state,
@@ -61,6 +69,28 @@ const records = (state = {}, action) => {
     }
     case 'ADD_CARD': {
       return addCard(state, action.payload.id, action.payload.parentId);
+    }
+    case 'ADD_CARDS': {
+      const { cards, sectionId } = action.payload;
+      let cardIds = [];
+
+      // Go through each comment and check if it doesnt already exists
+      for(let key in cards) {
+        if(cards.hasOwnProperty(key)) {
+          key = isNumeric(key) ? parseInt(key) : key;
+          if (state[sectionId].cards.indexOf(key) === -1) {
+            cardIds.push(key);
+          }
+        }
+      }
+
+      return update(state, {
+        [sectionId]: {
+          cards: {
+            $push: [...cardIds]
+          }
+        }
+      });
     }
     case 'REMOVE_CARD': {
       const { id, sectionId } = action.payload;

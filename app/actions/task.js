@@ -23,7 +23,7 @@ const Task = (asana, taskId = null) => {
         assignee,assignee.name,assignee.photo,
         subtasks,subtasks.name,subtasks.due_on,subtasks.completed,
         subtasks.assignee, subtasks.assignee.name, subtasks.assignee.photo`
-    }
+    };
 
     return new Promise((resolve, reject) => {
       asanaClient.tasks.findById(id, data)
@@ -65,6 +65,20 @@ const Task = (asana, taskId = null) => {
     });
   };
 
+  const getSubTasks = () => {
+    const data = {
+      opt_fields: `
+        subtasks,subtasks.name,subtasks.due_on,subtasks.completed,
+        subtasks.assignee, subtasks.assignee.name, subtasks.assignee.photo`
+    };
+
+    return new Promise((resolve, reject) => {
+      asanaClient.tasks.findById(id, data)
+      .then((data) => { resolve(data); })
+      .catch((err) => { reject(err); })
+    });
+  };
+
   const getStories = () => {
     if (id === null) {
       return new Error('No id provided');
@@ -101,7 +115,8 @@ const Task = (asana, taskId = null) => {
     update: update,
     createSubTask: createSubTask,
     getStories: getStories,
-    getComments: getComments
+    getComments: getComments,
+    getSubTasks: getSubTasks
   };
 };
 

@@ -48,13 +48,13 @@ const mapDispatchToProps = (dispatch) => {
 
       dispatch(Actions.updateSection(options));
     },
-    onTaskSelected: (id) => {
+    onTaskSelected: (id, projectId) => {
       const options = {
         id: id
       };
 
       dispatch(UIActions.selectTask(options));
-      dispatch(Actions.getComments(options));
+      dispatch(Actions.getTask(id, projectId));
     },
     onCardMoved: (cardToMove, cardToInsertAfter, projectId) => {
       dispatch(Actions.moveCard(cardToMove, cardToInsertAfter, projectId));
@@ -72,6 +72,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     },
     onCardMoved: (cardToMove, cardToInsertAfter) => {
       dispatchProps.onCardMoved(cardToMove, cardToInsertAfter, currentProjectId);
+    },
+    onTaskSelected: (id) => {
+      dispatchProps.onTaskSelected(id, currentProjectId);
     }
   };
 

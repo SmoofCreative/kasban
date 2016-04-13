@@ -19,3 +19,7 @@ export function oneHourFromNow () {
   let theFuture = Date.now() + 60*60*1000;
   return theFuture;
 }
+
+export function isNumeric(input) {
+  return /^\d+$/.test(input);
+}
