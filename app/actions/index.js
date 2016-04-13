@@ -76,12 +76,28 @@ const storeSubtasks = (dispatch, card) => {
   }
 };
 
-const storeComments = (dispatch, cardId, comment) => {
+const formatComments = (comments) => {
+  let formattedComments = {}
+
+  for (let i = 0; i < comments.length; i++) {
+    let comment = comments[i];
+    formattedComments = {
+      ...formattedComments,
+      [comment.id]: {
+        ...comment
+      }
+    };
+  }
+  return formattedComments;
+};
+
+const storeComments = (dispatch, cardId, comments) => {
+  const formattedComments = formatComments(comments);
+
   dispatch({
-    type: 'ADD_COMMENT',
+    type: 'ADD_COMMENTS',
     payload: {
-      id: comment.id,
-      comment: comment,
+      comments: { ...formattedComments },
       cardId: cardId
     }
   });
@@ -218,10 +234,7 @@ const getCommentsForTask = (dispatch, id) => {
   const task = Task(AsanaClient, id);
   task.getComments()
   .then((comments) => {
-    comments.map((comment) => {
-      storeComments(dispatch, id, comment);
-    });
-
+    storeComments(dispatch, id, comments);
     dispatch({ type: 'FETCHING_STORIES_FOR_TASK_SUCCESS' });
   })
   .catch((err) => { console.log(err); dispatch({ type: 'FETCHING_STORIES_FOR_TASK_FAILED' }); });
@@ -258,9 +271,7 @@ const getTaskInformation = (dispatch, id, projectId) => {
       });
     }
 
-    taskComments.map((comment) => {
-      storeComments(dispatch, id, comment);
-    });
+    storeComments(dispatch, id, taskComments);
   })
   .catch(() => {
     // If we fail, reload the project
