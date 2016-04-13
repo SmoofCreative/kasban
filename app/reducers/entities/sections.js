@@ -50,6 +50,12 @@ const records = (state = {}, action) => {
         }
       };
     }
+    case 'ADD_SECTIONS': {
+      return {
+        ...state,
+        ...action.payload.sections
+      };
+    }
     case 'UPDATE_SECTION': {
       return {
         ...state,

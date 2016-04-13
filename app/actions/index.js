@@ -50,6 +50,35 @@ const storeProjects = (dispatch, workspaceId, projects) => {
   }
 };
 
+const formatSections = (sections) => {
+  let formattedSections = {}
+
+  for (let i = 0; i < sections.length; i++) {
+    let section = sections[i];
+    formattedSections = {
+      ...formattedSections,
+      [section.id]: {
+        ...section,
+        cards: []
+      }
+    };
+  }
+  return formattedSections;
+};
+
+const storeSections = (dispatch, projectId, sections) => {
+  if (sections.length) {
+    const formattedSections = formatSections(sections);
+    dispatch({
+      type: 'ADD_SECTIONS',
+      payload: {
+        sections: formattedSections,
+        projectId: projectId
+      }
+    });
+  }
+};
+
 const storeSection = (dispatch, projectId, section) => {
   dispatch({
     type: 'ADD_SECTION',
@@ -200,32 +229,68 @@ const completeCard = (dispatch, taskId) => {
     .catch(() => { dispatch({ type: 'COMPLETED_CARD_FAILED' }); });
 };
 
+
+/*
+ We want to format the sections and cards in the action rather than passing each one
+ to the reducer as this was blocking the UI.
+
+ The function works on the assumtion that each card in a section has a section membership (from asana).
+ If the card has no section membership then we know it's either uncategorised or completed. To determine this
+ we check for the `completed` property.
+
+ 1. Go through each task in the list
+ 2. Determine if it is a section; add it to the relevant array
+ 3. Push the sections
+ 4. Push the tasks
+ 5. Push the subtasks (base tasks need to be in place first)
+*/
 const addSectionsAndCards = (dispatch, projectId, tasks) => {
-  // First add our own hardcoded sections
+  let sections = [];
+  let cards = [];
+  let subtasks = [];
 
-  const presetSections = [
-    {
-      id: 'completed',
-      name: 'Completed',
-      completed: true,
-      cards: []
-    },
-    {
-      id: 'uncategorised',
-      name: 'Uncategorised:',
-      completed: false,
-      cards: []
-    }
-  ];
+  sections.push({
+    id: 'completed',
+    name: 'Completed',
+    completed: true,
+    cards: []
+  });
 
-  presetSections.map((section) => {
-    storeSection(dispatch, projectId, section);
+  sections.push({
+    id: 'uncategorised',
+    name: 'Uncategorised:',
+    completed: false,
+    cards: []
   });
 
   if (tasks.length) {
+    // for (let item of tasks) {
+      // if (isSection(item)) {
+      //   storeSection(dispatch, projectId, item);
+      //   continue;
+      // }
+
+      if (item.completed) {
+        storeCard(dispatch, 'completed', item, 'card');
+        continue;
+      }
+
+    //   if (item.memberships.length) {
+    //     if (item.memberships[0].section !== null) {
+    //       storeCard(dispatch, item.memberships[0].section.id, item, 'card');
+    //       continue;
+    //     }
+    //   }
+
+    //   // If here the task is not completed nor in a section
+    //   storeCard(dispatch, 'uncategorised', item, 'card');
+
     for (let item of tasks) {
       if (isSection(item)) {
-        storeSection(dispatch, projectId, item);
+        sections.push({
+          ...item,
+          cards: []
+        });
         continue;
       }
 
@@ -234,20 +299,15 @@ const addSectionsAndCards = (dispatch, projectId, tasks) => {
         continue;
       }
 
-      if (item.memberships.length) {
-        if (item.memberships[0].section !== null) {
-          storeCard(dispatch, item.memberships[0].section.id, item, 'card');
-          continue;
-        }
-      }
-
-      // If here the task is not completed nor in a section
-      storeCard(dispatch, 'uncategorised', item, 'card');
     }
   }
 
+  console.log(sections);
+
+  storeSections(dispatch, projectId, sections);
+
   // Move the uncategorised column to the front
-  moveSection(dispatch, 'uncategorised', projectId, 0)
+  // moveSection(dispatch, 'uncategorised', projectId, 0)
 };
 
 const getCommentsForTask = (dispatch, id) => {
