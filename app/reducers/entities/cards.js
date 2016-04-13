@@ -78,6 +78,29 @@ const records = (state = {}, action) => {
         }
       });
     }
+    case 'ADD_COMMENTS': {
+      const { comments, cardId } = action.payload;
+
+      let commentIds = [];
+
+      // Go through each comment and check if it doesnt already exists
+      for(let key in comments) {
+        if(comments.hasOwnProperty(key)) {
+          key = parseInt(key);
+          if (state[cardId].comments.indexOf(key) === -1) {
+            commentIds.push(key);
+          }
+        }
+      }
+
+      return update(state, {
+        [cardId]: {
+          comments: {
+            $push: [...commentIds]
+          }
+        }
+      });
+    }
     default: {
       return state;
     }

@@ -10,6 +10,12 @@ const records = (state = {}, action) => {
         }
       };
     }
+    case 'ADD_COMMENTS': {
+      return {
+        ...state,
+        ...action.payload.comments
+      };
+    }
     case 'UPDATE_COMMENT': {
       return {
         ...state,

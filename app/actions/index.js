@@ -21,15 +21,33 @@ const storeWorkspace = (dispatch, workspace) => {
   });
 };
 
-const storeProject = (dispatch, workspaceId, project) => {
-  dispatch({
-    type: 'ADD_PROJECT',
-    payload: {
-      id: project.id,
-      project: project,
-      workspaceId: workspaceId
-    }
-  });
+const formatProjects = (projects) => {
+  let formattedProjects = {}
+
+  for (let i = 0; i < projects.length; i++) {
+    let project = projects[i];
+    formattedProjects = {
+      ...formattedProjects,
+      [project.id]: {
+        ...project,
+        sections: []
+      }
+    };
+  }
+  return formattedProjects;
+};
+
+const storeProjects = (dispatch, workspaceId, projects) => {
+  if (projects.length) {
+    const formattedProjects = formatProjects(projects);
+    dispatch({
+      type: 'ADD_PROJECTS',
+      payload: {
+        projects: formattedProjects,
+        workspaceId: workspaceId
+      }
+    });
+  }
 };
 
 const storeSection = (dispatch, projectId, section) => {
@@ -76,26 +94,44 @@ const storeSubtasks = (dispatch, card) => {
   }
 };
 
-const storeComments = (dispatch, cardId, comment) => {
-  dispatch({
-    type: 'ADD_COMMENT',
-    payload: {
-      id: comment.id,
-      comment: comment,
-      cardId: cardId
-    }
-  });
+const formatComments = (comments) => {
+  let formattedComments = {}
+
+  for (let i = 0; i < comments.length; i++) {
+    let comment = comments[i];
+    formattedComments = {
+      ...formattedComments,
+      [comment.id]: {
+        ...comment
+      }
+    };
+  }
+  return formattedComments;
+};
+
+const storeComments = (dispatch, cardId, comments) => {
+  if (comments.length) {
+    const formattedComments = formatComments(comments);
+
+    dispatch({
+      type: 'ADD_COMMENTS',
+      payload: {
+        comments: { ...formattedComments },
+        cardId: cardId
+      }
+    });
+  }
 };
 
 const getTasksForProject = (dispatch, id) => {
   const project = Project(id);
   project.getTasks(AsanaClient)
-    .then((tasks) => {
-      addSectionsAndCards(dispatch, id, tasks);
-    })
-    .then(() => {
-      dispatch({ type: 'RECEIVED_SECTIONS_AND_TASKS' })
-    });
+  .then((tasks) => {
+    addSectionsAndCards(dispatch, id, tasks);
+  })
+  .then(() => {
+    dispatch({ type: 'RECEIVED_SECTIONS_AND_TASKS' })
+  });
 };
 
 const moveSection = (dispatch, sectionId, projectId, index) => {
@@ -218,24 +254,48 @@ const getCommentsForTask = (dispatch, id) => {
   const task = Task(AsanaClient, id);
   task.getComments()
   .then((comments) => {
-    comments.map((comment) => {
-      storeComments(dispatch, id, comment);
-    });
-
+    storeComments(dispatch, id, comments);
     dispatch({ type: 'FETCHING_STORIES_FOR_TASK_SUCCESS' });
   })
   .catch((err) => { console.log(err); dispatch({ type: 'FETCHING_STORIES_FOR_TASK_FAILED' }); });
 };
 
-const getTaskInformation = (dispatch, id) => {
+const getTaskInformation = (dispatch, id, projectId) => {
   const task = Task(AsanaClient, id);
+
+  dispatch({ type: 'FETCHING_UPDATED_TASK_INFORMATION '});
 
   Promise.all([task.getInformation(), task.getComments()])
   .spread((taskInformation, taskComments) => {
     updateCard(dispatch, taskInformation);
-    taskComments.map((comment) => {
-      storeComments(dispatch, id, comment);
-    });
+
+    if (taskInformation.completed) {
+      // Move the card to the completed section
+
+      const cardToMove = {
+        id: taskInformation.id,
+        sectionId: taskInformation.memberships[0].section.id
+      };
+
+      const cardToInsertAfter = {
+        id: null,
+        sectionId: 'completed'
+      };
+
+      dispatch({
+        type: 'MOVE_CARD',
+        payload: {
+          cardToMove: cardToMove,
+          cardToInsertAfter: cardToInsertAfter
+        }
+      });
+    }
+
+    storeComments(dispatch, id, taskComments);
+  })
+  .catch(() => {
+    // If we fail, reload the project
+    getTasksForProject(dispatch, projectId);
   });
 };
 
@@ -250,9 +310,7 @@ Actions.getWorkspaces = () => {
         storeWorkspace(dispatch, ws);
         workspace.getProjects(ws.id, AsanaClient)
         .then((projects) => {
-          projects.map((project) => {
-            storeProject(dispatch, ws.id, project);
-          });
+          storeProjects(dispatch, ws.id, projects);
         });
       });
 
@@ -416,10 +474,10 @@ Actions.getComments = ({ id }) => {
   }
 }
 
-Actions.getTask = (id) => {
+Actions.getTask = (id, projectId) => {
   return (dispatch) => {
     dispatch({ type: 'FETCHING_TASK_INFORMATION' });
-    getTaskInformation(dispatch, id);
+    getTaskInformation(dispatch, id, projectId);
   }
 }
 

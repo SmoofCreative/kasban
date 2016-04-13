@@ -30,6 +30,29 @@ const records = (state = {}, action) => {
         }
       });
     }
+    case 'ADD_PROJECTS': {
+      const { projects, workspaceId } = action.payload;
+
+      let projectIds = [];
+
+      // Go through each comment and check if it doesnt already exists
+      for(let key in projects) {
+        if(projects.hasOwnProperty(key)) {
+          key = parseInt(key);
+          if (state[workspaceId].projects.indexOf(key) === -1) {
+            projectIds.push(key);
+          }
+        }
+      }
+
+      return update(state, {
+        [workspaceId]: {
+          projects: {
+            $push: [...projectIds]
+          }
+        }
+      });
+    }
     default: {
       return state;
     }
