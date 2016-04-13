@@ -86,8 +86,9 @@ const records = (state = {}, action) => {
       // Go through each comment and check if it doesnt already exists
       for(let key in comments) {
         if(comments.hasOwnProperty(key)) {
+          key = parseInt(key);
           if (state[cardId].comments.indexOf(key) === -1) {
-            commentIds.push(parseInt(key));
+            commentIds.push(key);
           }
         }
       }

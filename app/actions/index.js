@@ -92,15 +92,17 @@ const formatComments = (comments) => {
 };
 
 const storeComments = (dispatch, cardId, comments) => {
-  const formattedComments = formatComments(comments);
+  if (comments.length) {
+    const formattedComments = formatComments(comments);
 
-  dispatch({
-    type: 'ADD_COMMENTS',
-    payload: {
-      comments: { ...formattedComments },
-      cardId: cardId
-    }
-  });
+    dispatch({
+      type: 'ADD_COMMENTS',
+      payload: {
+        comments: { ...formattedComments },
+        cardId: cardId
+      }
+    });
+  }
 };
 
 const getTasksForProject = (dispatch, id) => {
