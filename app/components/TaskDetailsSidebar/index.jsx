@@ -5,6 +5,7 @@ import './style';
 import UserImage from '../UserImage';
 import DueDate from '../DueDate';
 import CommentList from '../CommentList';
+import Loading from '../Loading';
 import Swimlane from '../../containers/SwimlaneContainer';
 
 const renderDisplayName = (user) => {
@@ -28,8 +29,11 @@ const renderDisplayName = (user) => {
   return <span className="task-details-sidebar__user-name">{ displayName }</span>;
 };
 
-const TaskDetailsSidebar = ({ card, visible, onSidebarClose, comments }) => {
-  const classes = classNames('task-details-sidebar', { active: visible });
+const TaskDetailsSidebar = ({ card, visible, onSidebarClose, comments, isLoading }) => {
+  const classes = classNames('task-details-sidebar', {
+    'active': visible,
+    'loading': isLoading
+  });
 
   return (
     <div className={ classes }>
@@ -39,36 +43,41 @@ const TaskDetailsSidebar = ({ card, visible, onSidebarClose, comments }) => {
         </i>
       </div>
 
-      <div className="task-details-sidebar__details">
-        <UserImage user={ card.assignee } />
-        { renderDisplayName(card.assignee) }
-        <DueDate card={ card } showIcon={true} />
+      {(isLoading
+        ? <Loading text="Loading task details" />
+        : <div>
+            <div className="task-details-sidebar__details">
+              <UserImage user={ card.assignee } />
+              { renderDisplayName(card.assignee) }
+              <DueDate card={ card } showIcon={true} />
 
-        <h2 className="task-details-sidebar__title">
-          { card.name }
-        </h2>
+              <h2 className="task-details-sidebar__title">
+                { card.name }
+              </h2>
 
-        <p className="task-details-sidebar__description">
-          { card.notes }
-        </p>
+              <p className="task-details-sidebar__description">
+                { card.notes }
+              </p>
 
-        <div className="task-details-sidebar__sub-tasks">
-          <Swimlane
-            name="Subtasks"
-            id={card.id}
-            cards={card.subtasks}
-            isFullWidth={true}
-            isStatic={true}
-            showInteractiveIcons={true}
-            isSubTasks={true}
-            fullHeight={true}
-            hasGutter={false}
-          />
-        </div>
-      </div>
-      <div className="task-details-sidebar__comment-list">
-          <CommentList comments={comments} />
-        </div>
+              <div className="task-details-sidebar__sub-tasks">
+                <Swimlane
+                  name="Subtasks"
+                  id={card.id}
+                  cards={card.subtasks}
+                  isFullWidth={true}
+                  isStatic={true}
+                  showInteractiveIcons={true}
+                  isSubTasks={true}
+                  fullHeight={true}
+                  hasGutter={false}
+                />
+              </div>
+            </div>
+            <div className="task-details-sidebar__comment-list">
+              <CommentList comments={comments} />
+            </div>
+          </div>
+      )}
     </div>
   );
 };

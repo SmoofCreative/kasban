@@ -15,18 +15,28 @@ $sidebar-components-vertical-padding: 25px;
   width: $task-sidebar-width;
   height: 100%;
   border-left: 1px solid $sidebar-border-colour;
-  padding-top: $header-height + $sidebar-vertical-padding;
+  padding-top: $header-height;
   padding-bottom: 0;
-  background-color: $sidebar-secondary-colour;
+  background-color: $sidebar-primary-colour;
   overflow-y: scroll;
 
   &.active {
     display: block;
   }
 
+  &.loading {
+    background-color: $sidebar-primary-colour;
+
+    .task-details-sidebar__close {
+      background-color: $sidebar-primary-colour;
+    }
+  }
+
   &__close {
+    padding-top: $sidebar-vertical-padding;
     padding-right: $sidebar-horizontal-padding;
     padding-left: $sidebar-horizontal-padding;
+    background-color: $sidebar-secondary-colour;
     text-align: right;
 
     &__icon {
@@ -40,6 +50,7 @@ $sidebar-components-vertical-padding: 25px;
     padding-right: $sidebar-horizontal-padding;
     padding-left: $sidebar-horizontal-padding;
     border-bottom: 1px solid $sidebar-border-colour;
+    background-color: $sidebar-secondary-colour;
   }
 
   &__comment-list {

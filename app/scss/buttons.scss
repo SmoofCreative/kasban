@@ -1,4 +1,6 @@
-$cta-colour: #0EB0D1;
+@import "./variables";
+
+$cta-colour: $brand-blue;
 $cta-hover-colour: #12CFFD;
 
 .cta {
