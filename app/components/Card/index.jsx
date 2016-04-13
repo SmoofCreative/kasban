@@ -126,9 +126,12 @@ const Card = React.createClass({
   },
 
   render() {
-    const { card, canDrop, isOver, showInteractiveIcons } = this.props;
+    const { card, canDrop, isOver, showInteractiveIcons, isFocused } = this.props;
 
-    const classes = classNames('swimcard__card-border', { active: canDrop && isOver });
+    const classes = classNames('swimcard__card-border', {
+      'active': canDrop && isOver,
+      'swimcard__card-border--focused': isFocused
+    });
 
     return (
       <article onClick={ !showInteractiveIcons && this.handleTaskSelected } className="swimcard__card pure-g">

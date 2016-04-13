@@ -35,7 +35,8 @@ const Swimlane = React.createClass({
       onTaskSelected,
       onTaskUpdated,
       isStatic,
-      showInteractiveIcons
+      showInteractiveIcons,
+      currentTaskId
      } = this.props;
 
     return cards.map((cardId) => {
@@ -51,7 +52,8 @@ const Swimlane = React.createClass({
         onTaskUpdated: onTaskUpdated,
         onCardClick: onTaskSelected,
         sectionId: id,
-        showInteractiveIcons: showInteractiveIcons
+        showInteractiveIcons: showInteractiveIcons,
+        isFocused: currentTaskId === card.id
       };
 
       return isStatic

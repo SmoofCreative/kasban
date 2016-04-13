@@ -8,7 +8,8 @@ import UIActions from '../actions/ui';
 const mapStateToProps = (state) => {
   return {
     cardEntities: state.entities.cards.records,
-    currentProjectId: state.entities.projects.conditions.currentId
+    currentProjectId: state.entities.projects.conditions.currentId,
+    currentTaskId: state.entities.cards.conditions.currentId
   }
 };
 
