@@ -9,7 +9,7 @@ $sidebar-components-vertical-padding: 25px;
 
 .task-details-sidebar {
   display: none;
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   width: $task-sidebar-width;
@@ -19,6 +19,7 @@ $sidebar-components-vertical-padding: 25px;
   padding-bottom: 0;
   background-color: $sidebar-primary-colour;
   overflow-y: scroll;
+  z-index: 5;
 
   &.active {
     display: block;
