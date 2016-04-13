@@ -69,9 +69,6 @@ const records = (state = {}, action) => {
     case 'ADD_SUBTASKS': {
       const { subtasks, cardId, addToTop } = action.payload;
 
-      console.log(subtasks);
-      console.log(cardId);
-
       const newState = {
         ...state,
         ...subtasks
@@ -88,8 +85,6 @@ const records = (state = {}, action) => {
           }
         }
       }
-
-      console.log(addToTop);
 
       if (addToTop) {
         return update(newState, {
