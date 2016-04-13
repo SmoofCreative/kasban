@@ -29,6 +29,11 @@ $drag-handle-size: 16px;
       border-width: 0 0 2px 0;
       border-image: linear-gradient(to right, $brand-pink, $brand-orange) 100% 1;
     }
+
+    &--focused {
+      border-top: 2px solid $brand-blue;
+      border-bottom: 2px solid $brand-blue;
+    }
   }
 
   &__card-content {
