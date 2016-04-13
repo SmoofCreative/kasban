@@ -24,6 +24,10 @@ $sidebar-components-vertical-padding: 25px;
     display: block;
   }
 
+  &.loading {
+    background-color: $sidebar-primary-colour;
+  }
+
   &__close {
     padding-right: $sidebar-horizontal-padding;
     padding-left: $sidebar-horizontal-padding;

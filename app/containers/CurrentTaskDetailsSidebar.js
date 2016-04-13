@@ -22,6 +22,7 @@ const mapStateToProps = (state) => {
   return {
     card: state.entities.cards.records[currentTaskId] || {},
     visible: state.ui.showTaskDetailsSidebar,
+    isLoading: state.ui.showTaskDetailsSidebarLoading,
     currentTaskId: currentTaskId,
     comments: comments
   }
