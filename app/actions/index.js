@@ -379,10 +379,13 @@ const getTaskInformation = (dispatch, id, projectId) => {
 
     storeSubtasks(dispatch, taskSubTasks.id, taskSubTasks.subtasks, false);
     storeComments(dispatch, id, taskComments);
+
+    dispatch({ type: 'FETCHING_UPDATED_TASK_INFORMATION_SUCCESS'});
   })
   .catch(() => {
     // If we fail, reload the project
     getTasksForProject(dispatch, projectId);
+    dispatch({ type: 'FETCHING_UPDATED_TASK_INFORMATION_FAILED '});
   });
 };
 

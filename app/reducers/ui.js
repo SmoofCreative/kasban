@@ -12,7 +12,10 @@ export default function auth(state = initialState, action) {
       return Object.assign({}, state, { showSidebar: action.payload.showSidebar });
     }
     case 'CARD_SELECTED': {
-      return Object.assign({}, state, { showTaskDetailsSidebar: true });
+      return Object.assign({}, state, {
+        showTaskDetailsSidebar: true ,
+        showTaskDetailsSidebarLoading: true
+      });
     }
     case 'UPDATE_TASK_DETAILS_SIDEBAR_VISIBILITY': {
       return Object.assign({}, state, { showTaskDetailsSidebar: action.payload.showSidebar });
@@ -28,6 +31,9 @@ export default function auth(state = initialState, action) {
     }
     case 'RECEIVED_SECTIONS_AND_TASKS': {
       return Object.assign({}, state, { showProjectLoading: false });
+    }
+    case 'FETCHING_UPDATED_TASK_INFORMATION_SUCCESS': {
+      return Object.assign({}, state, { showTaskDetailsSidebarLoading: false });
     }
     default: {
       return state;
