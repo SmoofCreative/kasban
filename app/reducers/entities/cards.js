@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux'
 import update from 'react/lib/update';
 
+import { isNumeric } from '../../utils';
+
 const getSubTaskIndex = (state, cardId, parentId) => {
   return state[parentId].subtasks.indexOf(cardId);
 };
@@ -39,6 +41,12 @@ const records = (state = {}, action) => {
         }
       };
     }
+    case 'ADD_CARDS': {
+      return {
+        ...state,
+        ...action.payload.cards
+      }
+    }
     case 'ADD_SUBTASK': {
       const { id, card, parentId } = action.payload;
 
@@ -57,6 +65,46 @@ const records = (state = {}, action) => {
           }
         }
       });
+    }
+    case 'ADD_SUBTASKS': {
+      const { subtasks, cardId, addToTop } = action.payload;
+
+      const newState = {
+        ...state,
+        ...subtasks
+      };
+
+      let subtaskIds = [];
+
+      // Go through each comment and check if it doesnt already exists
+      for(let key in subtasks) {
+        if(subtasks.hasOwnProperty(key)) {
+          key = isNumeric(key) ? parseInt(key) : key;
+          if (newState[cardId].subtasks.indexOf(key) === -1) {
+            subtaskIds.push(key);
+          }
+        }
+      }
+
+      if (addToTop) {
+        return update(newState, {
+          [cardId]: {
+            subtasks: {
+              $splice: [[0, 0, ...subtaskIds]]
+            }
+          }
+        });
+      } else {
+        return update(newState, {
+          [cardId]: {
+            subtasks: {
+              $push: [...subtaskIds]
+            }
+          }
+        });
+      }
+
+
     }
     case 'REMOVE_SUBTASK': {
       const { id, parentId } = action.payload;
@@ -86,7 +134,7 @@ const records = (state = {}, action) => {
       // Go through each comment and check if it doesnt already exists
       for(let key in comments) {
         if(comments.hasOwnProperty(key)) {
-          key = parseInt(key);
+          key = isNumeric(key) ? parseInt(key) : key;
           if (state[cardId].comments.indexOf(key) === -1) {
             commentIds.push(key);
           }

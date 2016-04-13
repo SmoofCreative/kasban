@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux'
 import update from 'react/lib/update';
 
+import { isNumeric } from '../../utils';
+
 const records = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_PROJECT': {
@@ -39,6 +41,29 @@ const records = (state = {}, action) => {
         [action.payload.projectId]: {
           sections: {
             $set: [action.payload.id, ...state[action.payload.projectId].sections]
+          }
+        }
+      });
+    }
+    case 'ADD_SECTIONS': {
+      const { sections, projectId } = action.payload;
+
+      let sectionIds = [];
+
+      // Go through each comment and check if it doesnt already exists
+      for(let key in sections) {
+        if(sections.hasOwnProperty(key)) {
+          key = isNumeric(key) ? parseInt(key) : key;
+          if (state[projectId].sections.indexOf(key) === -1) {
+            sectionIds.push(key);
+          }
+        }
+      }
+
+      return update(state, {
+        [projectId]: {
+          sections: {
+            $push: [...sectionIds]
           }
         }
       });

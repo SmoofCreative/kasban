@@ -16,7 +16,7 @@ const Swimlane = React.createClass({
       isFullWidth: false,
       showInteractiveIcons: false,
       isSubTasks: false,
-      isSmall: false,
+      fullHeight: false,
       hasGutter: true
     }
   },
@@ -25,16 +25,16 @@ const Swimlane = React.createClass({
     const { onNewTaskSubmit, isSubTasks } = this.props;
     onNewTaskSubmit(task, isSubTasks);
   },
-  
+
   renderCards() {
-    const { 
-      id, 
-      cards, 
+    const {
+      id,
+      cards,
       cardEntities,
-      onCardMoved, 
+      onCardMoved,
       onTaskSelected,
-      onTaskUpdated, 
-      isStatic, 
+      onTaskUpdated,
+      isStatic,
       showInteractiveIcons
      } = this.props;
 
@@ -61,28 +61,27 @@ const Swimlane = React.createClass({
   },
 
   render() {
-    const { 
-      id, 
-      name, 
-      completed, 
-      memberships, 
-      onCardMoved, 
+    const {
+      id,
+      name,
+      completed,
+      memberships,
+      onCardMoved,
       onTaskUpdated,
       onSectionUpdated,
-      isStatic, 
-      isFullWidth, 
-      isSmall,
+      isStatic,
+      isFullWidth,
+      fullHeight,
       hasGutter
     } = this.props;
 
     const sectionClasses = classNames('swimlane', {
       'swimlane--full-width': isFullWidth,
-      'swimlane--no-gutter': !hasGutter,
-      'swimlane--small' : isSmall
+      'swimlane--no-gutter': !hasGutter
     });
 
     const cardClasses = classNames('swimlane__cards', {
-      'swimlane__cards--small' : isSmall
+      'swimlane__cards--full-height' : fullHeight
     });
 
     return (
