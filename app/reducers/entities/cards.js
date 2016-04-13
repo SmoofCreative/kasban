@@ -39,6 +39,12 @@ const records = (state = {}, action) => {
         }
       };
     }
+    case 'ADD_CARDS': {
+      return {
+        ...state,
+        ...action.payload.cards
+      }
+    }
     case 'ADD_SUBTASK': {
       const { id, card, parentId } = action.payload;
 

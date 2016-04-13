@@ -79,17 +79,6 @@ const storeSections = (dispatch, projectId, sections) => {
   }
 };
 
-const storeSection = (dispatch, projectId, section) => {
-  dispatch({
-    type: 'ADD_SECTION',
-    payload: {
-      id: section.id,
-      section: section,
-      projectId: projectId
-    }
-  });
-};
-
 const storeCard = (dispatch, parentId, card, type) => {
   const dispatchType = `ADD_${type.toUpperCase()}`;
 
@@ -119,6 +108,36 @@ const storeSubtasks = (dispatch, card) => {
     // For each subtask, store it
     card.subtasks.map((subtask) => {
       storeCard(dispatch, clonedCard.id, subtask, 'subtask');
+    });
+  }
+};
+
+const formatCards = (cards) => {
+  let formattedCards = {}
+
+  for (let i = 0; i < cards.length; i++) {
+    let card = cards[i];
+    formattedCards = {
+      ...formattedCards,
+      [card.id]: {
+        ...card,
+        subtasks: [],
+        comments: []
+      }
+    };
+  }
+  return formattedCards;
+};
+
+const storeCards = (dispatch, sectionId, cards) => {
+  if (cards.length) {
+    const formattedCards = formatCards(cards);
+    dispatch({
+      type: 'ADD_CARDS',
+      payload: {
+        cards: formattedCards,
+        sectionId: sectionId
+      }
     });
   }
 };
@@ -238,76 +257,60 @@ const completeCard = (dispatch, taskId) => {
  If the card has no section membership then we know it's either uncategorised or completed. To determine this
  we check for the `completed` property.
 
- 1. Go through each task in the list
- 2. Determine if it is a section; add it to the relevant array
- 3. Push the sections
- 4. Push the tasks
- 5. Push the subtasks (base tasks need to be in place first)
+ - Go through each task in the list
+ - Determine if it is a section; add it to the relevant array
+ - Push the sections
+ - Push the tasks
+ - Push the subtasks (base tasks need to be in place first)
 */
 const addSectionsAndCards = (dispatch, projectId, tasks) => {
   let sections = [];
-  let cards = [];
-  let subtasks = [];
+  let sectionCards = {};
 
-  sections.push({
-    id: 'completed',
-    name: 'Completed',
-    completed: true,
-    cards: []
-  });
+  sections.unshift({ id: 'completed', name: 'Completed', completed: true, cards: [] });
+  sectionCards = { ...sectionCards, 'completed': [] };
 
-  sections.push({
-    id: 'uncategorised',
-    name: 'Uncategorised:',
-    completed: false,
-    cards: []
-  });
+  sections.unshift({ id: 'uncategorised', name: 'Uncategorised:', completed: false, cards: [] });
+  sectionCards = { ...sectionCards, 'uncategorised': [] };
 
   if (tasks.length) {
-    // for (let item of tasks) {
-      // if (isSection(item)) {
-      //   storeSection(dispatch, projectId, item);
-      //   continue;
-      // }
-
-      if (item.completed) {
-        storeCard(dispatch, 'completed', item, 'card');
-        continue;
-      }
-
-    //   if (item.memberships.length) {
-    //     if (item.memberships[0].section !== null) {
-    //       storeCard(dispatch, item.memberships[0].section.id, item, 'card');
-    //       continue;
-    //     }
-    //   }
-
-    //   // If here the task is not completed nor in a section
-    //   storeCard(dispatch, 'uncategorised', item, 'card');
-
     for (let item of tasks) {
       if (isSection(item)) {
-        sections.push({
-          ...item,
-          cards: []
-        });
+        sections.unshift({ ...item, cards: [] });
+        sectionCards = { ...sectionCards, [item.id]: [] };
         continue;
       }
 
       if (item.completed) {
-        storeCard(dispatch, 'completed', item, 'card');
+        sectionCards['completed'].push(item);
         continue;
       }
 
+      if (item.memberships.length) {
+        if (item.memberships[0].section !== null) {
+          let sectionId = item.memberships[0].section.id;
+          sectionCards[sectionId].push(item);
+          continue;
+        }
+      }
+
+      // If here the task is not completed nor in a section
+      sectionCards['uncategorised'].push(item);
     }
   }
 
-  console.log(sections);
-
+  // Store our sections
   storeSections(dispatch, projectId, sections);
 
+  // Iterate over each section and add its cards
+  for(let key in sectionCards) {
+   if (sectionCards.hasOwnProperty(key)) {
+      storeCards(dispatch, key, sectionCards[key]);
+   }
+  }
+
   // Move the uncategorised column to the front
-  // moveSection(dispatch, 'uncategorised', projectId, 0)
+  moveSection(dispatch, 'uncategorised', projectId, 0)
 };
 
 const getCommentsForTask = (dispatch, id) => {

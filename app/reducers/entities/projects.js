@@ -43,6 +43,29 @@ const records = (state = {}, action) => {
         }
       });
     }
+    case 'ADD_SECTIONS': {
+      const { sections, projectId } = action.payload;
+
+      let sectionIds = [];
+
+      // Go through each comment and check if it doesnt already exists
+      for(let key in sections) {
+        if(sections.hasOwnProperty(key)) {
+          key = isNaN(parseInt(key)) ? key : parseInt(key);
+          if (state[projectId].sections.indexOf(key) === -1) {
+            sectionIds.push(key);
+          }
+        }
+      }
+
+      return update(state, {
+        [projectId]: {
+          sections: {
+            $push: [...sectionIds]
+          }
+        }
+      });
+    }
     case 'MOVE_SECTION': {
       const { sectionId, projectId, index } = action.payload;
 

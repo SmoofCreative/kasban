@@ -68,6 +68,28 @@ const records = (state = {}, action) => {
     case 'ADD_CARD': {
       return addCard(state, action.payload.id, action.payload.parentId);
     }
+    case 'ADD_CARDS': {
+      const { cards, sectionId } = action.payload;
+      let cardIds = [];
+
+      // Go through each comment and check if it doesnt already exists
+      for(let key in cards) {
+        if(cards.hasOwnProperty(key)) {
+          key = parseInt(key);
+          if (state[sectionId].cards.indexOf(key) === -1) {
+            cardIds.push(key);
+          }
+        }
+      }
+
+      return update(state, {
+        [sectionId]: {
+          cards: {
+            $push: [...cardIds]
+          }
+        }
+      });
+    }
     case 'REMOVE_CARD': {
       const { id, sectionId } = action.payload;
       return removeCard(state, id, sectionId);
