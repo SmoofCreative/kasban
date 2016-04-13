@@ -20,6 +20,7 @@ $sidebar-tip-horizontal-border: $sidebar-tip-height solid $sidebar-secondary-col
   width: $sidebar-width;
   background-color: $sidebar-primary-colour;
   border-right: 1px solid $sidebar-border-colour;
+  z-index: 6;
 
   &:after {
     content: '';
