@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux'
 import update from 'react/lib/update';
 
+import { isNumeric } from '../../utils';
+
 const getCardIndex = (state, cardId, sectionId) => {
   let index = state[sectionId].cards.indexOf(cardId);
   index = index == -1 ? 0 : index;
@@ -75,7 +77,7 @@ const records = (state = {}, action) => {
       // Go through each comment and check if it doesnt already exists
       for(let key in cards) {
         if(cards.hasOwnProperty(key)) {
-          key = parseInt(key);
+          key = isNumeric(key) ? parseInt(key) : key;
           if (state[sectionId].cards.indexOf(key) === -1) {
             cardIds.push(key);
           }

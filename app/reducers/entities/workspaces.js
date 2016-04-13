@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux'
 import update from 'react/lib/update';
 
+import { isNumeric } from '../../utils';
+
 const records = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_WORKSPACE': {
@@ -38,7 +40,7 @@ const records = (state = {}, action) => {
       // Go through each comment and check if it doesnt already exists
       for(let key in projects) {
         if(projects.hasOwnProperty(key)) {
-          key = parseInt(key);
+          key = isNumeric(key) ? parseInt(key) : key;
           if (state[workspaceId].projects.indexOf(key) === -1) {
             projectIds.push(key);
           }

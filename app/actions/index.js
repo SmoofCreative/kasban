@@ -79,35 +79,48 @@ const storeSections = (dispatch, projectId, sections) => {
   }
 };
 
-const storeCard = (dispatch, parentId, card, type) => {
-  const dispatchType = `ADD_${type.toUpperCase()}`;
-
+const storeCard = (dispatch, parentId, card) => {
   // Cloning so we can remove the none normalised subtasks
   // They are populated elsewhere
   const clonedCard = { ...card, subtasks: [] };
 
   dispatch({
-    type: dispatchType,
+    type: 'ADD_CARD',
     payload: {
       id: clonedCard.id,
       card: clonedCard,
       parentId: parentId
     }
   });
-
-  storeSubtasks(dispatch, card);
 };
 
-const storeSubtasks = (dispatch, card) => {
-  // If the card has subtasks, normalise the structure
-  if (typeof card.subtasks !== 'undefined' && card.subtasks.length) {
-    // First clone the card so that we can remove the current structure
-    const clonedCard = { ...card, subtasks: [], comments: [] };
-    updateCard(dispatch, clonedCard);
+const formatSubTasks = (subtasks) => {
+  let formattedSubTasks = {}
 
-    // For each subtask, store it
-    card.subtasks.map((subtask) => {
-      storeCard(dispatch, clonedCard.id, subtask, 'subtask');
+  for (let i = 0; i < subtasks.length; i++) {
+    let subtask = subtasks[i];
+    formattedSubTasks = {
+      ...formattedSubTasks,
+      [subtask.id]: {
+        ...subtask,
+        subtasks: [],
+        comments: []
+      }
+    };
+  }
+  return formattedSubTasks;
+};
+
+const storeSubtasks = (dispatch, cardId, subtasks, addToTop = false) => {
+  if (subtasks.length) {
+    const formattedSubTasks = formatSubTasks(subtasks);
+    dispatch({
+      type: 'ADD_SUBTASKS',
+      payload: {
+        subtasks: formattedSubTasks,
+        cardId: cardId,
+        addToTop: addToTop
+      }
     });
   }
 };
@@ -198,15 +211,14 @@ const isSection = (item) => {
 };
 
 const updateCard = (dispatch, card) => {
+  const clonedCard = { ...card, subtasks: [] };
   dispatch({
     type: 'UPDATE_CARD',
     payload: {
       id: card.id,
-      card: card
+      card: clonedCard
     }
   });
-
-  storeSubtasks(dispatch, card);
 };
 
 const updateSection = (dispatch, section) => {
@@ -294,7 +306,7 @@ const addSectionsAndCards = (dispatch, projectId, tasks) => {
         }
       }
 
-      // If here the task is not completed nor in a section
+      // If here, the task is not completed nor in a section
       sectionCards['uncategorised'].push(item);
     }
   }
@@ -328,8 +340,8 @@ const getTaskInformation = (dispatch, id, projectId) => {
 
   dispatch({ type: 'FETCHING_UPDATED_TASK_INFORMATION '});
 
-  Promise.all([task.getInformation(), task.getComments()])
-  .spread((taskInformation, taskComments) => {
+  Promise.all([task.getInformation(), task.getComments(), task.getSubTasks()])
+  .spread((taskInformation, taskComments, taskSubTasks) => {
     updateCard(dispatch, taskInformation);
 
     if (taskInformation.completed) {
@@ -354,6 +366,7 @@ const getTaskInformation = (dispatch, id, projectId) => {
       });
     }
 
+    storeSubtasks(dispatch, taskSubTasks.id, taskSubTasks.subtasks, false);
     storeComments(dispatch, id, taskComments);
   })
   .catch(() => {
@@ -399,7 +412,7 @@ Actions.createTask = (params) => {
     taskDetails.id = cardId;
 
     // Store the card locally
-    storeCard(dispatch, sectionId, taskDetails, 'card');
+    storeCard(dispatch, sectionId, taskDetails);
 
     if (sectionId == 'completed') {
       taskDetails.completed = true;
@@ -419,7 +432,7 @@ Actions.createTask = (params) => {
     const task = Task(AsanaClient);
     task.create(taskDetails)
       .then((data) => {
-        storeCard(dispatch, sectionId, data, 'card');
+        storeCard(dispatch, sectionId, data);
         removeCard(dispatch, cardId, sectionId);
       })
       .catch(() => { dispatch({ type: 'ADD_CARD_FAILED' }); });
@@ -436,12 +449,12 @@ Actions.createSubTask = (params) => {
     taskDetails.id = cardId;
 
     // Store the card locally
-    storeCard(dispatch, parentId, taskDetails, 'subtask');
+    storeSubtasks(dispatch, parentId, [taskDetails], true);
 
     const task = Task(AsanaClient, parentId);
     task.createSubTask(taskDetails)
       .then((data) => {
-        storeCard(dispatch, parentId, data, 'subtask');
+        storeSubtasks(dispatch, parentId, [data], true);
         removeSubtask(dispatch, cardId, parentId);
       })
       .catch(() => { removeSubtask(dispatch, cardId, parentId); });
