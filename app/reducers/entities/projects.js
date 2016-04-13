@@ -12,6 +12,12 @@ const records = (state = {}, action) => {
         }
       };
     }
+    case 'ADD_PROJECTS': {
+      return {
+        ...state,
+        ...action.payload.projects
+      };
+    }
     case 'UPDATE_PROJECT': {
       return {
         ...state,
