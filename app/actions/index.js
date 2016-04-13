@@ -211,7 +211,18 @@ const isSection = (item) => {
 };
 
 const updateCard = (dispatch, card) => {
-  const clonedCard = { ...card, subtasks: [] };
+
+  let clonedCard = { ...card };
+
+  // Remove all subtasks which arent ids
+  if (typeof card.subtasks !== 'undefined' && card.subtasks.length) {
+    const subtasks = card.subtasks.filter((subtask) => {
+      typeof subtask === 'number';
+    });
+
+    clonedCard = { ...card, subtasks: subtasks };
+  }
+
   dispatch({
     type: 'UPDATE_CARD',
     payload: {
