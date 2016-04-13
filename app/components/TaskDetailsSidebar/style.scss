@@ -9,13 +9,13 @@ $sidebar-components-vertical-padding: 25px;
 
 .task-details-sidebar {
   display: none;
-  position: fixed;
-  top: $header-height;
+  position: absolute;
+  top: 0;
   right: 0;
   width: $task-sidebar-width;
   height: 100%;
   border-left: 1px solid $sidebar-border-colour;
-  padding-top: $sidebar-vertical-padding;
+  padding-top: $header-height + $sidebar-vertical-padding;
   padding-bottom: 0;
   background-color: $sidebar-secondary-colour;
   overflow-y: scroll;
@@ -43,7 +43,6 @@ $sidebar-components-vertical-padding: 25px;
   }
 
   &__comment-list {
-    height: 100%;
     padding-right: $sidebar-horizontal-padding;
     padding-left: $sidebar-horizontal-padding;
     background-color: $sidebar-primary-colour;
