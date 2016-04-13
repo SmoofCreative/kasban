@@ -21,15 +21,33 @@ const storeWorkspace = (dispatch, workspace) => {
   });
 };
 
-const storeProject = (dispatch, workspaceId, project) => {
-  dispatch({
-    type: 'ADD_PROJECT',
-    payload: {
-      id: project.id,
-      project: project,
-      workspaceId: workspaceId
-    }
-  });
+const formatProjects = (projects) => {
+  let formattedProjects = {}
+
+  for (let i = 0; i < projects.length; i++) {
+    let project = projects[i];
+    formattedProjects = {
+      ...formattedProjects,
+      [project.id]: {
+        ...project,
+        sections: []
+      }
+    };
+  }
+  return formattedProjects;
+};
+
+const storeProjects = (dispatch, workspaceId, projects) => {
+  if (projects.length) {
+    const formattedProjects = formatProjects(projects);
+    dispatch({
+      type: 'ADD_PROJECTS',
+      payload: {
+        projects: formattedProjects,
+        workspaceId: workspaceId
+      }
+    });
+  }
 };
 
 const storeSection = (dispatch, projectId, section) => {
@@ -292,9 +310,7 @@ Actions.getWorkspaces = () => {
         storeWorkspace(dispatch, ws);
         workspace.getProjects(ws.id, AsanaClient)
         .then((projects) => {
-          projects.map((project) => {
-            storeProject(dispatch, ws.id, project);
-          });
+          storeProjects(dispatch, ws.id, projects);
         });
       });
 
