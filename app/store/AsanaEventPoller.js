@@ -1,6 +1,8 @@
 import AsanaClient from '../utils/AsanaClient';
 import Actions from '../actions';
 
+const defaultInterval = 15 * 1000; // 15 seconds
+
 const AsanaEventPoller = (store) => {
 
   let _projectId,
@@ -8,14 +10,14 @@ const AsanaEventPoller = (store) => {
       _interval,
       _rerun = true;
 
-  const init = (projectId, options = { syncToken: '', interval: 3000 }) => {
+  const init = (projectId, options = { syncToken: '', interval: defaultInterval }) => {
     _projectId = projectId;
     _syncToken = options.syncToken;
     _interval = options.interval;
   };
 
   const resetInterval = () => {
-    _interval = 3000;
+    _interval = defaultInterval;
   };
 
   const checkEvent = () => {
@@ -45,24 +47,17 @@ const AsanaEventPoller = (store) => {
         }
 
         if (_rerun) {
-          setTimeout(() => {
-            checkEvent();
-          }, _interval);
+          setTimeout(() => { checkEvent(); }, _interval);
         }
-
-
       })
       .catch(() => {
         // backoff
-        _interval = 9000;
+        _interval = defaultInterval * 2;
 
         if (_rerun) {
-          setTimeout(() => {
-            checkEvent();
-          }, _interval);
+          setTimeout(() => { checkEvent(); }, _interval);
         }
       });
-
   };
 
   const start = () => {
