@@ -2,12 +2,24 @@ import React from 'react';
 
 const SwimlaneHeader = React.createClass({
   handleTextUpdate(updateAsana = false) {
+
+    const { sectionInput } = this.refs;
+
     let section = {
       id: this.props.id,
-      name: this.refs.sectionInput.value
+      name: sectionInput.value
     };
 
+    if (sectionInput.value == sectionInput.defaultValue) {
+      updateAsana = false;
+    }
+
     this.props.onSectionUpdated(section, updateAsana);
+
+    if (updateAsana && this.props.isPlaceholder) {
+      // Reset the text
+      sectionInput.value = sectionInput.defaultValue;
+    }
   },
 
   handleTextBlur() {
@@ -23,9 +35,7 @@ const SwimlaneHeader = React.createClass({
     if (e.keyCode === 13 && !e.shiftKey) {
       // If so, stop the new line
       e.preventDefault();
-
-      // Focus the parent element to trigger the input blur event
-      e.target.parentElement.focus();
+      this.handleTextUpdate(true)
       return false;
     }
   },
@@ -36,10 +46,12 @@ const SwimlaneHeader = React.createClass({
         <input type="text"
                className="swimlane__header__update-input"
                ref="sectionInput"
+               placeholder={ this.props.placeholder }
                onBlur={ this.handleTextBlur }
                onChange={ this.handleTextChange }
                onKeyDown={ this.handleTaskKeyDown }
-               value={ this.props.title} />
+               value={ this.props.title}
+               />
       </form>
     );
   },

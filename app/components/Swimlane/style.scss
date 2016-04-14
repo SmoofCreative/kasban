@@ -87,6 +87,13 @@ $swimlane-height-small: 250px;
     &--full-height {
       height: 100%;
     }
+
+    // This goes into the cards component
+    & div:not(:first-child) {
+      .swimcard__card .swimcard__card-border {
+        margin-top: -1px;
+      }
+    }
   }
 
   &__footer {
