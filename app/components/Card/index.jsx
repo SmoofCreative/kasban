@@ -86,7 +86,7 @@ const Card = React.createClass({
   renderInteractiveIcons(baseClass) {
     return (
       <div className={ baseClass }>
-        <i className="fa fa-eye" onClick={this.handleTaskSelected}></i>
+        <i className="fa fa-chevron-right swimcard__view-subtask" onClick={this.handleTaskSelected}></i>
       </div>
     )
   },
