@@ -6,6 +6,7 @@ import { oneHourFromNow } from '../utils';
 import AsanaClient from '../utils/AsanaClient';
 
 import Task from './task';
+import Section from './section';
 import Project from './project';
 import Workspace from './workspace';
 
@@ -63,6 +64,7 @@ const formatSections = (sections) => {
       }
     };
   }
+
   return formattedSections;
 };
 
@@ -77,6 +79,21 @@ const storeSections = (dispatch, projectId, sections) => {
       }
     });
   }
+};
+
+// Index of 1 as nothing should be before uncategorised
+const storeSection = (dispatch, projectId, section, index = 1) => {
+  section.cards = [];
+
+  dispatch({
+    type: 'ADD_SECTION',
+    payload: {
+      id: section.id,
+      section: section,
+      projectId: projectId,
+      index: index
+    }
+  });
 };
 
 const storeCard = (dispatch, parentId, card) => {
@@ -184,17 +201,6 @@ const storeComments = (dispatch, cardId, comments) => {
   }
 };
 
-const getTasksForProject = (dispatch, id) => {
-  const project = Project(id);
-  project.getTasks(AsanaClient)
-  .then((tasks) => {
-    addSectionsAndCards(dispatch, id, tasks);
-  })
-  .then(() => {
-    dispatch({ type: 'RECEIVED_SECTIONS_AND_TASKS' })
-  });
-};
-
 const moveSection = (dispatch, sectionId, projectId, index) => {
   dispatch({
     type: 'MOVE_SECTION',
@@ -238,6 +244,16 @@ const updateSection = (dispatch, section) => {
     payload: {
       id: section.id,
       section: section
+    }
+  });
+};
+
+const removeSection = (dispatch, sectionId, projectId) => {
+  dispatch({
+    type: 'REMOVE_SECTION',
+    payload: {
+      projectId: projectId,
+      id: sectionId
     }
   });
 };
@@ -334,6 +350,18 @@ const addSectionsAndCards = (dispatch, projectId, tasks) => {
 
   // Move the uncategorised column to the front
   moveSection(dispatch, 'uncategorised', projectId, 0)
+  moveSection(dispatch, 'completed', projectId, sections.length);
+};
+
+const getTasksForProject = (dispatch, id) => {
+  const project = Project(id);
+  project.getTasks(AsanaClient)
+  .then((tasks) => {
+    addSectionsAndCards(dispatch, id, tasks);
+  })
+  .then(() => {
+    dispatch({ type: 'RECEIVED_SECTIONS_AND_TASKS' })
+  });
 };
 
 const getCommentsForTask = (dispatch, id) => {
@@ -487,6 +515,43 @@ Actions.updateTask = (params) => {
         .catch(() => { dispatch({ type: 'UPDATING_CARD_FAILED' }); });
     }
   };
+};
+
+Actions.createSection = (params) => {
+  return (dispatch) => {
+    // Generate a temporary id to use for adding to store
+    const sectionId = uuid.v4();
+
+    let { details, projectId, firstSectionId } = params;
+
+    let asanaSectionId = firstSectionId;
+    details.id = sectionId;
+
+    // Store the temporary section
+    storeSection(dispatch, projectId, details, 1);
+
+    if (firstSectionId === 'uncategorised' || firstSectionId === 'completed') {
+      asanaSectionId = null;
+    }
+
+    details.projects = [projectId];
+    details.memberships = [{
+      section: asanaSectionId,
+      project: projectId
+    }];
+
+    dispatch({ type: 'CREATING_SECTION' });
+
+    const section = Section(AsanaClient);
+    section.create(details)
+    .then((data) => {
+      // Store the given section with it's id
+      storeSection(dispatch, projectId, data, 1);
+      removeSection(dispatch, sectionId, projectId);
+      dispatch({ type: 'CREATING_SECTION_SUCCESS' })
+    })
+    .catch(() => { dispatch({ type: 'CREATING_SECTION_FAILED' }) });
+  }
 };
 
 Actions.updateSection = (params) => {

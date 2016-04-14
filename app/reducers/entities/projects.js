@@ -3,6 +3,12 @@ import update from 'react/lib/update';
 
 import { isNumeric } from '../../utils';
 
+const getSectionIndex = (state, sectionId, projectId) => {
+  let index = state[projectId].sections.indexOf(sectionId);
+  index = index == -1 ? 0 : index;
+  return index;
+};
+
 const records = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_PROJECT': {
@@ -30,7 +36,8 @@ const records = (state = {}, action) => {
       };
     }
     case 'ADD_SECTION': {
-      const { projectId, id } = action.payload;
+      // Default index of 1 as uncategorised should be first
+      const { projectId, id, index = 1 } = action.payload;
 
       // If the id already exists return what we already have
       if (state[projectId].sections.indexOf(id) !== -1) {
@@ -38,9 +45,9 @@ const records = (state = {}, action) => {
       }
 
       return update(state, {
-        [action.payload.projectId]: {
+        [projectId]: {
           sections: {
-            $set: [action.payload.id, ...state[action.payload.projectId].sections]
+            $splice: [[index, 0, id]]
           }
         }
       });
@@ -54,16 +61,14 @@ const records = (state = {}, action) => {
       for(let key in sections) {
         if(sections.hasOwnProperty(key)) {
           key = isNumeric(key) ? parseInt(key) : key;
-          if (state[projectId].sections.indexOf(key) === -1) {
-            sectionIds.push(key);
-          }
+          sectionIds.push(key);
         }
       }
 
       return update(state, {
         [projectId]: {
           sections: {
-            $push: [...sectionIds]
+            $set: [...sectionIds]
           }
         }
       });
@@ -93,6 +98,18 @@ const records = (state = {}, action) => {
         [projectId]: {
           sections: {
             $splice: [[index, 0, sectionId]]
+          }
+        }
+      });
+    }
+    case 'REMOVE_SECTION': {
+      const { id, projectId } = action.payload;
+      const index = getSectionIndex(state, id, projectId);
+
+      return update(state, {
+        [projectId]: {
+          sections: {
+            $splice: [[index, 1]]
           }
         }
       });
