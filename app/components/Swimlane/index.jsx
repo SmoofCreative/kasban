@@ -5,6 +5,7 @@ import './style';
 import DraggableCard from '../../containers/DraggableCard';
 import Card from '../Card';
 import DroppableSwimlaneHeader from '../../containers/DroppableSwimlaneHeader';
+import DroppableSwimlaneFooter from '../../containers/DroppableSwimlaneFooter';
 import SwimlaneHeader from './header';
 import SwimlaneFooter from './footer';
 
@@ -86,24 +87,37 @@ const Swimlane = React.createClass({
       'swimlane__cards--full-height' : fullHeight
     });
 
+    const headerProps = {
+      id: id,
+      title: name,
+      onSectionUpdated: onSectionUpdated
+    };
+
+    const footerProps = {
+      id: id,
+      onSubmit: this.handleNewTaskSubmit
+    };
+
     return (
       <section className={sectionClasses}>
         {
           isStatic
-            ? <SwimlaneHeader id={id} title={name} onSectionUpdated={onSectionUpdated} />
+            ? <SwimlaneHeader { ...headerProps } />
             : <DroppableSwimlaneHeader
-                id={id}
-                title={name}
+                { ...headerProps }
                 completed={completed}
                 memberships={memberships}
                 onCardMoved={onCardMoved}
                 onTaskUpdated={onTaskUpdated}
-                onSectionUpdated={onSectionUpdated}
               />
         }
         <div className={cardClasses}>
           { this.renderCards() }
-          <SwimlaneFooter id={id} onSubmit={ this.handleNewTaskSubmit } />
+          {
+            isStatic
+              ? <SwimlaneFooter { ...footerProps } />
+              : <DroppableSwimlaneFooter { ...footerProps } onCardMoved={onCardMoved} />
+          }
         </div>
       </section>
     );
