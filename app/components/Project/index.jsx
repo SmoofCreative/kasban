@@ -2,6 +2,7 @@ import React from 'react';
 
 import './style';
 import Swimlane from '../../containers/SwimlaneContainer';
+import AddASectionSwimlane from '../../containers/AddASectionSwimlaneContainer';
 
 const Project = (props) => {
   return (
@@ -22,6 +23,7 @@ const Project = (props) => {
                   />;
           })
         }
+        <AddASectionSwimlane />
       </div>
     </div>
   );

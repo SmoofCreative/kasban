@@ -18,7 +18,8 @@ const Swimlane = React.createClass({
       showInteractiveIcons: false,
       isSubTasks: false,
       fullHeight: false,
-      hasGutter: true
+      hasGutter: true,
+      isPlaceholder: false
     }
   },
 
@@ -75,7 +76,9 @@ const Swimlane = React.createClass({
       isStatic,
       isFullWidth,
       fullHeight,
-      hasGutter
+      hasGutter,
+      headerPlaceholder,
+      isPlaceholder
     } = this.props;
 
     const sectionClasses = classNames('swimlane', {
@@ -90,7 +93,9 @@ const Swimlane = React.createClass({
     const headerProps = {
       id: id,
       title: name,
-      onSectionUpdated: onSectionUpdated
+      placeholder: headerPlaceholder,
+      onSectionUpdated: onSectionUpdated,
+      isPlaceholder: isPlaceholder
     };
 
     const footerProps = {
