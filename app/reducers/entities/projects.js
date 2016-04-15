@@ -9,6 +9,16 @@ const getSectionIndex = (state, sectionId, projectId) => {
   return index;
 };
 
+const removeSection = (state, projectId, index) => {
+  return update(state, {
+    [projectId]: {
+      sections: {
+        $splice: [[index, 1]]
+      }
+    }
+  });
+};
+
 const records = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_PROJECT': {
@@ -105,14 +115,12 @@ const records = (state = {}, action) => {
     case 'REMOVE_SECTION': {
       const { id, projectId } = action.payload;
       const index = getSectionIndex(state, id, projectId);
-
-      return update(state, {
-        [projectId]: {
-          sections: {
-            $splice: [[index, 1]]
-          }
-        }
-      });
+      return removeSection(state, projectId, index);
+    }
+    case 'CONVERT_SECTION_TO_CARD': {
+      const { id, projectId } = action.payload;
+      const index = getSectionIndex(state, id, projectId);
+      return removeSection(state, projectId, index);
     }
     default: {
       return state;

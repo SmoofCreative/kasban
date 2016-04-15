@@ -57,6 +57,15 @@ const Task = (asana, taskId = null) => {
     });
   };
 
+  // Using remove as delete is a reserved word
+  const remove = () => {
+    return new Promise((resolve, reject) => {
+      asanaClient.tasks.delete(id)
+      .then((data) => { resolve(data); })
+      .catch((err) => { reject(err); })
+    });
+  }
+
   const createSubTask = (params) => {
     return new Promise((resolve, reject) => {
       asanaClient.tasks.addSubtask(id, params)
@@ -113,6 +122,7 @@ const Task = (asana, taskId = null) => {
     complete: complete,
     move: move,
     update: update,
+    delete: remove,
     createSubTask: createSubTask,
     getStories: getStories,
     getComments: getComments,

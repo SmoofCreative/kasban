@@ -37,13 +37,19 @@ const mapDispatchToProps = (dispatch) => {
       }
     },
     onSectionUpdated: (section, currentProjectId, firstSectionId, updateAsana) => {
-      const options = {
-        details: section,
-        projectId: currentProjectId,
-        firstSectionId: firstSectionId
-      };
-
       if (updateAsana && section.name.trim() !== '') {
+        section.name = section.name.trim();
+        const options = {
+          details: section,
+          projectId: currentProjectId,
+          firstSectionId: firstSectionId
+        };
+
+        // Ensure there is a colon at the end
+        if (section.name.slice(-1) !== ':') {
+          options.details.name += ':';
+        }
+
         dispatch(Actions.createSection(options));
       }
     },

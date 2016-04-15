@@ -12,6 +12,22 @@ import Workspace from './workspace';
 
 const Actions = {};
 
+const formatEntities = (entities, extras) => {
+  let formattedEntities = {}
+
+  for (let i = 0; i < entities.length; i++) {
+    let entity = entities[i];
+    formattedEntities = {
+      ...formattedEntities,
+      [entity.id]: {
+        ...entity,
+        ...extras
+      }
+    };
+  }
+  return formattedEntities;
+};
+
 const storeWorkspace = (dispatch, workspace) => {
   dispatch({
     type: 'ADD_WORKSPACE',
@@ -22,25 +38,9 @@ const storeWorkspace = (dispatch, workspace) => {
   });
 };
 
-const formatProjects = (projects) => {
-  let formattedProjects = {}
-
-  for (let i = 0; i < projects.length; i++) {
-    let project = projects[i];
-    formattedProjects = {
-      ...formattedProjects,
-      [project.id]: {
-        ...project,
-        sections: []
-      }
-    };
-  }
-  return formattedProjects;
-};
-
 const storeProjects = (dispatch, workspaceId, projects) => {
   if (projects.length) {
-    const formattedProjects = formatProjects(projects);
+    const formattedProjects = formatEntities(projects, { sections: [] });
     dispatch({
       type: 'ADD_PROJECTS',
       payload: {
@@ -51,26 +51,9 @@ const storeProjects = (dispatch, workspaceId, projects) => {
   }
 };
 
-const formatSections = (sections) => {
-  let formattedSections = {}
-
-  for (let i = 0; i < sections.length; i++) {
-    let section = sections[i];
-    formattedSections = {
-      ...formattedSections,
-      [section.id]: {
-        ...section,
-        cards: []
-      }
-    };
-  }
-
-  return formattedSections;
-};
-
 const storeSections = (dispatch, projectId, sections) => {
   if (sections.length) {
-    const formattedSections = formatSections(sections);
+    const formattedSections = formatEntities(sections, { cards: [] });
     dispatch({
       type: 'ADD_SECTIONS',
       payload: {
@@ -96,6 +79,19 @@ const storeSection = (dispatch, projectId, section, index = 1) => {
   });
 };
 
+const storeCards = (dispatch, sectionId, cards) => {
+  if (cards.length) {
+    const formattedCards = formatEntities(cards, { subtasks: [], comments: [] });
+    dispatch({
+      type: 'ADD_CARDS',
+      payload: {
+        cards: formattedCards,
+        sectionId: sectionId
+      }
+    });
+  }
+};
+
 const storeCard = (dispatch, parentId, card) => {
   // Cloning so we can remove the none normalised subtasks
   // They are populated elsewhere
@@ -111,26 +107,9 @@ const storeCard = (dispatch, parentId, card) => {
   });
 };
 
-const formatSubTasks = (subtasks) => {
-  let formattedSubTasks = {}
-
-  for (let i = 0; i < subtasks.length; i++) {
-    let subtask = subtasks[i];
-    formattedSubTasks = {
-      ...formattedSubTasks,
-      [subtask.id]: {
-        ...subtask,
-        subtasks: [],
-        comments: []
-      }
-    };
-  }
-  return formattedSubTasks;
-};
-
 const storeSubtasks = (dispatch, cardId, subtasks, addToTop = false) => {
   if (subtasks.length) {
-    const formattedSubTasks = formatSubTasks(subtasks);
+    const formattedSubTasks = formatEntities(subtasks, { subtasks: [], comments: [] });
     dispatch({
       type: 'ADD_SUBTASKS',
       payload: {
@@ -142,54 +121,9 @@ const storeSubtasks = (dispatch, cardId, subtasks, addToTop = false) => {
   }
 };
 
-const formatCards = (cards) => {
-  let formattedCards = {}
-
-  for (let i = 0; i < cards.length; i++) {
-    let card = cards[i];
-    formattedCards = {
-      ...formattedCards,
-      [card.id]: {
-        ...card,
-        subtasks: [],
-        comments: []
-      }
-    };
-  }
-  return formattedCards;
-};
-
-const storeCards = (dispatch, sectionId, cards) => {
-  if (cards.length) {
-    const formattedCards = formatCards(cards);
-    dispatch({
-      type: 'ADD_CARDS',
-      payload: {
-        cards: formattedCards,
-        sectionId: sectionId
-      }
-    });
-  }
-};
-
-const formatComments = (comments) => {
-  let formattedComments = {}
-
-  for (let i = 0; i < comments.length; i++) {
-    let comment = comments[i];
-    formattedComments = {
-      ...formattedComments,
-      [comment.id]: {
-        ...comment
-      }
-    };
-  }
-  return formattedComments;
-};
-
 const storeComments = (dispatch, cardId, comments) => {
   if (comments.length) {
-    const formattedComments = formatComments(comments);
+    const formattedComments = formatEntities(comments, { subtasks: [], comments: [] });
 
     dispatch({
       type: 'ADD_COMMENTS',
@@ -287,7 +221,6 @@ const completeCard = (dispatch, taskId) => {
     .catch(() => { dispatch({ type: 'COMPLETED_CARD_FAILED' }); });
 };
 
-
 /*
  We want to format the sections and cards in the action rather than passing each one
  to the reducer as this was blocking the UI.
@@ -375,15 +308,14 @@ const getCommentsForTask = (dispatch, id) => {
 };
 
 const getTaskInformation = (dispatch, id, projectId) => {
-  const task = Task(AsanaClient, id);
-
   dispatch({ type: 'FETCHING_UPDATED_TASK_INFORMATION '});
 
+  const task = Task(AsanaClient, id);
   Promise.all([task.getInformation(), task.getComments(), task.getSubTasks()])
   .spread((taskInformation, taskComments, taskSubTasks) => {
     updateCard(dispatch, taskInformation);
 
-    if (taskInformation.completed) {
+    if (taskInformation.completed && taskInformation.memberships[0].section !== null) {
       // Move the card to the completed section
 
       const cardToMove = {
@@ -517,6 +449,25 @@ Actions.updateTask = (params) => {
   };
 };
 
+Actions.deleteTask = (params) => {
+  return (dispatch) => {
+    const { taskId, sectionId } = params;
+    const task = Task(AsanaClient, taskId);
+
+    dispatch({
+      type: 'REMOVE_CARD',
+      payload: {
+        id: taskId,
+        sectionId: sectionId
+      }
+    });
+
+    task.delete()
+      .then(() => { dispatch({ type: 'DELETING_CARD_SUCCESS' }); })
+      .catch(() => { dispatch({ type: 'DELETING_CARD_FAILED' }); });
+  };
+}
+
 Actions.createSection = (params) => {
   return (dispatch) => {
     // Generate a temporary id to use for adding to store
@@ -556,14 +507,38 @@ Actions.createSection = (params) => {
 
 Actions.updateSection = (params) => {
   return (dispatch) => {
-    let { details, updateAsana } = params;
+    let { details, updateAsana, projectId, nextSectionId } = params;
+    const task = Task(AsanaClient, details.id);
+
     updateSection(dispatch, details);
 
     if (updateAsana) {
-      const task = Task(AsanaClient, details.id);
-      task.update(details)
-        .then(() => { dispatch({ type: 'UPDATING_CARD_SUCCESS' }); })
-        .catch(() => { dispatch({ type: 'UPDATING_CARD_FAILED' }); });
+      // Determine if the section header text has been deleted
+      if (details.name.length === 0) {
+        dispatch({
+          type: 'CONVERT_SECTION_TO_CARD',
+          payload: {
+            id: details.id,
+            projectId: projectId,
+            nextSectionId: nextSectionId
+          }
+        });
+
+        // Now delete the section from asana
+        task.delete()
+          .then(() => { dispatch({ type: 'DELETING_SECTION_SUCCESS' }); })
+          .catch(() => { dispatch({ type: 'DELETING_SECTION_FAILED' }); });
+      } else {
+        // Ensure there is a semi colon at the end
+        if (details.name.slice(-1) !== ':') {
+          details.name += ':';
+        }
+
+        updateSection(dispatch, details);
+        task.update(details)
+          .then(() => { dispatch({ type: 'UPDATING_SECTION_SUCCESS' }); })
+          .catch(() => { dispatch({ type: 'UPDATING_SECTION_FAILED' }); });
+      }
     }
   };
 };
