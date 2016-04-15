@@ -221,6 +221,15 @@ const completeCard = (dispatch, taskId) => {
     .catch(() => { dispatch({ type: 'COMPLETED_CARD_FAILED' }); });
 };
 
+const reopenCard = (dispatch, taskId) => {
+  dispatch({ type: 'REOPENING_CARD', payload: { id: taskId } });
+
+  const task = Task(AsanaClient, taskId);
+  task.reopen()
+    .then(() => { dispatch({ type: 'REOPENING_CARD_SUCCESS' }); })
+    .catch(() => { dispatch({ type: 'REOPENING_CARD_FAILED' }); });
+};
+
 /*
  We want to format the sections and cards in the action rather than passing each one
  to the reducer as this was blocking the UI.
@@ -547,6 +556,8 @@ Actions.moveCard = (cardToMove, cardToInsertAfter, projectId) => {
   return (dispatch) => {
     if (cardToInsertAfter.completed) {
       completeCard(dispatch, cardToMove.id);
+    } else {
+      reopenCard(dispatch, cardToMove.id);
     }
 
     if (cardToMove.id === cardToInsertAfter.id) {
