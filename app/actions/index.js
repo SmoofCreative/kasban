@@ -12,6 +12,22 @@ import Workspace from './workspace';
 
 const Actions = {};
 
+const formatEntities = (entities, extras) => {
+  let formattedEntities = {}
+
+  for (let i = 0; i < entities.length; i++) {
+    let entity = entities[i];
+    formattedEntities = {
+      ...formattedEntities,
+      [entity.id]: {
+        ...entity,
+        ...extras
+      }
+    };
+  }
+  return formattedEntities;
+};
+
 const storeWorkspace = (dispatch, workspace) => {
   dispatch({
     type: 'ADD_WORKSPACE',
@@ -22,25 +38,9 @@ const storeWorkspace = (dispatch, workspace) => {
   });
 };
 
-const formatProjects = (projects) => {
-  let formattedProjects = {}
-
-  for (let i = 0; i < projects.length; i++) {
-    let project = projects[i];
-    formattedProjects = {
-      ...formattedProjects,
-      [project.id]: {
-        ...project,
-        sections: []
-      }
-    };
-  }
-  return formattedProjects;
-};
-
 const storeProjects = (dispatch, workspaceId, projects) => {
   if (projects.length) {
-    const formattedProjects = formatProjects(projects);
+    const formattedProjects = formatEntities(projects, { sections: [] });
     dispatch({
       type: 'ADD_PROJECTS',
       payload: {
@@ -51,26 +51,9 @@ const storeProjects = (dispatch, workspaceId, projects) => {
   }
 };
 
-const formatSections = (sections) => {
-  let formattedSections = {}
-
-  for (let i = 0; i < sections.length; i++) {
-    let section = sections[i];
-    formattedSections = {
-      ...formattedSections,
-      [section.id]: {
-        ...section,
-        cards: []
-      }
-    };
-  }
-
-  return formattedSections;
-};
-
 const storeSections = (dispatch, projectId, sections) => {
   if (sections.length) {
-    const formattedSections = formatSections(sections);
+    const formattedSections = formatEntities(sections, { cards: [] });
     dispatch({
       type: 'ADD_SECTIONS',
       payload: {
@@ -111,26 +94,9 @@ const storeCard = (dispatch, parentId, card) => {
   });
 };
 
-const formatSubTasks = (subtasks) => {
-  let formattedSubTasks = {}
-
-  for (let i = 0; i < subtasks.length; i++) {
-    let subtask = subtasks[i];
-    formattedSubTasks = {
-      ...formattedSubTasks,
-      [subtask.id]: {
-        ...subtask,
-        subtasks: [],
-        comments: []
-      }
-    };
-  }
-  return formattedSubTasks;
-};
-
 const storeSubtasks = (dispatch, cardId, subtasks, addToTop = false) => {
   if (subtasks.length) {
-    const formattedSubTasks = formatSubTasks(subtasks);
+    const formattedSubTasks = formatEntities(subtasks, { subtasks: [], comments: [] });
     dispatch({
       type: 'ADD_SUBTASKS',
       payload: {
@@ -142,26 +108,9 @@ const storeSubtasks = (dispatch, cardId, subtasks, addToTop = false) => {
   }
 };
 
-const formatCards = (cards) => {
-  let formattedCards = {}
-
-  for (let i = 0; i < cards.length; i++) {
-    let card = cards[i];
-    formattedCards = {
-      ...formattedCards,
-      [card.id]: {
-        ...card,
-        subtasks: [],
-        comments: []
-      }
-    };
-  }
-  return formattedCards;
-};
-
 const storeCards = (dispatch, sectionId, cards) => {
   if (cards.length) {
-    const formattedCards = formatCards(cards);
+    const formattedCards = formatEntities(cards, { subtasks: [], comments: [] });
     dispatch({
       type: 'ADD_CARDS',
       payload: {
@@ -172,24 +121,9 @@ const storeCards = (dispatch, sectionId, cards) => {
   }
 };
 
-const formatComments = (comments) => {
-  let formattedComments = {}
-
-  for (let i = 0; i < comments.length; i++) {
-    let comment = comments[i];
-    formattedComments = {
-      ...formattedComments,
-      [comment.id]: {
-        ...comment
-      }
-    };
-  }
-  return formattedComments;
-};
-
 const storeComments = (dispatch, cardId, comments) => {
   if (comments.length) {
-    const formattedComments = formatComments(comments);
+    const formattedComments = formatEntities(comments, { subtasks: [], comments: [] });
 
     dispatch({
       type: 'ADD_COMMENTS',
@@ -286,7 +220,6 @@ const completeCard = (dispatch, taskId) => {
     .then(() => { dispatch({ type: 'COMPLETED_CARD_SUCCESS' }); })
     .catch(() => { dispatch({ type: 'COMPLETED_CARD_FAILED' }); });
 };
-
 
 /*
  We want to format the sections and cards in the action rather than passing each one
