@@ -79,6 +79,19 @@ const storeSection = (dispatch, projectId, section, index = 1) => {
   });
 };
 
+const storeCards = (dispatch, sectionId, cards) => {
+  if (cards.length) {
+    const formattedCards = formatEntities(cards, { subtasks: [], comments: [] });
+    dispatch({
+      type: 'ADD_CARDS',
+      payload: {
+        cards: formattedCards,
+        sectionId: sectionId
+      }
+    });
+  }
+};
+
 const storeCard = (dispatch, parentId, card) => {
   // Cloning so we can remove the none normalised subtasks
   // They are populated elsewhere
@@ -103,19 +116,6 @@ const storeSubtasks = (dispatch, cardId, subtasks, addToTop = false) => {
         subtasks: formattedSubTasks,
         cardId: cardId,
         addToTop: addToTop
-      }
-    });
-  }
-};
-
-const storeCards = (dispatch, sectionId, cards) => {
-  if (cards.length) {
-    const formattedCards = formatEntities(cards, { subtasks: [], comments: [] });
-    dispatch({
-      type: 'ADD_CARDS',
-      payload: {
-        cards: formattedCards,
-        sectionId: sectionId
       }
     });
   }
@@ -488,14 +488,32 @@ Actions.createSection = (params) => {
 
 Actions.updateSection = (params) => {
   return (dispatch) => {
-    let { details, updateAsana } = params;
+    let { details, updateAsana, projectId, nextSectionId } = params;
+    const task = Task(AsanaClient, details.id);
+
     updateSection(dispatch, details);
 
     if (updateAsana) {
-      const task = Task(AsanaClient, details.id);
-      task.update(details)
+      // Determine if the section header text has been deleted
+      if (details.name.length === 0) {
+        dispatch({
+          type: 'CONVERT_SECTION_TO_CARD',
+          payload: {
+            id: details.id,
+            projectId: projectId,
+            nextSectionId: nextSectionId
+          }
+        });
+
+        // Now delete the section from asana
+        task.delete()
+        .then(() => { dispatch({ type: 'DELETING_CARD_SUCCESS' }); })
+        .catch(() => { dispatch({ type: 'DELETING_CARD_FAILED' }); });
+      } else {
+        task.update(details)
         .then(() => { dispatch({ type: 'UPDATING_CARD_SUCCESS' }); })
         .catch(() => { dispatch({ type: 'UPDATING_CARD_FAILED' }); });
+      }
     }
   };
 };
