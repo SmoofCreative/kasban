@@ -44,6 +44,10 @@ const Task = (asana, taskId = null) => {
     return update({ completed: true }, asanaClient);
   };
 
+  const reopen = () => {
+    return update({ completed: false }, asanaClient);
+  };
+
   const move = (params) => {
     const data = {
       project: params.projectId,
@@ -120,6 +124,7 @@ const Task = (asana, taskId = null) => {
     getInformation: get,
     create: create,
     complete: complete,
+    reopen: reopen,
     move: move,
     update: update,
     delete: remove,
