@@ -16,7 +16,7 @@ const addCard = (state, id, card) => {
   };
 };
 
-const removeCard = (state, cardId, parentId) => {
+const removeSubtask = (state, cardId, parentId) => {
   const index = getSubTaskIndex(state, cardId, parentId);
 
   return update(state, {
@@ -103,12 +103,10 @@ const records = (state = {}, action) => {
           }
         });
       }
-
-
     }
     case 'REMOVE_SUBTASK': {
       const { id, parentId } = action.payload;
-      return removeCard(state, id, parentId);
+      return removeSubtask(state, id, parentId);
     }
     case 'ADD_COMMENT': {
       const { id, cardId } = action.payload;

@@ -53,6 +53,17 @@ const Card = React.createClass({
       // Focus the parent element to trigger the input blur event
       e.target.parentElement.focus();
       return false;
+    } else if (e.keyCode === 8 || e.keyCode === 46) {
+      // If delete or backspace are pressed
+      // This function is called before the deletion occurs
+
+      // Check if the card value has any characters if not then delete the card
+      const { cardNameInput } = this.refs;
+      if (cardNameInput.value.trim().length === 0) {
+        // Stop the backspace page navigation
+        e.preventDefault();
+        this.props.onDeleteTask(this.props.card.id);
+      }
     }
   },
 

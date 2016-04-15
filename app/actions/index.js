@@ -449,6 +449,25 @@ Actions.updateTask = (params) => {
   };
 };
 
+Actions.deleteTask = (params) => {
+  return (dispatch) => {
+    const { taskId, sectionId } = params;
+    const task = Task(AsanaClient, taskId);
+
+    dispatch({
+      type: 'REMOVE_CARD',
+      payload: {
+        id: taskId,
+        sectionId: sectionId
+      }
+    });
+
+    task.delete()
+      .then(() => { dispatch({ type: 'DELETING_CARD_SUCCESS' }); })
+      .catch(() => { dispatch({ type: 'DELETING_CARD_FAILED' }); });
+  };
+}
+
 Actions.createSection = (params) => {
   return (dispatch) => {
     // Generate a temporary id to use for adding to store
@@ -507,8 +526,8 @@ Actions.updateSection = (params) => {
 
         // Now delete the section from asana
         task.delete()
-        .then(() => { dispatch({ type: 'DELETING_CARD_SUCCESS' }); })
-        .catch(() => { dispatch({ type: 'DELETING_CARD_FAILED' }); });
+          .then(() => { dispatch({ type: 'DELETING_SECTION_SUCCESS' }); })
+          .catch(() => { dispatch({ type: 'DELETING_SECTION_FAILED' }); });
       } else {
         // Ensure there is a semi colon at the end
         if (details.name.slice(-1) !== ':') {
@@ -517,8 +536,8 @@ Actions.updateSection = (params) => {
 
         updateSection(dispatch, details);
         task.update(details)
-        .then(() => { dispatch({ type: 'UPDATING_CARD_SUCCESS' }); })
-        .catch(() => { dispatch({ type: 'UPDATING_CARD_FAILED' }); });
+          .then(() => { dispatch({ type: 'UPDATING_SECTION_SUCCESS' }); })
+          .catch(() => { dispatch({ type: 'UPDATING_SECTION_FAILED' }); });
       }
     }
   };
