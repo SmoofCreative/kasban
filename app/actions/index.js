@@ -79,6 +79,19 @@ const storeSection = (dispatch, projectId, section, index = 1) => {
   });
 };
 
+const storeCards = (dispatch, sectionId, cards) => {
+  if (cards.length) {
+    const formattedCards = formatEntities(cards, { subtasks: [], comments: [] });
+    dispatch({
+      type: 'ADD_CARDS',
+      payload: {
+        cards: formattedCards,
+        sectionId: sectionId
+      }
+    });
+  }
+};
+
 const storeCard = (dispatch, parentId, card) => {
   // Cloning so we can remove the none normalised subtasks
   // They are populated elsewhere
@@ -103,19 +116,6 @@ const storeSubtasks = (dispatch, cardId, subtasks, addToTop = false) => {
         subtasks: formattedSubTasks,
         cardId: cardId,
         addToTop: addToTop
-      }
-    });
-  }
-};
-
-const storeCards = (dispatch, sectionId, cards) => {
-  if (cards.length) {
-    const formattedCards = formatEntities(cards, { subtasks: [], comments: [] });
-    dispatch({
-      type: 'ADD_CARDS',
-      payload: {
-        cards: formattedCards,
-        sectionId: sectionId
       }
     });
   }
@@ -488,10 +488,29 @@ Actions.createSection = (params) => {
 
 Actions.updateSection = (params) => {
   return (dispatch) => {
-    let { details, updateAsana } = params;
+    let { details, updateAsana, projectId, nextSectionId } = params;
     updateSection(dispatch, details);
 
     if (updateAsana) {
+      // Determine if the section header text has been deleted
+      if (details.name.length === 0) {
+        /*
+          If so then we need to convert it to a task in our store.
+          - Create a card based on the section and add it to the section before
+          - Move the tasks in the updated section into the section before (as long as it's not the completed section)
+          - Remove the section id from the project
+        */
+
+        dispatch({
+          type: 'CONVERT_SECTION_TO_CARD',
+          payload: {
+            id: details.id,
+            projectId: projectId,
+            nextSectionId: nextSectionId
+          }
+        });
+      }
+
       const task = Task(AsanaClient, details.id);
       task.update(details)
         .then(() => { dispatch({ type: 'UPDATING_CARD_SUCCESS' }); })

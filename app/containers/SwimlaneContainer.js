@@ -9,6 +9,7 @@ const mapStateToProps = (state) => {
   return {
     cardEntities: state.entities.cards.records,
     currentProjectId: state.entities.projects.conditions.currentId,
+    projectEntities: state.entities.projects.records,
     currentTaskId: state.entities.cards.conditions.currentId
   }
 };
@@ -41,10 +42,12 @@ const mapDispatchToProps = (dispatch) => {
 
       dispatch(Actions.updateTask(options));
     },
-    onSectionUpdated: (section, updateAsana) => {
+    onSectionUpdated: (section, updateAsana, projectId, nextSectionId) => {
       const options = {
         details: section,
-        updateAsana: updateAsana
+        updateAsana: updateAsana,
+        projectId: projectId,
+        nextSectionId: nextSectionId
       };
 
       dispatch(Actions.updateSection(options));
@@ -64,7 +67,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { currentProjectId } = stateProps;
+  const { currentProjectId, projectEntities } = stateProps;
   const { id } = ownProps;
 
   const functions = {
@@ -76,6 +79,16 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     },
     onTaskSelected: (id) => {
       dispatchProps.onTaskSelected(id, currentProjectId);
+    },
+    onSectionUpdated: (section, updateAsana) => {
+      // Get the id of the next section as this is the previous on asana
+      const sections = projectEntities[currentProjectId].sections;
+      let nextSectionId = sections[sections.indexOf(section.id) + 1];
+
+      // If the next section is completed the change it to the first section
+      nextSectionId = nextSectionId === 'completed' ? sections[0] : nextSectionId;
+
+      dispatchProps.onSectionUpdated(section, updateAsana, currentProjectId, nextSectionId);
     }
   };
 

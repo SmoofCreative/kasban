@@ -108,6 +108,22 @@ const records = (state = {}, action) => {
       // Insert the card in the new position
       return insertCard(removedCardState, cardToMove.id, cardToInsertAfter.sectionId, index + 1);
     }
+    case 'CONVERT_SECTION_TO_CARD': {
+      const { id, nextSectionId } = action.payload;
+      // Move the cards from the current section into the next section
+      return update(state, {
+        [nextSectionId]: {
+          cards: {
+            $push: state[id].cards
+          }
+        },
+        [id]: {
+          cards: {
+            $set: []
+          }
+        }
+      });
+    }
     default: {
       return state;
     }
