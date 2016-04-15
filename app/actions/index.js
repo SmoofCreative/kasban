@@ -489,18 +489,13 @@ Actions.createSection = (params) => {
 Actions.updateSection = (params) => {
   return (dispatch) => {
     let { details, updateAsana, projectId, nextSectionId } = params;
+    const task = Task(AsanaClient, details.id);
+
     updateSection(dispatch, details);
 
     if (updateAsana) {
       // Determine if the section header text has been deleted
       if (details.name.length === 0) {
-        /*
-          If so then we need to convert it to a task in our store.
-          - Create a card based on the section and add it to the section before
-          - Move the tasks in the updated section into the section before (as long as it's not the completed section)
-          - Remove the section id from the project
-        */
-
         dispatch({
           type: 'CONVERT_SECTION_TO_CARD',
           payload: {
@@ -509,12 +504,16 @@ Actions.updateSection = (params) => {
             nextSectionId: nextSectionId
           }
         });
-      }
 
-      const task = Task(AsanaClient, details.id);
-      task.update(details)
+        // Now delete the section from asana
+        task.delete()
+        .then(() => { dispatch({ type: 'DELETING_CARD_SUCCESS' }); })
+        .catch(() => { dispatch({ type: 'DELETING_CARD_FAILED' }); });
+      } else {
+        task.update(details)
         .then(() => { dispatch({ type: 'UPDATING_CARD_SUCCESS' }); })
         .catch(() => { dispatch({ type: 'UPDATING_CARD_FAILED' }); });
+      }
     }
   };
 };
