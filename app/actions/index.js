@@ -375,15 +375,14 @@ const getCommentsForTask = (dispatch, id) => {
 };
 
 const getTaskInformation = (dispatch, id, projectId) => {
-  const task = Task(AsanaClient, id);
-
   dispatch({ type: 'FETCHING_UPDATED_TASK_INFORMATION '});
 
+  const task = Task(AsanaClient, id);
   Promise.all([task.getInformation(), task.getComments(), task.getSubTasks()])
   .spread((taskInformation, taskComments, taskSubTasks) => {
     updateCard(dispatch, taskInformation);
 
-    if (taskInformation.completed) {
+    if (taskInformation.completed && taskInformation.memberships[0].section !== null) {
       // Move the card to the completed section
 
       const cardToMove = {
