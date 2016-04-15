@@ -39,6 +39,8 @@ const AsanaEventPoller = (store) => {
             } else {
               store.dispatch(Actions.getTask(event.data[0].resource.id, _projectId));
             }
+          } else {
+            store.dispatch(Actions.updateTasksForProject(_projectId));
           }
         }
 
