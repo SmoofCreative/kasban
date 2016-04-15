@@ -446,10 +446,22 @@ Actions.createSubTask = (params) => {
 
 Actions.updateTask = (params) => {
   return (dispatch) => {
-    let { taskDetails, updateAsana } = params;
+    let { taskDetails, sectionId, currentProjectId, updateAsana } = params;
     updateCard(dispatch, taskDetails);
 
     if (updateAsana) {
+      // Determine if the card is now a section
+      if (isSection(taskDetails)) {
+        dispatch({
+          type: 'CONVERT_CARD_TO_SECTION',
+          payload: {
+            newSection: taskDetails,
+            containerSectionId: sectionId,
+            projectId: currentProjectId
+          }
+        });
+      }
+
       const task = Task(AsanaClient, taskDetails.id);
       task.update(taskDetails)
         .then(() => { dispatch({ type: 'UPDATING_CARD_SUCCESS' }); })

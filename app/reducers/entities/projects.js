@@ -9,6 +9,21 @@ const getSectionIndex = (state, sectionId, projectId) => {
   return index;
 };
 
+const addSection = (state, projectId, sectionId, index) => {
+  // If the id already exists return what we already have
+  if (state[projectId].sections.indexOf(sectionId) !== -1) {
+    return state;
+  }
+
+  return update(state, {
+    [projectId]: {
+      sections: {
+        $splice: [[index, 0, sectionId]]
+      }
+    }
+  });
+};
+
 const removeSection = (state, projectId, index) => {
   return update(state, {
     [projectId]: {
@@ -48,19 +63,7 @@ const records = (state = {}, action) => {
     case 'ADD_SECTION': {
       // Default index of 1 as uncategorised should be first
       const { projectId, id, index = 1 } = action.payload;
-
-      // If the id already exists return what we already have
-      if (state[projectId].sections.indexOf(id) !== -1) {
-        return state;
-      }
-
-      return update(state, {
-        [projectId]: {
-          sections: {
-            $splice: [[index, 0, id]]
-          }
-        }
-      });
+      return addSection(state, projectId, id, index);
     }
     case 'ADD_SECTIONS': {
       const { sections, projectId } = action.payload;
@@ -121,6 +124,18 @@ const records = (state = {}, action) => {
       const { id, projectId } = action.payload;
       const index = getSectionIndex(state, id, projectId);
       return removeSection(state, projectId, index);
+    }
+    case 'CONVERT_CARD_TO_SECTION': {
+      const { newSection, containerSectionId, projectId } = action.payload;
+      let index = getSectionIndex(state, containerSectionId, projectId);
+
+      // Check if the task was originally in the uncategorised section
+      if (index === 0) {
+        // If so find the completed section index
+        index = getSectionIndex(state, 'completed', projectId);
+      }
+
+      return addSection(state, projectId, newSection.id, index);
     }
     default: {
       return state;

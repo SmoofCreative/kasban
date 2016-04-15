@@ -34,9 +34,11 @@ const mapDispatchToProps = (dispatch) => {
         }));
       }
     },
-    onTaskUpdated: (task, updateAsana) => {
+    onTaskUpdated: (task, sectionId, currentProjectId, updateAsana) => {
       const options = {
         taskDetails: task,
+        sectionId: sectionId,
+        currentProjectId: currentProjectId,
         updateAsana: updateAsana
       };
 
@@ -100,6 +102,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     },
     onDeleteTask: (taskId) => {
       dispatchProps.onDeleteTask(taskId, id);
+    },
+    onTaskUpdated: (task, updateAsana) => {
+      dispatchProps.onTaskUpdated(task, id, currentProjectId, updateAsana);
     }
   };
 

@@ -3,6 +3,16 @@ import update from 'react/lib/update';
 
 import { isNumeric } from '../../utils';
 
+const addSection = (state, id, section) => {
+  return {
+    ...state,
+    [id]: {
+      ...section,
+      cards: []
+    }
+  };
+};
+
 const getCardIndex = (state, cardId, sectionId) => {
   let index = state[sectionId].cards.indexOf(cardId);
   index = index == -1 ? 0 : index;
@@ -44,13 +54,8 @@ const removeCard = (state, cardId, sectionId) => {
 const records = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_SECTION': {
-      return {
-        ...state,
-        [action.payload.id]: {
-          ...action.payload.section,
-          cards: []
-        }
-      };
+      const { id, section } = action.payload;
+      return addSection(state, id, section);
     }
     case 'ADD_SECTIONS': {
       return {
@@ -120,6 +125,36 @@ const records = (state = {}, action) => {
         [id]: {
           cards: {
             $set: []
+          }
+        }
+      });
+    }
+    case 'CONVERT_CARD_TO_SECTION': {
+      const { newSection, containerSectionId } = action.payload;
+
+      // Create a new section
+      const addedSectionState = addSection(state, newSection.id, newSection);
+
+      // Find the index of the card we've converting and get the cards we want to move
+      const currentContainerCards = addedSectionState[containerSectionId].cards;
+      const convertedCardIndex = currentContainerCards.indexOf(newSection.id);
+
+      // Get the list of cards we want to move to our new section, exlcuding the new section id
+      const newSectionCards = currentContainerCards.splice(convertedCardIndex + 1, currentContainerCards.length);
+
+      // Get the list of cards we want to keep in the container section
+      const containerCards = currentContainerCards.splice(0, convertedCardIndex);
+
+      // Set the cards to their respective section
+      return update(addedSectionState, {
+        [newSection.id]: {
+          cards: {
+            $set: newSectionCards
+          }
+        },
+        [containerSectionId]: {
+          cards: {
+            $set: containerCards
           }
         }
       });
