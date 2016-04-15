@@ -62,6 +62,14 @@ const mapDispatchToProps = (dispatch) => {
     },
     onCardMoved: (cardToMove, cardToInsertAfter, projectId) => {
       dispatch(Actions.moveCard(cardToMove, cardToInsertAfter, projectId));
+    },
+    onDeleteTask: (id, sectionId) => {
+      const options = {
+        taskId: id,
+        sectionId: sectionId
+      };
+
+      dispatch(Actions.deleteTask(options))
     }
   }
 };
@@ -89,6 +97,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       nextSectionId = nextSectionId === 'completed' ? sections[0] : nextSectionId;
 
       dispatchProps.onSectionUpdated(section, updateAsana, currentProjectId, nextSectionId);
+    },
+    onDeleteTask: (taskId) => {
+      dispatchProps.onDeleteTask(taskId, id);
     }
   };
 

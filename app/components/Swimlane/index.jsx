@@ -36,6 +36,7 @@ const Swimlane = React.createClass({
       onCardMoved,
       onTaskSelected,
       onTaskUpdated,
+      onDeleteTask,
       isStatic,
       showInteractiveIcons,
       currentTaskId
@@ -53,6 +54,7 @@ const Swimlane = React.createClass({
         card: card,
         onTaskUpdated: onTaskUpdated,
         onCardClick: onTaskSelected,
+        onDeleteTask: onDeleteTask,
         sectionId: id,
         showInteractiveIcons: showInteractiveIcons,
         isFocused: currentTaskId === card.id
