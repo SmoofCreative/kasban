@@ -510,6 +510,12 @@ Actions.updateSection = (params) => {
         .then(() => { dispatch({ type: 'DELETING_CARD_SUCCESS' }); })
         .catch(() => { dispatch({ type: 'DELETING_CARD_FAILED' }); });
       } else {
+        // Ensure there is a semi colon at the end
+        if (details.name.slice(-1) !== ':') {
+          details.name += ':';
+        }
+
+        updateSection(dispatch, details);
         task.update(details)
         .then(() => { dispatch({ type: 'UPDATING_CARD_SUCCESS' }); })
         .catch(() => { dispatch({ type: 'UPDATING_CARD_FAILED' }); });
