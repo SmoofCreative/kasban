@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import EventActions from '../../actions/events';
 import UIActions from '../../actions/ui';
 import './style';
 
@@ -9,6 +10,7 @@ const BoardSelector = React.createClass({
     const { dispatch, showSidebar } = this.props;
     let sidebarActive = showSidebar;
     dispatch(UIActions.setSidebarVisibilty(!sidebarActive));
+    EventActions.openProjectsSidebar();
   },
 
   render() {
