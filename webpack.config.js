@@ -5,6 +5,8 @@ var webpack  = require('webpack');
 var NODE_ENV = JSON.stringify(process.env.NODE_ENV || 'development');
 var CLIENT_ID = JSON.stringify(process.env.CLIENT_ID || '93624243720041');
 var TYPEKIT_KIT_ID = JSON.stringify(process.env.TYPEKIT_KIT_ID || 'ctj8mvm');
+var GOOGLE_ANALYTICS_ID = JSON.stringify(process.env.GOOGLE_ANALYTICS_ID || 'UA-36944240-2');
+
 
 var isDevelopment = (NODE_ENV == JSON.stringify('development'));
 var isProduction = (NODE_ENV == JSON.stringify('production'));
@@ -12,6 +14,7 @@ var isProduction = (NODE_ENV == JSON.stringify('production'));
 console.log('NODE_ENV', NODE_ENV);
 console.log('CLIENT_ID', CLIENT_ID);
 console.log('TYPEKIT_KIT_ID', TYPEKIT_KIT_ID);
+console.log('GOOGLE_ANALYTICS_ID', GOOGLE_ANALYTICS_ID);
 
 var devTool = isDevelopment ? 'eval' : 'source-map';
 
@@ -25,7 +28,8 @@ var plugins = [
     'process.env': {
       NODE_ENV: NODE_ENV,
       CLIENT_ID: CLIENT_ID,
-      TYPEKIT_KIT_ID: TYPEKIT_KIT_ID
+      TYPEKIT_KIT_ID: TYPEKIT_KIT_ID,
+      GOOGLE_ANALYTICS_ID: GOOGLE_ANALYTICS_ID
     }
   })
 ];

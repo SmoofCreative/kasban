@@ -4,6 +4,7 @@ import Promise from 'bluebird';
 
 import { oneHourFromNow } from '../utils';
 import AsanaClient from '../utils/AsanaClient';
+import GoogleAnalytics from '../utils/GoogleAnalytics';
 
 import Task from './task';
 import Section from './section';
@@ -637,9 +638,8 @@ Actions.getTask = (id, projectId) => {
 Actions.checkAuth = () => {
   return (dispatch) => {
 
-    dispatch({
-      type: 'STARTING_ASANA_AUTH'
-    });
+    dispatch({ type: 'STARTING_ASANA_AUTH' });
+
 
     // The access_token is returned from Asana in a url hash --> /#access_token=XXXXXX
     // Lop off the # and parse the params
@@ -670,9 +670,13 @@ Actions.checkAuth = () => {
             }
           });
 
-          // FIXME: is there a way to try/catch a dispatch?
-          dispatch(Actions.getWorkspaces());
+          AsanaClient.users.me()
+            .then((user) => {
+              GoogleAnalytics.set({ userId: user.id});
+              GoogleAnalytics.pageview('/');
+            });
 
+          dispatch(Actions.getWorkspaces());
           return;
     }
 
@@ -695,8 +699,13 @@ Actions.checkAuth = () => {
             }
           });
 
-          dispatch(Actions.getWorkspaces());
+          AsanaClient.users().me()
+            .then((user) => {
+              GoogleAnalytics.set({ userId: user.id});
+              GoogleAnalytics.pageview('/');
+            });
 
+          dispatch(Actions.getWorkspaces());
         });
 
     /**
@@ -710,6 +719,8 @@ Actions.checkAuth = () => {
           isAsanaAuthed: false
         }
       });
+
+      GoogleAnalytics.pageview('/');
     }
   };
 };
