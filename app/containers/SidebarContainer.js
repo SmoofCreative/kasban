@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 
 import Actions from '../actions';
+import EventActions from '../actions/events';
 import UIActions from '../actions/ui';
 import Sidebar from '../components/Sidebar';
 
@@ -19,6 +20,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(Actions.getInitialTasksForProject(projectId));
       dispatch(UIActions.hideSidebar());
       dispatch(UIActions.hideTaskDetailsSidebar());
+      EventActions.selectProject(projectId);
     },
     onBackdropClick: () => {
       dispatch(UIActions.hideSidebar());

@@ -11,6 +11,8 @@ import Section from './section';
 import Project from './project';
 import Workspace from './workspace';
 
+import EventActions from './events';
+
 const Actions = {};
 
 const formatEntities = (entities, extras) => {
@@ -451,6 +453,8 @@ Actions.updateTask = (params) => {
     updateCard(dispatch, taskDetails);
 
     if (updateAsana) {
+      EventActions.updateTask(taskDetails.id);
+
       // Determine if the card is now a section
       if (isSection(taskDetails)) {
         dispatch({
@@ -461,6 +465,9 @@ Actions.updateTask = (params) => {
             projectId: currentProjectId
           }
         });
+
+
+        EventActions.convertTaskToSection(taskDetails.id);
       }
 
       const task = Task(AsanaClient, taskDetails.id);
