@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import Swimlane from '../components/Swimlane';
 
 import Actions from '../actions';
+import EventActions from '../actions/events';
 import UIActions from '../actions/ui';
 
 const mapStateToProps = (state) => {
@@ -20,6 +21,8 @@ const mapDispatchToProps = (dispatch) => {
       let options = {
         taskDetails: task
       };
+
+      EventActions.addTask();
 
       if (isSubTasks) {
         dispatch(Actions.createSubTask({
@@ -61,9 +64,11 @@ const mapDispatchToProps = (dispatch) => {
 
       dispatch(UIActions.selectTask(options));
       dispatch(Actions.getTask(id, projectId));
+      EventActions.selectTask(id);
     },
     onCardMoved: (cardToMove, cardToInsertAfter, projectId) => {
       dispatch(Actions.moveCard(cardToMove, cardToInsertAfter, projectId));
+      EventActions.moveTask(cardToMove.id);
     },
     onDeleteTask: (id, sectionId) => {
       const options = {
@@ -71,7 +76,8 @@ const mapDispatchToProps = (dispatch) => {
         sectionId: sectionId
       };
 
-      dispatch(Actions.deleteTask(options))
+      dispatch(Actions.deleteTask(options));
+      EventActions.deleteTask(id);
     }
   }
 };

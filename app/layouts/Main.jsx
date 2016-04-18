@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import './style';
+
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import BoardSelector from '../components/BoardSelector';

@@ -4,11 +4,14 @@ import Promise from 'bluebird';
 
 import { oneHourFromNow } from '../utils';
 import AsanaClient from '../utils/AsanaClient';
+import GoogleAnalytics from '../utils/GoogleAnalytics';
 
 import Task from './task';
 import Section from './section';
 import Project from './project';
 import Workspace from './workspace';
+
+import EventActions from './events';
 
 const Actions = {};
 
@@ -450,6 +453,8 @@ Actions.updateTask = (params) => {
     updateCard(dispatch, taskDetails);
 
     if (updateAsana) {
+      EventActions.updateTask(taskDetails.id);
+
       // Determine if the card is now a section
       if (isSection(taskDetails)) {
         dispatch({
@@ -460,6 +465,9 @@ Actions.updateTask = (params) => {
             projectId: currentProjectId
           }
         });
+
+
+        EventActions.convertTaskToSection(taskDetails.id);
       }
 
       const task = Task(AsanaClient, taskDetails.id);
@@ -637,9 +645,8 @@ Actions.getTask = (id, projectId) => {
 Actions.checkAuth = () => {
   return (dispatch) => {
 
-    dispatch({
-      type: 'STARTING_ASANA_AUTH'
-    });
+    dispatch({ type: 'STARTING_ASANA_AUTH' });
+
 
     // The access_token is returned from Asana in a url hash --> /#access_token=XXXXXX
     // Lop off the # and parse the params
@@ -670,9 +677,13 @@ Actions.checkAuth = () => {
             }
           });
 
-          // FIXME: is there a way to try/catch a dispatch?
-          dispatch(Actions.getWorkspaces());
+          AsanaClient.users.me()
+            .then((user) => {
+              GoogleAnalytics.set({ userId: user.id});
+              GoogleAnalytics.pageview('/');
+            });
 
+          dispatch(Actions.getWorkspaces());
           return;
     }
 
@@ -695,8 +706,13 @@ Actions.checkAuth = () => {
             }
           });
 
-          dispatch(Actions.getWorkspaces());
+          AsanaClient.users().me()
+            .then((user) => {
+              GoogleAnalytics.set({ userId: user.id});
+              GoogleAnalytics.pageview('/');
+            });
 
+          dispatch(Actions.getWorkspaces());
         });
 
     /**
@@ -710,6 +726,8 @@ Actions.checkAuth = () => {
           isAsanaAuthed: false
         }
       });
+
+      GoogleAnalytics.pageview('/');
     }
   };
 };
