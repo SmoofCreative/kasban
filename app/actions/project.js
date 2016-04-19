@@ -12,9 +12,7 @@ const Project = (projectId = null) => {
       const data = {
         opt_fields: `
           id,name,notes,completed_at,completed,due_on,projects,memberships.section,
-          assignee,assignee.name,assignee.photo,
-          subtasks,subtasks.name,subtasks.due_on,subtasks.completed,
-          subtasks.assignee, subtasks.assignee.name, subtasks.assignee.photo`
+          assignee,assignee.name,assignee.photo`
       }
 
       asana.tasks.findByProject(id, data)
