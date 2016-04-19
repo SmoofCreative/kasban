@@ -15,7 +15,7 @@ const Workspace = () => {
     }
 
     return new Promise((resolve, reject) => {
-      asana.projects.findByWorkspace(id, { limit: 100 })
+      asana.projects.findByWorkspace(id, { limit: 100, archived: false })
       .then((collection) => { resolve(collection.data); })
       .catch((err) => { reject(err); })
     });
