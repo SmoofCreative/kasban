@@ -687,6 +687,11 @@ Actions.updateTypeaheadCondition = (id, text) => {
       .search(id, searchParams, AsanaClient)
       .then((projects) => {
         if (projects.length) {
+          // Filter out archived projects
+          projects = projects.filter((project) => {
+            return !project.archived;
+          });
+
           storeProjects(dispatch, id, projects, true);
           dispatch({ type: 'WORKSPACE_TYPEAHEAD_UPDATE_FETCHED', payload: { id: id } });
         }
