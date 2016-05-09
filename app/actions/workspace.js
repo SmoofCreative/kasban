@@ -23,13 +23,15 @@ const Workspace = () => {
     });
   };
 
-  const search = (id, text, asana) => {
+  const search = (id, params, asana) => {
     if (id == null) {
       throw new Error('Workspace ID required to search through a workspace');
     }
 
+    params = { ...params, opt_fields: 'name, archived' };
+
     return new Promise((resolve, reject) => {
-      asana.workspaces.typeahead(id, text)
+      asana.workspaces.typeahead(id, params)
       .then((collection) => { resolve(collection.data) })
       .catch((err) => { reject(err); });
     });
