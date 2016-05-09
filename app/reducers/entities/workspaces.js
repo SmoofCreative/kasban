@@ -55,14 +55,47 @@ const records = (state = {}, action) => {
         }
       });
     }
+    case 'OVERWRITE_PROJECTS': {
+      const { projects, workspaceId } = action.payload;
+
+      let projectIds = [];
+
+      for(let key in projects) {
+        if (projects.hasOwnProperty(key)) {
+          key = isNumeric(key) ? parseInt(key) : key;
+          projectIds.push(key);
+        }
+      }
+
+      return update(state, {
+        [workspaceId]: {
+          projects: {
+            $set: [...projectIds]
+          }
+        }
+      });
+    }
     default: {
       return state;
     }
   }
 };
 
-const conditions = (state = {}, action) => {
+const conditions = (state = { filters: {} }, action) => {
   switch (action.type) {
+    case 'WORKSPACE_TYPEAHEAD_UPDATE_FETCHING': {
+      state.filters[action.payload.id]
+      return {
+        ...state,
+        filters: {
+          ...state.filters,
+          [action.payload.id]: {
+            ...state.filters[action.payload.id],
+            typeahead: action.payload.text
+          }
+        }
+      }
+    }
     default: {
       return state;
     }
