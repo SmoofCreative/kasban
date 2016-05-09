@@ -69,17 +69,21 @@ $typeahead-font-color: #656872;
     }
 
     &__typeahead {
-      border: none;
-      color: $typeahead-font-color;
-      padding-top: 5px;
+      width: 100%;
+      padding-top: 10px;
+      padding-bottom: 10px;
       padding-left: 15px;
+      margin-bottom: 10px;
+      border-top: none;
+      border-right: none;
+      border-bottom: 1px solid #ddd;
+      border-left: none;
+      color: $typeahead-font-color;
       font-size: $font-size-base;
       font-weight: $font-weight-regular;
-      width: 100%;
 
       &:focus {
         outline: none;
-        border: none;
         box-shadow: none;
       }
     }
