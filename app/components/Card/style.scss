@@ -10,7 +10,6 @@ $drag-handle-size: 16px;
 
 .swimcard {
   &__card {
-    position: relative;
     min-height: 50px;
     padding-right: $card-horizontal-padding;
     padding-left: $card-horizontal-padding;
@@ -57,8 +56,6 @@ $drag-handle-size: 16px;
   }
 
   &__update-form {
-    position: relative;
-
     &:focus {
       outline: none;
     }

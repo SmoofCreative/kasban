@@ -40,7 +40,7 @@ const targetCollect = (connect, monitor) => ({
 
 const DraggableCard = (props) => {
   const { connectDropTarget, connectDragPreview } = props;
-  return connectDragPreview(connectDropTarget(<div><Card {...props} isDraggable={ true } /></div>))
+  return connectDragPreview(connectDropTarget(<div><Card {...props} isDraggable={ true } /></div>));
 };
 
 DraggableCard.propTypes = {
