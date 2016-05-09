@@ -13,6 +13,8 @@ $drag-handle-size: 16px;
     min-height: 50px;
     padding-right: $card-horizontal-padding;
     padding-left: $card-horizontal-padding;
+    // Needed for firefox to show bottom border
+    margin-bottom: 1px;
     background-color: $card-background-color;
     border-right: $swimlane-border;
     border-left: $swimlane-border;
