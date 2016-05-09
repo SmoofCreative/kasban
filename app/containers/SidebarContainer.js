@@ -8,6 +8,7 @@ import Sidebar from '../components/Sidebar';
 const mapStateToProps = (state) => {
   return {
     workspaceEntities: state.entities.workspaces.records,
+    workspaceConditions: state.entities.workspaces.conditions,
     projectEntities: state.entities.projects.records,
     showSidebarLoading: state.ui.showSidebarLoading,
     visible: state.ui.showSidebar
@@ -24,6 +25,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     onBackdropClick: () => {
       dispatch(UIActions.hideSidebar());
+    },
+    onTypeaheadUpdate: (id, text) => {
+      dispatch(Actions.updateTypeaheadCondition(id, text));
     }
   };
 };

@@ -45,7 +45,8 @@ const records = (state = {}, action) => {
         }
       };
     }
-    case 'ADD_PROJECTS': {
+    case 'ADD_PROJECTS':
+    case 'OVERWRITE_PROJECTS': {
       return {
         ...state,
         ...action.payload.projects

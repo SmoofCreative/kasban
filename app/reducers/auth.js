@@ -1,4 +1,3 @@
-
 const initialState = {
   isAsanaAuthed: false,
   checkInProgress: false

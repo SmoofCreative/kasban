@@ -10,6 +10,7 @@ $sidebar-tip-width: 10px;
 $sidebar-tip-vertical-border: $sidebar-tip-width solid transparent;
 $sidebar-tip-horizontal-border: $sidebar-tip-height solid $sidebar-secondary-colour;
 
+$typeahead-font-color: #656872;
 
 .sidebar {
   display: none;
@@ -67,6 +68,22 @@ $sidebar-tip-horizontal-border: $sidebar-tip-height solid $sidebar-secondary-col
       text-overflow: ellipsis;
     }
 
+    &__typeahead {
+      border: none;
+      color: $typeahead-font-color;
+      padding-top: 5px;
+      padding-left: 15px;
+      font-size: $font-size-base;
+      font-weight: $font-weight-regular;
+      width: 100%;
+
+      &:focus {
+        outline: none;
+        border: none;
+        box-shadow: none;
+      }
+    }
+
     &:last-of-type {
       & .sidebar__projects {
         margin-bottom: $header-height + 10px;
@@ -76,7 +93,7 @@ $sidebar-tip-horizontal-border: $sidebar-tip-height solid $sidebar-secondary-col
 
   &__projects {
     padding-left: 15px;
-    margin-top: 5px;
+    margin-top: 0;
     margin-bottom: 5px;
     list-style: none;
   }

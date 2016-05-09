@@ -4,17 +4,33 @@ import classNames from 'classnames';
 import './style';
 
 import AccordionSection from './accordion-section';
+import Typeahead from './typeahead';
 import Loading from '../Loading';
 
-const renderWorkspaces = ({ workspaces, workspaceEntities, projectEntities, currentProjectId, onProjectSelected }) => {
+const handleTypeaheadUpdate = (onTypeaheadUpdate, id, text) => {
+  onTypeaheadUpdate(id, text);
+};
+
+const renderWorkspaces = ({ workspaces, workspaceEntities, workspaceConditions, projectEntities, currentProjectId, onProjectSelected, onTypeaheadUpdate }) => {
   return workspaces.map((workspaceId) => {
     const workspace = workspaceEntities[workspaceId];
+
+    // Check if the workspace has any filters
+    const filters = workspaceConditions.filters[workspace.id];
+    const hasFilters = typeof filters !== 'undefined';
 
     return (
       <AccordionSection
         key={workspace.id}
         classname="sidebar__section"
         title={workspace.name}>
+
+        <Typeahead
+          classname="sidebar__section"
+          onUpdate={ handleTypeaheadUpdate.bind(this, onTypeaheadUpdate, workspace.id) }
+          searchValue={ hasFilters ? filters.typeahead : '' }
+        />
+
         <ul className="sidebar__projects">
           {
             workspace.projects.map((projectId) => {
@@ -60,3 +76,4 @@ const Sidebar = (params) => {
 };
 
 export default Sidebar;
+
