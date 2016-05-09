@@ -13,6 +13,9 @@ import Workspace from './workspace';
 
 import EventActions from './events';
 
+// Create a global workspace so that the typeahead search can be debounced
+const workspaceSingleton = Workspace();
+
 const Actions = {};
 
 const formatEntities = (entities, extras) => {
@@ -41,11 +44,14 @@ const storeWorkspace = (dispatch, workspace) => {
   });
 };
 
-const storeProjects = (dispatch, workspaceId, projects) => {
-  if (projects.length) {
+const storeProjects = (dispatch, workspaceId, projects, overwrite = false) => {
+  if (projects.length || overwrite) {
     const formattedProjects = formatEntities(projects, { sections: [] });
+
+    const actionType = overwrite ? 'OVERWRITE_PROJECTS' : 'ADD_PROJECTS';
+
     dispatch({
-      type: 'ADD_PROJECTS',
+      type: actionType,
       payload: {
         projects: formattedProjects,
         workspaceId: workspaceId
@@ -361,6 +367,29 @@ const getTaskInformation = (dispatch, id, projectId) => {
   });
 };
 
+const getProjectsForWorkspace = (dispatch, id, dispatchHooks = null) => {
+  const hasDispatchHook = dispatchHooks !== null;
+
+  if (hasDispatchHook && typeof dispatchHooks.preFetchDispatch !== 'undefined') {
+    dispatch(dispatchHooks.preFetchDispatch);
+  }
+
+  const workspace = Workspace();
+  workspace
+  .getProjects(id, AsanaClient)
+  .then((projects) => {
+    if (hasDispatchHook && typeof dispatchHooks.postFetchDispatch !== 'undefined') {
+      dispatch(dispatchHooks.postFetchDispatch);
+    }
+    storeProjects(dispatch, id, projects);
+  })
+  .catch(() => {
+    if (hasDispatchHook && typeof dispatchHooks.errorFetchDispatch !== 'undefined') {
+      dispatch(dispatchHooks.errorFetchDispatch);
+    }
+  });
+};
+
 Actions.getWorkspaces = () => {
   return (dispatch) => {
     dispatch({ type: 'REQUEST_WORKSPACES_AND_PROJECTS' });
@@ -370,10 +399,7 @@ Actions.getWorkspaces = () => {
     .then((workspaces) => {
       workspaces.map((ws) => {
         storeWorkspace(dispatch, ws);
-        workspace.getProjects(ws.id, AsanaClient)
-        .then((projects) => {
-          storeProjects(dispatch, ws.id, projects);
-        });
+        getProjectsForWorkspace(dispatch, ws.id);
       });
 
       // Return null as otherwise we get a warning about not returning promises
@@ -641,6 +667,57 @@ Actions.getTask = (id, projectId) => {
     getTaskInformation(dispatch, id, projectId);
   }
 }
+
+Actions.updateTypeaheadCondition = (id, text) => {
+  return (dispatch) => {
+    // Update our UI with the new text
+    dispatch({
+      type: 'WORKSPACE_TYPEAHEAD_UPDATE_FETCHING',
+      payload: {
+        id: id,
+        text: text
+      }
+    });
+
+    // Check if the typeahead text exists
+    if (text.length) {
+      const searchParams = { type: workspaceSingleton.searchTypes.Project, query: text };
+
+      workspaceSingleton
+      .search(id, searchParams, AsanaClient)
+      .then((projects) => {
+        if (projects.length) {
+          storeProjects(dispatch, id, projects, true);
+          dispatch({ type: 'WORKSPACE_TYPEAHEAD_UPDATE_FETCHED', payload: { id: id } });
+        }
+      });
+    } else {
+      const dispatchHooks = {
+        preFetchDispatch: {
+          type: 'REQUEST_PROJECTS_FOR_WORKSPACE',
+          payload: {
+            id: id
+          }
+        },
+        postFetchDispatch: {
+          type: 'RECEIVED_PROJECTS_FOR_WORKSPACE',
+          payload: {
+            id: id
+          }
+        },
+        errorFetchDispatch: {
+          type: 'RECEIVED_PROJECTS_FOR_WORKSPACE_ERROR',
+          payload: {
+            id: id
+          }
+        }
+      };
+
+      // If the typeahead is empty then reload the list
+      getProjectsForWorkspace(dispatch, id, dispatchHooks);
+    }
+  };
+};
 
 Actions.checkAuth = () => {
   return (dispatch) => {
