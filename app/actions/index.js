@@ -750,7 +750,7 @@ console.log('Params check', typeof params.access_token !== 'undefined');
 
 console.log('Check storage', localStorage.getItem('access_token'));
 console.log('Check storage', localStorage.getItem('token_death'));
-      
+
 console.log('Location change');
 
       document.location = '/';
@@ -762,7 +762,7 @@ console.log('Location change check ', document.location);
 
 console.log('I was wrong - Alex 2016');
 
-console.log('Second if', localStorage.getItem('access_token') && parseInt(localStorage.getItem('token_death')) > Date.now());
+console.log('Second if');
 
 
     /**
@@ -795,6 +795,9 @@ console.log('Second if', localStorage.getItem('access_token') && parseInt(localS
 
       console.log('Setup analytics');
 
+            })
+            .catch((err) => {
+              console.log('Well that didnt work', err);
             });
 
       console.log('Get workspaces');
