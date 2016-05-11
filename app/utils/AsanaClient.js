@@ -10,6 +10,5 @@ if (access_token) {
 }
 
 export default Asana.Client.create({
-  clientId: process.env.CLIENT_ID,
-  redirectUri: document.location['href']
+  clientId: process.env.CLIENT_ID
 }).useOauth(authCreds);
