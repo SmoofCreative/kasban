@@ -837,6 +837,9 @@ console.log('Second if');
             });
 
           dispatch(Actions.getWorkspaces());
+        })
+        .catch((err) => {
+          console.log('Auth didnt work :(', err)
         });
 
 
