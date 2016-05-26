@@ -281,13 +281,6 @@ const addSectionsAndCards = (dispatch, projectId, tasks) => {
           let sectionId = item.memberships[0].section.id;
 
           if (typeof sectionCards[sectionId] !== 'undefined') {
-            console.log('Section ID:' + JSON.stringify(sectionId));
-            console.log('Item: ' + JSON.stringify(item));
-            console.log('Item memberships: ' + JSON.stringify(item.memberships));
-            console.log('Item first membership: ' + JSON.stringify(item.memberships[0]));
-            console.log('Item first membership section id: ' + JSON.stringify(item.memberships[0].section.id));
-            console.log('\n');
-
             sectionCards[sectionId].push(item);
           } else {
             console.log(sectionId);
