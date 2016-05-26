@@ -279,7 +279,24 @@ const addSectionsAndCards = (dispatch, projectId, tasks) => {
       if (item.memberships.length) {
         if (item.memberships[0].section !== null) {
           let sectionId = item.memberships[0].section.id;
-          sectionCards[sectionId].push(item);
+
+          if (typeof sectionCards[sectionId] !== 'undefined') {
+            console.log('Section ID:' + JSON.stringify(sectionId));
+            console.log('Item: ' + JSON.stringify(item));
+            console.log('Item memberships: ' + JSON.stringify(item.memberships));
+            console.log('Item first membership: ' + JSON.stringify(item.memberships[0]));
+            console.log('Item first membership section id: ' + JSON.stringify(item.memberships[0].section.id));
+            console.log('\n');
+
+            sectionCards[sectionId].push(item);
+          } else {
+            console.log(sectionId);
+            console.log('Item: ' + item);
+            console.log('Item memberships: ' + item.memberships);
+            console.log('Item first membership: ' + item.memberships[0]);
+            console.log('Item first membership section id: ' +item.memberships[0].section.id);
+          }
+
           continue;
         }
       }
@@ -728,43 +745,21 @@ Actions.checkAuth = () => {
   return (dispatch) => {
 
     try {
-      console.log('Start');
-
       dispatch({ type: 'STARTING_ASANA_AUTH' });
-
-      console.log(' After first dispatch');
 
       // The access_token is returned from Asana in a url hash --> /#access_token=XXXXXX
       // Lop off the # and parse the params
       let params = querystringify.parse(location.hash.slice(1))
 
-      console.log('Params', params);
-      console.log('Params check', typeof params.access_token !== 'undefined');
-
       /**
        * Asana redirect_uri action - just set token to local storage and bail.
        */
       if (typeof params.access_token !== 'undefined') {
-        console.log('Inside if');
         localStorage.setItem('access_token', params.access_token);
         localStorage.setItem('token_death', oneHourFromNow());
-
-        console.log('Check storage', localStorage.getItem('access_token'));
-        console.log('Check storage', localStorage.getItem('token_death'));
-
-        console.log('Location change');
-
         document.location = '/';
-
-        console.log('Location change check ', document.location);
-
         return;
       }
-
-      console.log('I was wrong - Alex 2016');
-
-      console.log('Second if');
-
 
       /**
        * Check token age
@@ -773,9 +768,6 @@ Actions.checkAuth = () => {
       if ( localStorage.getItem('access_token') &&
            parseInt(localStorage.getItem('token_death')) > Date.now()
           ) {
-
-            console.log('Inside if');
-
             // we 'assume' they are authed
             dispatch({
               type: 'ASANA_AUTH_COMPLETE',
@@ -784,24 +776,14 @@ Actions.checkAuth = () => {
               }
             });
 
-            console.log('Get client');
-
-
             AsanaClient.users.me()
               .then((user) => {
-                console.log('Got user', user);
-
                 GoogleAnalytics.set({ userId: user.id});
                 GoogleAnalytics.pageview('/');
-
-                console.log('Setup analytics');
-
               })
-              .catch((err) => {
-                console.log('Well that didnt work', err);
+              .catch(() => {
+                console.log('Failed to get user');
               });
-
-            console.log('Get workspaces');
 
             dispatch(Actions.getWorkspaces());
             return;
@@ -813,14 +795,9 @@ Actions.checkAuth = () => {
        * If a token exists and we haven't already bailed, then we need to reauth
        */
       else if ( localStorage.getItem('access_token') ) {
-        console.log('Inside another if');
-
         AsanaClient
           .authorize()
           .then(() => {
-
-            console.log('Authed');
-
             localStorage.setItem('access_token', AsanaClient.dispatcher.authenticator.credentials.access_token);
             localStorage.setItem('token_death', oneHourFromNow());
 
@@ -839,8 +816,8 @@ Actions.checkAuth = () => {
 
             dispatch(Actions.getWorkspaces());
           })
-          .catch((err) => {
-            console.log('Auth didnt work :(', err)
+          .catch(() => {
+            console.log('Auth didnt work :(')
           });
 
 
@@ -849,8 +826,6 @@ Actions.checkAuth = () => {
        * Probably haven't clicked the Auth button
        */
       } else {
-        console.log('Inside last if');
-
         dispatch({
           type: 'ASANA_AUTH_COMPLETE',
           payload: {
@@ -863,7 +838,7 @@ Actions.checkAuth = () => {
 
     } catch(e) {
       console.log(e);
-    }    
+    }
   };
 };
 
