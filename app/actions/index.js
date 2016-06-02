@@ -276,20 +276,28 @@ const addSectionsAndCards = (dispatch, projectId, tasks) => {
         continue;
       }
 
+      // Check if the task has any associations
       if (item.memberships.length) {
-        if (item.memberships[0].section !== null) {
-          let sectionId = item.memberships[0].section.id;
 
-          if (typeof sectionCards[sectionId] !== 'undefined') {
-            sectionCards[sectionId].push(item);
-          } else {
-            console.log(sectionId);
-            console.log('Item: ' + item);
-            console.log('Item memberships: ' + item.memberships);
-            console.log('Item first membership: ' + item.memberships[0]);
-            console.log('Item first membership section id: ' +item.memberships[0].section.id);
+        // Track if the task exists at least once in this project
+        let hasASection = false;
+
+        // Loop through each membership and add to the relevant section
+        item.memberships.forEach((mem) => {
+          // Check the membership is a section
+          if (mem.section !== null) {
+            let sectionId = mem.section.id;
+
+            // Check that section exists in our project
+            if (typeof sectionCards[sectionId] !== 'undefined') {
+              sectionCards[sectionId].push(item);
+              hasASection = true;
+            }
           }
+        });
 
+        if (hasASection)
+        {
           continue;
         }
       }
