@@ -11,8 +11,7 @@ const mapStateToProps = (state) => {
     cardEntities: state.entities.cards.records,
     currentProjectId: state.entities.projects.conditions.currentId,
     projectEntities: state.entities.projects.records,
-    currentTaskId: state.entities.cards.conditions.currentId,
-    swimlaneCollapsed: state.ui.swimlaneCollapsed
+    currentTaskId: state.entities.cards.conditions.currentId
   }
 };
 

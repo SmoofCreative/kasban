@@ -1,5 +1,4 @@
 const initialState = {
-  collapsedLanes: [],
   showSidebar: false,
   showSidebarLoading: false,
   showProjectLoading: false,
