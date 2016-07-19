@@ -71,6 +71,7 @@ $sidebar-components-vertical-padding: 25px;
 
   &__sub-tasks {
     padding-bottom: $sidebar-components-vertical-padding;
+    .swimlane__header__button {display: none;}
   }
 
   &__user-name {

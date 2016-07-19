@@ -1,4 +1,5 @@
 const initialState = {
+  collapsedLanes: [],
   showSidebar: false,
   showSidebarLoading: false,
   showProjectLoading: false,
@@ -34,6 +35,9 @@ export default function auth(state = initialState, action) {
     }
     case 'FETCHING_UPDATED_TASK_INFORMATION_SUCCESS': {
       return Object.assign({}, state, { showTaskDetailsSidebarLoading: false });
+    }
+    case 'TOGGLE_SWIMLANE': {
+      return document.querySelector('section[data-reactid*="'+action.payload.id+'"]').classList.toggle('swimlane--collapsed');
     }
     default: {
       return state;

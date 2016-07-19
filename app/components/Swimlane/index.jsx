@@ -75,6 +75,7 @@ const Swimlane = React.createClass({
       onCardMoved,
       onTaskUpdated,
       onSectionUpdated,
+      onSwimlaneToggle,
       isStatic,
       isFullWidth,
       fullHeight,
@@ -97,6 +98,7 @@ const Swimlane = React.createClass({
       title: name,
       placeholder: headerPlaceholder,
       onSectionUpdated: onSectionUpdated,
+      onSwimlaneToggle: onSwimlaneToggle,
       isPlaceholder: isPlaceholder
     };
 
