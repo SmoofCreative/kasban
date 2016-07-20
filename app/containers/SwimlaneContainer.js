@@ -11,7 +11,8 @@ const mapStateToProps = (state) => {
     cardEntities: state.entities.cards.records,
     currentProjectId: state.entities.projects.conditions.currentId,
     projectEntities: state.entities.projects.records,
-    currentTaskId: state.entities.cards.conditions.currentId
+    currentTaskId: state.entities.cards.conditions.currentId,
+    collapsed: state.ui.swimlaneCollapsed
   }
 };
 
@@ -79,8 +80,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(Actions.deleteTask(options));
       EventActions.deleteTask(id);
     },
-    onSwimlaneToggle: (id) => {
-      dispatch(UIActions.toggleSwimlane(id))
+    onSwimlaneToggle: (id, collapsed) => {
+      dispatch(UIActions.toggleSwimlane(id, collapsed))
     }
   }
 };
@@ -115,8 +116,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     onTaskUpdated: (task, updateAsana) => {
       dispatchProps.onTaskUpdated(task, id, currentProjectId, updateAsana);
     },
-    onSwimlaneToggle: (id) => {
-      dispatchProps.onSwimlaneToggle(id);
+    onSwimlaneToggle: (id, collapsed) => {
+      dispatchProps.onSwimlaneToggle(id, collapsed);
     }
   };
 

@@ -3,7 +3,8 @@ const initialState = {
   showSidebarLoading: false,
   showProjectLoading: false,
   showTaskDetailsSidebar: false,
-  showTaskDetailsSidebarLoading: false
+  showTaskDetailsSidebarLoading: false,
+  swimlaneCollapsed: false
 };
 
 export default function auth(state = initialState, action) {
@@ -36,7 +37,11 @@ export default function auth(state = initialState, action) {
       return Object.assign({}, state, { showTaskDetailsSidebarLoading: false });
     }
     case 'TOGGLE_SWIMLANE': {
-      return document.querySelector('section[data-reactid*="'+action.payload.id+'"]').classList.toggle('swimlane--collapsed');
+      if (action.payload.swimlaneCollapsed) {
+        return Object.assign({}, state, { swimlaneCollapsed: false });
+      } else {
+        return Object.assign({}, state, { swimlaneCollapsed: true });
+      }
     }
     default: {
       return state;

@@ -41,7 +41,9 @@ $swimlane-height-small: 250px;
     width: $swimlane-header-height;
 
     .swimlane {
-      &__cards {display: none;}
+      &__cards {
+        display: none;
+      }
 
       &__header {
         border-bottom-left-radius: $swimlane-border-radius;
@@ -49,12 +51,12 @@ $swimlane-height-small: 250px;
         height: $swimlane-width;
         width: $swimlane-header-height;
 
-        form {
+        &__update-form {
           transform: rotate(90deg);
+        }
 
-          input {
+        &__update-input {
             width: $swimlane-width - 35px;
-          }
         }
 
         &__button {

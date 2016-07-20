@@ -44,11 +44,12 @@ UIActions.hideTaskDetailsSidebar = () => {
   }
 };
 
-UIActions.toggleSwimlane = (id) => {
+UIActions.toggleSwimlane = (id, collapsed) => {
   return {
     type: 'TOGGLE_SWIMLANE',
     payload: {
-      id: id
+      id: id,
+      swimlaneCollapsed: collapsed
     }
   }
 };
