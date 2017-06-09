@@ -1,3 +1,5 @@
+Deprecated - The project has be deprecated in favour of [Asana boards](https://asana.com/guide/help/views/boards). 
+
 # Kasban
 
 Kanban for Asana
