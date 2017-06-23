@@ -44,4 +44,14 @@ UIActions.hideTaskDetailsSidebar = () => {
   }
 };
 
+UIActions.toggleSwimlane = (id, collapsed) => {
+  return {
+    type: 'TOGGLE_SWIMLANE',
+    payload: {
+      id: id,
+      swimlaneCollapsed: collapsed
+    }
+  }
+};
+
 export default UIActions;

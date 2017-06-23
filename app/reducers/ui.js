@@ -3,7 +3,8 @@ const initialState = {
   showSidebarLoading: false,
   showProjectLoading: false,
   showTaskDetailsSidebar: false,
-  showTaskDetailsSidebarLoading: false
+  showTaskDetailsSidebarLoading: false,
+  swimlaneCollapsed: false
 };
 
 export default function auth(state = initialState, action) {
@@ -34,6 +35,13 @@ export default function auth(state = initialState, action) {
     }
     case 'FETCHING_UPDATED_TASK_INFORMATION_SUCCESS': {
       return Object.assign({}, state, { showTaskDetailsSidebarLoading: false });
+    }
+    case 'TOGGLE_SWIMLANE': {
+      if (action.payload.swimlaneCollapsed) {
+        return Object.assign({}, state, { swimlaneCollapsed: false });
+      } else {
+        return Object.assign({}, state, { swimlaneCollapsed: true });
+      }
     }
     default: {
       return state;

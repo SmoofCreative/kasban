@@ -32,6 +32,43 @@ $swimlane-height-small: 250px;
     margin-left: 0;
   }
 
+  &--collapsed {
+    border-bottom-left-radius: $swimlane-border-radius;
+    border-bottom-right-radius: $swimlane-border-radius;
+    flex: none;
+    height: $swimlane-width;
+    overflow-y: visible;
+    width: $swimlane-header-height;
+
+    .swimlane {
+      &__cards {
+        display: none;
+      }
+
+      &__header {
+        border-bottom-left-radius: $swimlane-border-radius;
+        border-bottom-right-radius: $swimlane-border-radius;
+        height: $swimlane-width;
+        width: $swimlane-header-height;
+
+        &__update-form {
+          transform: rotate(90deg);
+        }
+
+        &__update-input {
+            width: $swimlane-width - 35px;
+        }
+
+        &__button {
+          border-bottom-right-radius: $swimlane-border-radius;
+          border-top-right-radius: 0;
+          bottom: 0;
+          top: auto;      
+        }
+      }
+    }
+  }
+
   &__header {
     width: 100%;
     height: $swimlane-header-height;
@@ -42,6 +79,22 @@ $swimlane-height-small: 250px;
     border-bottom: 1px solid #eee;
     border-left: $swimlane-border;
     background-color: #F9FAFB;
+
+    &__button {
+      background: transparent;
+      border: $swimlane-border;
+      border-top-right-radius: $swimlane-border-radius;
+      border-bottom-left-radius: $swimlane-border-radius;
+      font-size: .75em;
+      outline: none;
+      position: absolute;
+      right: 0;
+      top: 0;
+      &:hover {
+        border-color: $brand-blue;
+        color: $brand-blue;
+      }
+    }
 
     &__text {
       width: $swimlane-width - 1px;

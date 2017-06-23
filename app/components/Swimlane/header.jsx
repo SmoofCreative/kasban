@@ -1,6 +1,10 @@
 import React from 'react';
 
 const SwimlaneHeader = React.createClass({
+  handleSwimlaneToggle() {
+    this.props.onSwimlaneToggle(this.props.id, this.props.collapsed);
+  },
+
   handleTextUpdate(updateAsana = false) {
 
     const { sectionInput } = this.refs;
@@ -59,6 +63,7 @@ const SwimlaneHeader = React.createClass({
   render() {
     return (
       <header className="swimlane__header">
+        <button className="swimlane__header__button" onClick={ this.handleSwimlaneToggle }>Toggle Lane</button>
         { this.renderInput() }
       </header>
     );

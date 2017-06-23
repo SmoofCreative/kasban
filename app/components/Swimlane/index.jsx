@@ -75,17 +75,20 @@ const Swimlane = React.createClass({
       onCardMoved,
       onTaskUpdated,
       onSectionUpdated,
+      onSwimlaneToggle,
       isStatic,
       isFullWidth,
       fullHeight,
       hasGutter,
+      collapsed,
       headerPlaceholder,
       isPlaceholder
     } = this.props;
 
     const sectionClasses = classNames('swimlane', {
       'swimlane--full-width': isFullWidth,
-      'swimlane--no-gutter': !hasGutter
+      'swimlane--no-gutter': !hasGutter,
+      'swimlane--collapsed': collapsed
     });
 
     const cardClasses = classNames('swimlane__cards', {
@@ -97,6 +100,8 @@ const Swimlane = React.createClass({
       title: name,
       placeholder: headerPlaceholder,
       onSectionUpdated: onSectionUpdated,
+      onSwimlaneToggle: onSwimlaneToggle,
+      collapsed,
       isPlaceholder: isPlaceholder
     };
 
